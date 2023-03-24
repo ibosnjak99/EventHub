@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Header } from 'semantic-ui-react';
-import List from 'semantic-ui-react/dist/commonjs/elements/List';
+import { Container } from 'semantic-ui-react';
+import { Event } from '../models/event';
+import NavBar from './NavBar';
+import EventsDashboard from '../../features/events/dashboard/EventsDashboard';
 
 function App() {
-  const [events, setEvents] = useState([])
+  const [events, setEvents] = useState<Event[]>([])
 
   useEffect(() => {
-    axios.get('https://localhost:7013/api/events')
+    axios.get<Event[]>('https://localhost:7013/api/events')
       .then(response => {
         setEvents(response.data)
       })
@@ -15,14 +17,10 @@ function App() {
 
   return (
     <>
-      <Header as='h2' icon='users' content='EventHub' />
-      <List>
-          {events.map((event: any) => (
-            <List.Item key={event.id}>
-              {event.title}
-            </List.Item>
-          ))}
-      </List>
+      <NavBar />
+      <Container style={{ marginTop: '6em'}}>
+        <EventsDashboard events={events}/>
+      </Container>
     </>
   );
 }
