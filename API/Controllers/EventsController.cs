@@ -1,7 +1,7 @@
-﻿using Domain;
-using Infrastructure;
+﻿using Application.Events;
+using Domain;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -11,15 +11,15 @@ namespace API.Controllers
     /// <seealso cref="BaseApiController" />
     public class EventsController : BaseApiController
     {
-        private readonly DataContext context;
+        private readonly IMediator mediator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventsController" /> class.
         /// </summary>
-        /// <param name="context">The context.</param>
-        public EventsController(DataContext context)
+        /// <param name="mediator"></param>
+        public EventsController(IMediator mediator)
         {
-            this.context = context;
+            this.mediator = mediator;
         }
 
         // GET: /api/events 
@@ -29,7 +29,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Event>>> GetEventsAsync()
         {
-            return await this.context.Events.ToListAsync();
+            return await this.mediator.Send(new EventsService.GetAllEvents());
         }
 
         // GET: /api/events/{id}
@@ -40,12 +40,41 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Event>> GetSingleEventAsync(Guid id)
         {
-            var singleEvent = await this.context.Events.FindAsync(id);
+            return await this.mediator.Send(new EventsService.GetEventById(id));
+        }
 
-            if (singleEvent != null)
-                return singleEvent;
-            else
-                return NotFound();
+        // POST: /api/events
+        /// <summary>
+        /// Creates new event asynchronous.
+        /// </summary>
+        /// <param name="event">The event.</param>
+        [HttpPost]
+        public async Task<IActionResult> CreateEventAsync(Event @event)
+        {
+            return Ok(await this.mediator.Send(new EventsService.CreateEvent(@event)));
+        }
+
+        // PUT: /api/events/{id}
+        /// <summary>
+        /// Edits event asynchronous.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditEventAsync(Guid id, Event @event)
+        {
+            @event.Id = id;
+            return Ok(await this.mediator.Send(new EventsService.EditEvent(@event)));
+        }
+
+        // DELETE: /api/events/{id}
+        /// <summary>
+        /// Deletes event asynchronous.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEventAsync(Guid id)
+        {
+            return Ok(await this.mediator.Send(new EventsService.DeleteEvent(id)));
         }
     }
 }
