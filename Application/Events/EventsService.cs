@@ -11,7 +11,16 @@ namespace Application.Events
     /// </summary>
     public class EventsService
     {
+        /// <summary>
+        /// Get all events class.
+        /// </summary>
+        /// <seealso cref="IRequest{TResponse}"/>
         public class GetAllEvents : IRequest<List<Event>>{}
+
+        /// <summary>
+        /// Get event class.
+        /// </summary>
+        /// <seealso cref="IRequest{TResponse}"/>
         public class GetEventById : IRequest<Event>
         {
             public GetEventById(Guid id)
@@ -21,7 +30,11 @@ namespace Application.Events
 
             public Guid Id { get; set; }
         }
-        
+
+        /// <summary>
+        /// Create event class.
+        /// </summary>
+        /// <seealso cref="IRequest"/>
         public class CreateEvent : IRequest
         {
             public CreateEvent(Event @event)
@@ -32,6 +45,10 @@ namespace Application.Events
             public Event Event { get; set; }
         }
 
+        /// <summary>
+        /// Edit event class.
+        /// </summary>
+        /// <seealso cref="IRequest"/>
         public class EditEvent : IRequest
         {
             public EditEvent(Event @event)
@@ -42,6 +59,10 @@ namespace Application.Events
             public Event Event { get; set; }
         }
 
+        /// <summary>
+        /// Delete event class.
+        /// </summary>
+        /// <seealso cref="IRequest"/>
         public class DeleteEvent : IRequest
         {
             public DeleteEvent(Guid id)
@@ -52,6 +73,10 @@ namespace Application.Events
             public Guid Id;
         }
 
+        /// <summary>
+        /// Events handler class.
+        /// </summary>
+        /// <seealso cref="IRequestHandler{TRequest}"/>
         public class EventsHandler : 
             IRequestHandler<GetAllEvents, List<Event>>, 
             IRequestHandler<GetEventById, Event>, 
@@ -62,17 +87,32 @@ namespace Application.Events
             private readonly DataContext context;
             private readonly IMapper mapper;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="EventsHandler" /> class.
+            /// </summary>
+            /// <param name="context">The context.</param>
+            /// <param name="mapper">The mapper.</param>
             public EventsHandler(DataContext context, IMapper mapper)
             {
                 this.context = context;
                 this.mapper = mapper;
             }
 
+            /// <summary>
+            /// Handles a GET request
+            /// </summary>
+            /// <param name="request">The request</param>
+            /// <param name="cancellationToken">Cancellation token</param>
             public async Task<List<Event>> Handle(GetAllEvents request, CancellationToken cancellationToken)
             {
                 return await this.context.Events.ToListAsync();
             }
 
+            /// <summary>
+            /// Handles a GET request
+            /// </summary>
+            /// <param name="request">The request</param>
+            /// <param name="cancellationToken">Cancellation token</param>
             public async Task<Event> Handle(GetEventById request, CancellationToken cancellationToken)
             {
                 var singleEvent = await this.context.Events.FindAsync(request.Id);
@@ -83,6 +123,11 @@ namespace Application.Events
                     throw new Exception("Event not found");
             }
 
+            /// <summary>
+            /// Handles a POST request
+            /// </summary>
+            /// <param name="request">The request</param>
+            /// <param name="cancellationToken">Cancellation token</param>
             public async Task<Unit> Handle(CreateEvent request, CancellationToken cancellationToken)
             {
                 this.context.Events.Add(request.Event);
@@ -92,6 +137,11 @@ namespace Application.Events
                 return Unit.Value;
             }
 
+            /// <summary>
+            /// Handles a PUT request
+            /// </summary>
+            /// <param name="request">The request</param>
+            /// <param name="cancellationToken">Cancellation token</param>
             public async Task<Unit> Handle(EditEvent request, CancellationToken cancellationToken)
             {
                 var eventToEdit = await this.context.Events.FindAsync(request.Event.Id);
@@ -108,6 +158,11 @@ namespace Application.Events
                 return Unit.Value;
             }
 
+            /// <summary>
+            /// Handles a DELETE request
+            /// </summary>
+            /// <param name="request">The request</param>
+            /// <param name="cancellationToken">Cancellation token</param>
             public async Task<Unit> Handle(DeleteEvent request, CancellationToken cancellationToken)
             {
                 var eventToDelete = await this.context.Events.FindAsync(request.Id);
