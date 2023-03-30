@@ -1,0 +1,12 @@
+body {
+  background-color: #f0f0f0 !important;
+}
+
+.ui.top.fixed.menu {
+  background-color: rgba(236, 236, 236, 0.699);
+}
+
+.ui.top.fixed.menu .ui.button {
+  background-color: rgb(197, 197, 197);
+}
+
