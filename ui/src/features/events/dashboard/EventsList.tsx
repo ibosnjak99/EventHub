@@ -18,7 +18,7 @@ export default function EventsList({events, selectEvent}: Props) {
                         <Item.Meta>{event.date}</Item.Meta>
                         <Item.Description>
                             <div>{event.description}</div>
-                            <div>{event.city}, {event.venue}</div>
+                            <div>{event.city}</div>
                         </Item.Description>
                         <Item.Extra>
                             <Button 
