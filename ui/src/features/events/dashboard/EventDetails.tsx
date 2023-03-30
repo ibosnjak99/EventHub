@@ -5,9 +5,11 @@ import { Event } from '../../../app/models/event';
 interface Props {
     event: Event
     unselectEvent: () => void
+    openForm: (id: string) => void
+    closeForm: () => void
 }
 
-export default function EventDetails({ event, unselectEvent }: Props) {
+export default function EventDetails({ event, unselectEvent, openForm, closeForm }: Props) {
     return (
         <>
             <Card fluid>
@@ -23,8 +25,8 @@ export default function EventDetails({ event, unselectEvent }: Props) {
                 </Card.Content>
                 <Card.Content extra>
                     <Button.Group widths='2'>
-                        <Button basic color='blue' content='Edit' />
-                        <Button onClick={unselectEvent} basic color='red' content='Cancel' />
+                        <Button onClick={() => openForm(event.id)} basic color='blue' content='Edit' />
+                        <Button onClick={() => {unselectEvent(); closeForm();}} basic color='red' content='Cancel' />
                     </Button.Group>
                 </Card.Content>
             </Card>

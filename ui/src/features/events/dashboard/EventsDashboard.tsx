@@ -10,9 +10,12 @@ interface Props {
     selectedEvent: Event | undefined
     selectEvent: (id: string) => void
     unselectEvent: () => void
+    editMode: boolean
+    openForm: (id: string) => void
+    closeForm: () => void
 }
 
-export default function EventsDashboard({events, selectedEvent, selectEvent, unselectEvent}: Props) {
+export default function EventsDashboard({events, selectedEvent, selectEvent, unselectEvent, editMode, openForm, closeForm}: Props) {
     return (
         <>
             <Grid>
@@ -24,9 +27,16 @@ export default function EventsDashboard({events, selectedEvent, selectEvent, uns
                 </Grid.Column>
                 <Grid.Column width='6'>
                     {selectedEvent &&
-                        <EventDetails event={selectedEvent} unselectEvent={unselectEvent} /> 
+                        <EventDetails 
+                            event={selectedEvent} 
+                            unselectEvent={unselectEvent} 
+                            openForm={openForm}
+                            closeForm={closeForm}
+                        /> 
                     }
-                    <EventsForm />
+                    {editMode &&
+                        <EventsForm closeForm={closeForm} event={undefined} />
+                    }
                 </Grid.Column>
             </Grid>
         </>

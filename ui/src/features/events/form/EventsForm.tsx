@@ -1,7 +1,12 @@
 import React from 'react';
 import { Button, Form } from 'semantic-ui-react';
 
-export default function EventsForm() {
+interface Props {
+    event: Event | undefined
+    closeForm: () => void
+}
+
+export default function EventsForm({ event, closeForm } : Props) {
     return (
         <>
             <Form>
@@ -12,7 +17,7 @@ export default function EventsForm() {
                 <Form.Input placeholder='City' />
                 <Form.Input placeholder='Venue' />
                 <Button floated='right' positive type='submit' content='Submit' />
-                <Button floated='right' type='button' content='Cancel' />
+                <Button onClick={closeForm} floated='right' type='button' content='Cancel' />
             </Form>
         </>
     )

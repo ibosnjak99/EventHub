@@ -8,6 +8,7 @@ import EventsDashboard from '../../features/events/dashboard/EventsDashboard';
 function App() {
   const [events, setEvents] = useState<Event[]>([])
   const [selectedEvent, setSelectedEvent] = useState<Event | undefined>(undefined)
+  const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {
     axios.get<Event[]>('https://localhost:7013/api/events')
@@ -24,16 +25,28 @@ function App() {
     setSelectedEvent(undefined)
   }
 
+  function handleOpenForm(id?: string) {
+    id ? handleSelectEvent(id) : handleUnselectEvent()
+    setEditMode(true)
+  }
+
+  function handleCloseForm() {
+    setEditMode(false)
+  }
+
   return (
     <>
-      <NavBar />
+      <NavBar openForm={handleOpenForm} />
       <Container style={{ marginTop: '6em'}}>
         <EventsDashboard 
           events={events}
           selectedEvent={selectedEvent}
           selectEvent={handleSelectEvent}
           unselectEvent={handleUnselectEvent}
-          />
+          editMode={editMode}
+          openForm={handleOpenForm}
+          closeForm={handleCloseForm}
+        />
       </Container>
     </>
   );
