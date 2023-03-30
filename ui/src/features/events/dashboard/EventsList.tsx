@@ -3,10 +3,11 @@ import { Button, Item, Label } from 'semantic-ui-react';
 import { Event } from '../../../app/models/event';
 
 interface Props {
-    events: Event[];
+    events: Event[]
+    selectEvent: (id: string) => void
 }
 
-export default function EventsList({events}: Props) {
+export default function EventsList({events, selectEvent}: Props) {
     return (
         <>
             <Item.Group divided>
@@ -20,7 +21,12 @@ export default function EventsList({events}: Props) {
                             <div>{event.city}, {event.venue}</div>
                         </Item.Description>
                         <Item.Extra>
-                            <Button floated='right' content='View' color='blue' />
+                            <Button 
+                                onClick={() => selectEvent(event.id)}
+                                floated='right' 
+                                content='View' 
+                                color='blue' 
+                            />
                             <Label basic content={event.category} />
                         </Item.Extra>
                     </Item.Content>

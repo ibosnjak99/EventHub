@@ -6,18 +6,26 @@ import EventDetails from "./EventDetails";
 import EventsList from "./EventsList";
 
 interface Props {
-    events: Event[];
+    events: Event[]
+    selectedEvent: Event | undefined
+    selectEvent: (id: string) => void
+    unselectEvent: () => void
 }
 
-export default function EventsDashboard({events}: Props) {
+export default function EventsDashboard({events, selectedEvent, selectEvent, unselectEvent}: Props) {
     return (
         <>
             <Grid>
                 <Grid.Column width='10'>
-                    <EventsList events={events} />
+                    <EventsList 
+                        events={events}
+                        selectEvent={selectEvent}
+                        />
                 </Grid.Column>
                 <Grid.Column width='6'>
-                    <EventDetails event={events[0]} />
+                    {selectedEvent &&
+                        <EventDetails event={selectedEvent} unselectEvent={unselectEvent} /> 
+                    }
                     <EventsForm />
                 </Grid.Column>
             </Grid>

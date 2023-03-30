@@ -1,12 +1,13 @@
 import React from 'react';
-import { Button, Card, Icon, Image } from 'semantic-ui-react';
+import { Button, Card, Image } from 'semantic-ui-react';
 import { Event } from '../../../app/models/event';
 
 interface Props {
-    event: Event;
+    event: Event
+    unselectEvent: () => void
 }
 
-export default function EventDetails({ event }: Props) {
+export default function EventDetails({ event, unselectEvent }: Props) {
     return (
         <>
             <Card fluid>
@@ -23,7 +24,7 @@ export default function EventDetails({ event }: Props) {
                 <Card.Content extra>
                     <Button.Group widths='2'>
                         <Button basic color='blue' content='Edit' />
-                        <Button basic color='red' content='Cancel' />
+                        <Button onClick={unselectEvent} basic color='red' content='Cancel' />
                     </Button.Group>
                 </Card.Content>
             </Card>

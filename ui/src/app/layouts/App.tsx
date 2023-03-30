@@ -7,6 +7,7 @@ import EventsDashboard from '../../features/events/dashboard/EventsDashboard';
 
 function App() {
   const [events, setEvents] = useState<Event[]>([])
+  const [selectedEvent, setSelectedEvent] = useState<Event | undefined>(undefined)
 
   useEffect(() => {
     axios.get<Event[]>('https://localhost:7013/api/events')
@@ -15,11 +16,24 @@ function App() {
       })
   }, [])
 
+  function handleSelectEvent(id: string) {
+    setSelectedEvent(events.find(e => e.id === id))
+  }
+
+  function handleUnselectEvent() {
+    setSelectedEvent(undefined)
+  }
+
   return (
     <>
       <NavBar />
       <Container style={{ marginTop: '6em'}}>
-        <EventsDashboard events={events}/>
+        <EventsDashboard 
+          events={events}
+          selectedEvent={selectedEvent}
+          selectEvent={handleSelectEvent}
+          unselectEvent={handleUnselectEvent}
+          />
       </Container>
     </>
   );
