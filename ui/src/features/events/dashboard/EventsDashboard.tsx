@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid } from "semantic-ui-react";
 import { Event } from "../../../app/models/event";
-import EventsForm from "../form/EventsForm";
+import EventsForm from "../form/EventForm";
 import EventDetails from "./EventDetails";
 import EventsList from "./EventsList";
 
@@ -13,9 +13,11 @@ interface Props {
     editMode: boolean
     openForm: (id: string) => void
     closeForm: () => void
+    createOrEdit: (event: Event) => void
+    deleteEvent: (id: string) => void
 }
 
-export default function EventsDashboard({events, selectedEvent, selectEvent, unselectEvent, editMode, openForm, closeForm}: Props) {
+export default function EventsDashboard({events, selectedEvent, selectEvent, unselectEvent, editMode, openForm, closeForm, createOrEdit, deleteEvent}: Props) {
     return (
         <>
             <Grid>
@@ -23,6 +25,7 @@ export default function EventsDashboard({events, selectedEvent, selectEvent, uns
                     <EventsList 
                         events={events}
                         selectEvent={selectEvent}
+                        deleteEvent={deleteEvent}
                         />
                 </Grid.Column>
                 <Grid.Column width='6'>
@@ -35,7 +38,10 @@ export default function EventsDashboard({events, selectedEvent, selectEvent, uns
                         /> 
                     }
                     {editMode &&
-                        <EventsForm closeForm={closeForm} event={undefined} />
+                        <EventsForm 
+                            closeForm={closeForm} 
+                            event={selectedEvent} 
+                            createOrEdit={createOrEdit} />
                     }
                 </Grid.Column>
             </Grid>

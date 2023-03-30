@@ -4,6 +4,7 @@ import { Container } from 'semantic-ui-react';
 import { Event } from '../models/event';
 import NavBar from './NavBar';
 import EventsDashboard from '../../features/events/dashboard/EventsDashboard';
+import { v4 as uuid } from 'uuid';
 
 function App() {
   const [events, setEvents] = useState<Event[]>([])
@@ -34,6 +35,18 @@ function App() {
     setEditMode(false)
   }
 
+  function handleCreateOrEditEvent(event: Event) {
+    event.id 
+      ? setEvents([...events.filter(e => e.id !== event.id), event]) 
+      : setEvents([...events, {...event, id: uuid()}])
+    setEditMode(false)
+    setSelectedEvent(event)
+  }
+
+  function handleDeleteEvent(id: string) {
+    setEvents([...events.filter(e => e.id !== id)])
+  }
+
   return (
     <>
       <NavBar openForm={handleOpenForm} />
@@ -46,6 +59,8 @@ function App() {
           editMode={editMode}
           openForm={handleOpenForm}
           closeForm={handleCloseForm}
+          createOrEdit={handleCreateOrEditEvent}
+          deleteEvent={handleDeleteEvent}
         />
       </Container>
     </>
