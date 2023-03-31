@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Container } from 'semantic-ui-react';
 import { Event } from '../models/event';
 import NavBar from './NavBar';
 import EventsDashboard from '../../features/events/dashboard/EventsDashboard';
 import { v4 as uuid } from 'uuid';
+import client from '../api/client';
+import LoadingComponent from './LoadingComponent';
 
 function App() {
   const [events, setEvents] = useState<Event[]>([])
   const [selectedEvent, setSelectedEvent] = useState<Event | undefined>(undefined)
   const [editMode, setEditMode] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
-    axios.get<Event[]>('https://localhost:7013/api/events')
+    client.Events.list()
       .then(response => {
-        setEvents(response.data)
+        let events: Event[] = [];
+        response.forEach(event => {
+          event.date = event.date.split('T')[0]
+          events.push(event)
+        })
+        setEvents(response)
+        setLoading(false)
       })
   }, [])
 
@@ -36,16 +45,39 @@ function App() {
   }
 
   function handleCreateOrEditEvent(event: Event) {
-    event.id 
-      ? setEvents([...events.filter(e => e.id !== event.id), event]) 
-      : setEvents([...events, {...event, id: uuid()}])
-    setEditMode(false)
-    setSelectedEvent(event)
+    setSubmitting(true)
+    if (event.id) {
+      client.Events.update(event)
+        .then(() => {
+          setEvents([...events.filter(e => e.id !== event.id), event]) 
+          setSelectedEvent(event)
+          setEditMode(false)
+          setSubmitting(false)
+        })
+    }
+    else {
+      event.id = uuid()
+      client.Events.create(event)
+        .then(() => {
+          setEvents([...events, event])
+          setSelectedEvent(event)
+          setEditMode(false)
+          setSubmitting(false)
+        })
+    }
   }
 
   function handleDeleteEvent(id: string) {
-    setEvents([...events.filter(e => e.id !== id)])
+    setSubmitting(true)
+    client.Events.delete(id)
+      .then(() => {
+        setEvents([...events.filter(e => e.id !== id)])
+        setSelectedEvent(undefined)
+        setSubmitting(false)
+      })
   }
+
+  if (loading) return <LoadingComponent content='Loading...' />
 
   return (
     <>
@@ -61,6 +93,7 @@ function App() {
           closeForm={handleCloseForm}
           createOrEdit={handleCreateOrEditEvent}
           deleteEvent={handleDeleteEvent}
+          submitting={submitting}
         />
       </Container>
     </>

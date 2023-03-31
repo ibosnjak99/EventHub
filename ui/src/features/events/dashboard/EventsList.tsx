@@ -34,7 +34,7 @@ export default function EventsList({events, selectEvent, deleteEvent}: Props) {
                     <Item key={event.id}>
                         <Item.Content>
                             <Item.Header>{event.title}</Item.Header>
-                            <Item.Meta>{event.date}</Item.Meta>
+                            <Item.Meta>{new Date(event.date).toLocaleDateString('en-GB')}</Item.Meta>
                             <Item.Description>
                                 <div>{event.description}</div>
                                 <div>{event.city}</div>
