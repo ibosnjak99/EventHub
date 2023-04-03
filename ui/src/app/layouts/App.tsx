@@ -11,7 +11,7 @@ function App() {
   const [events, setEvents] = useState<Event[]>([])
   const [selectedEvent, setSelectedEvent] = useState<Event | undefined>(undefined)
   const [editMode, setEditMode] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
