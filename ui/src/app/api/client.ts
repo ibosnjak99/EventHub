@@ -1,9 +1,9 @@
-import axios, { AxiosResponse } from "axios";
-import { Event } from "../models/event";
+import axios, { AxiosResponse } from "axios"
+import { Event } from "../models/event"
 
 const sleep = (timeout: number) => {
     return new Promise ((resolve) => {
-        setTimeout(resolve, timeout);
+        setTimeout(resolve, timeout)
     })
 }
 

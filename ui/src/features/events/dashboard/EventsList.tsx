@@ -1,36 +1,34 @@
-import React, { useState } from 'react';
-import { Button, Item, Label, Modal } from 'semantic-ui-react';
-import { Event } from '../../../app/models/event';
+import React, { useState } from 'react'
+import { Button, Item, Label, Modal } from 'semantic-ui-react'
+import { useStore } from '../../../app/stores/store'
+import { observer } from 'mobx-react-lite'
 
-interface Props {
-    events: Event[]
-    selectEvent: (id: string) => void
-    deleteEvent: (id: string) => void
-}
+export default observer (function EventsList() {
 
-export default function EventsList({events, selectEvent, deleteEvent}: Props) {
+    const {eventStore} = useStore()
+    const {deleteEvent, eventsSortedByDate } = eventStore
 
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [eventIdToDelete, setEventIdToDelete] = useState('');
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [eventIdToDelete, setEventIdToDelete] = useState('')
 
     function handleDeleteEvent(id: string) {
-        setEventIdToDelete(id);
-        setShowDeleteModal(true);
+        setEventIdToDelete(id)
+        setShowDeleteModal(true)
     }
 
     function handleConfirmDelete() {
-        deleteEvent(eventIdToDelete);
-        setShowDeleteModal(false);
+        deleteEvent(eventIdToDelete)
+        setShowDeleteModal(false)
     }
 
     function handleCancelDelete() {
-        setShowDeleteModal(false);
+        setShowDeleteModal(false)
     }
 
     return (
         <>
             <Item.Group divided>
-                {events.map(event => (
+                {eventsSortedByDate.map(event => (
                     <Item key={event.id}>
                         <Item.Content>
                             <Item.Header>{event.title}</Item.Header>
@@ -41,7 +39,7 @@ export default function EventsList({events, selectEvent, deleteEvent}: Props) {
                             </Item.Description>
                             <Item.Extra>
                                 <Button 
-                                    onClick={() => selectEvent(event.id)}
+                                    onClick={() => eventStore.selectEvent(event.id)}
                                     floated='right' 
                                     content='View' 
                                     color='blue' 
@@ -58,7 +56,7 @@ export default function EventsList({events, selectEvent, deleteEvent}: Props) {
                     </Item>
                 ))}
             </Item.Group>
-            <Modal open={showDeleteModal} size='mini'>
+             <Modal open={showDeleteModal} size='mini'>
                 <Modal.Header>Are you sure you want to delete this event?</Modal.Header>
                 <Modal.Content>
                     <p>This action cannot be undone.</p>
@@ -70,4 +68,4 @@ export default function EventsList({events, selectEvent, deleteEvent}: Props) {
             </Modal>
         </>
     )
-}
+})

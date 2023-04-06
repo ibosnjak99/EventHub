@@ -1,32 +1,30 @@
-import React, { useState } from 'react';
-import { Button, Card, Image, Modal } from 'semantic-ui-react';
-import { Event } from '../../../app/models/event';
+import React, { useState } from 'react'
+import { Button, Card, Image, Modal } from 'semantic-ui-react'
+import { useStore } from '../../../app/stores/store'
 
-interface Props {
-    event: Event
-    unselectEvent: () => void
-    openForm: (id: string) => void
-    closeForm: () => void
-    deleteEvent: (id: string) => void
-}
+export default function EventDetails() {
+    const {eventStore} = useStore()
+    const {selectedEvent: event, openModal, closeModal, unselectEvent, deleteEvent} = eventStore
+    
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [eventIdToDelete, setEventIdToDelete] = useState('')
 
-export default function EventDetails({ event, unselectEvent, openForm, closeForm, deleteEvent }: Props) {
 
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [eventIdToDelete, setEventIdToDelete] = useState('');
+    if (!event) return null
 
     function handleDeleteEvent(id: string) {
-        setEventIdToDelete(id);
-        setShowDeleteModal(true);
+        setEventIdToDelete(id)
+        setShowDeleteModal(true)
     }
 
+
     function handleConfirmDelete() {
-        deleteEvent(eventIdToDelete);
-        setShowDeleteModal(false);
+        deleteEvent(eventIdToDelete)
+        setShowDeleteModal(false)
     }
 
     function handleCancelDelete() {
-        setShowDeleteModal(false);
+        setShowDeleteModal(false)
     }
 
     return (
@@ -50,9 +48,9 @@ export default function EventDetails({ event, unselectEvent, openForm, closeForm
                     </Card.Content>
                     <Modal.Actions>
                         <Button.Group widths='3'>
-                            <Button onClick={() => openForm(event.id)} color='blue' content='Edit' />
+                            <Button onClick={() => openModal(event.id)} color='blue' content='Edit' />
                             <Button onClick={() => handleDeleteEvent(event.id)} color='red' content='Delete' />
-                            <Button onClick={() => {unselectEvent(); closeForm();}} content='Cancel' />
+                            <Button onClick={() => {unselectEvent(); closeModal();}} content='Cancel' />
                         </Button.Group>
                     </Modal.Actions>
                     </Card>
