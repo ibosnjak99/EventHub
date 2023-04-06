@@ -1,15 +1,11 @@
-import React, { useState, ChangeEvent } from 'react';
-import { Button, Form, Modal } from 'semantic-ui-react';
-import { Event } from '../../../app/models/event';
+import React, { useState, ChangeEvent } from 'react'
+import { Button, Form, Modal } from 'semantic-ui-react'
+import { useStore } from '../../../app/stores/store'
+import { observer } from 'mobx-react-lite'
 
-interface Props {
-    event: Event | undefined
-    closeForm: () => void
-    createOrEdit: (event: Event) => void
-    submitting: boolean
-}
-
-export default function EventsForm({ event: selectedEvent, closeForm, createOrEdit, submitting } : Props) {
+export default observer (function EventsForm() {
+    const {eventStore} = useStore()
+    const {selectedEvent, closeModal, createEvent, updateEvent, loading} = eventStore
 
     const initialState = selectedEvent ?? {
         id: '',
@@ -24,7 +20,7 @@ export default function EventsForm({ event: selectedEvent, closeForm, createOrEd
     const [event, setEvent] = useState(initialState)
 
     function handleSubmit() {
-        createOrEdit(event)
+        event.id ? updateEvent(event) : createEvent(event)
     }
 
     function handleInputChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -34,7 +30,7 @@ export default function EventsForm({ event: selectedEvent, closeForm, createOrEd
 
     return (
         <>
-            <Modal open={true} onClose={closeForm} style={{ maxWidth: '800px' }}>
+            <Modal open={true} onClose={closeModal} style={{ maxWidth: '800px' }}>
                 <Modal.Header>Event</Modal.Header>
                 <Modal.Content>
                     <Form autoComplete='off'>
@@ -48,11 +44,11 @@ export default function EventsForm({ event: selectedEvent, closeForm, createOrEd
                 </Modal.Content>
                 <Modal.Actions>
                     <Button.Group widths='2'>
-                        <Button onClick={closeForm} color='red' content='Cancel' />
-                        <Button loading={submitting} onClick={handleSubmit} color='green' content='Submit' />
+                        <Button onClick={closeModal} color='red' content='Cancel' />
+                        <Button loading={loading} onClick={handleSubmit} color='green' content='Submit' />
                     </Button.Group>
                 </Modal.Actions>
             </Modal>
         </>
     )
-}
+})
