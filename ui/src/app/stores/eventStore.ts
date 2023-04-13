@@ -18,18 +18,36 @@ export default class EventStore {
         return Array.from(this.eventRegistry.values()).sort((a, b) => Date.parse(a.date) - Date.parse(b.date))
     }
 
+    get groupedEvents() {
+        return Object.entries(
+            this.eventsSortedByDate.reduce((events, event) => {
+                const date = event.date
+                events[date] = events[date] ? [...events[date], event] : [event]
+                return events
+            }, {} as {[key: string]: Event[]})
+        )
+    }
+
     loadEvents = async () => {
         try {
             const events = await client.Events.list()
             events.forEach(event => {
-                event.date = event.date.split('T')[0]
-                this.eventRegistry.set(event.id, event)
+                this.setEvent(event)
             })
             this.setLoadingInitial(false)
         } catch (error) {
             console.log(error)
             this.setLoadingInitial(false)
         }
+    }
+
+    private setEvent = (event: Event) => {
+        event.date = event.date.split('T')[0]
+        this.eventRegistry.set(event.id, event)
+    }
+
+    private getEvent = (id: string) => {
+        this.eventRegistry.get(id)
     }
 
     setLoadingInitial = (state: boolean) => {
