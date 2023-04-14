@@ -1,17 +1,19 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './app/layouts/style.css';
+import ReactDOM from 'react-dom/client'
+import './app/layouts/style.css'
+import 'react-calendar/dist/Calendar.css'
 import 'semantic-ui-css/semantic.min.css'
-import App from './app/layouts/App';
-import reportWebVitals from './reportWebVitals';
-import { StoreContext, store } from './app/stores/store';
+import reportWebVitals from './reportWebVitals'
+import { StoreContext, store } from './app/stores/store'
+import { RouterProvider } from 'react-router-dom'
+import { router } from './app/router/Routes'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
     <StoreContext.Provider value={store}>
-      <App />
+      <RouterProvider router={router} />
     </StoreContext.Provider>
 );
 

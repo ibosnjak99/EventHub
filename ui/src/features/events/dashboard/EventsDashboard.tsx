@@ -1,19 +1,13 @@
 import React from "react"
 import { Grid } from "semantic-ui-react"
-import { Event } from "../../../app/models/event"
 import EventsForm from "../form/EventForm"
 import EventDetails from "./EventDetails"
 import EventsList from "./EventsList"
 import { useStore } from "../../../app/stores/store"
 import { observer } from "mobx-react-lite"
+import EventFilters from "./EventFilters"
 
-interface Props {
-    events: Event[]
-    deleteEvent: (id: string) => void
-    submitting: boolean
-}
-
-export default observer (function EventsDashboard({events, deleteEvent, submitting}: Props) {
+export default observer (function EventsDashboard() {
     const {eventStore} = useStore()
     const {selectedEvent, editMode} = eventStore
 
@@ -24,13 +18,14 @@ export default observer (function EventsDashboard({events, deleteEvent, submitti
                     <EventsList />
                 </Grid.Column>
                 <Grid.Column width='6'>
+                    <EventFilters />
+                </Grid.Column>
                     {selectedEvent &&
                         <EventDetails /> 
                     }
                     {editMode &&
                         <EventsForm />
                     }
-                </Grid.Column>
             </Grid>
         </>
     )
