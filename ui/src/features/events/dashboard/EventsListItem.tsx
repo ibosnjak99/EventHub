@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Button, Item, Label, Modal } from "semantic-ui-react";
+import React from "react";
+import { Button, Icon, Item, Segment, SegmentGroup } from "semantic-ui-react";
 import { Event } from "../../../app/models/event";
 import { useStore } from "../../../app/stores/store";
+import { Link } from "react-router-dom";
 
 interface Props {
     event: Event
@@ -10,62 +11,40 @@ interface Props {
 export default function EventsListItem({event}: Props) {
 
     const {eventStore} = useStore()
-    const {deleteEvent} = eventStore
-
-    const [showDeleteModal, setShowDeleteModal] = useState(false)
-    const [eventIdToDelete, setEventIdToDelete] = useState('')
-
-    function handleDeleteEvent(id: string) {
-        setEventIdToDelete(id)
-        setShowDeleteModal(true)
-    }
-
-    function handleConfirmDelete() {
-        deleteEvent(eventIdToDelete)
-        setShowDeleteModal(false)
-    }
-
-    function handleCancelDelete() {
-        setShowDeleteModal(false)
-    }
 
     return (
-        <>
-            <Item key={event.id} style={{ backgroundColor: '#e3e3e3', padding: '20px', borderRadius: '3px' }}>
-                <Item.Content>
-                    <Item.Header>{event.title}</Item.Header>
-                    <Item.Meta>{new Date(event.date).toLocaleDateString('en-GB')}</Item.Meta>
-                    <Item.Description>
-                        <div>{event.description}</div>
-                        <div>{event.city}</div>
-                    </Item.Description>
-                    <Item.Extra>
-                        <Button 
-                            onClick={() => eventStore.selectEvent(event.id)}
-                            floated='right' 
-                            content='View' 
-                            color='blue' 
-                        />
-                        <Button 
-                            onClick={() => handleDeleteEvent(event.id)}
-                            floated='right' 
-                            content='Delete' 
-                            color='red' 
-                        />
-                        <Label basic content={event.category} />
-                    </Item.Extra>
-                </Item.Content>
-            </Item>
-            <Modal open={showDeleteModal} size='mini'>
-                <Modal.Header>Are you sure you want to delete this event?</Modal.Header>
-                <Modal.Content>
-                    <p>This action cannot be undone.</p>
-                </Modal.Content>
-                <Modal.Actions>
-                    <Button onClick={handleCancelDelete}>Cancel</Button>
-                    <Button onClick={handleConfirmDelete} color='red'>Confirm</Button>
-                </Modal.Actions>
-            </Modal>
-        </>
+        <SegmentGroup style={{ backgroundColor: '#e3e3e3', padding: '10px' }}>
+            <Segment style={{ backgroundColor: '#e3e3e3' }}>
+                <Item.Group>
+                        <Item>
+                            <Item.Image size='tiny' circular src='assets/user.png' style={{ boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.3)' }}/>
+                            <Item.Content style={{  margin: 'auto' }}>
+                                <Item.Header as={Link} to={`/events/${event.id}`}>
+                                    {event.title}
+                                </Item.Header>
+                                <Item.Description>Hosted by me</Item.Description>
+                            </Item.Content>
+                        </Item>
+                </Item.Group>
+            </Segment>
+            <Segment style={{ backgroundColor: '#e3e3e3' }}>
+                <span>
+                    <Icon name='clock' /> {event.date} 
+                    <br/>
+                    <Icon name='marker' /> {event.venue}, {event.city}
+                </span>
+            </Segment >
+            <Segment style={{ backgroundColor: '#e3e3e3' }}>
+                Attendees
+            </Segment>
+            <Segment clearing style={{ backgroundColor: '#e3e3e3' }}>
+                <Button 
+                    onClick={() => eventStore.selectEvent(event.id)}
+                    floated='right'
+                    content='View' 
+                    color='blue' 
+                />
+            </Segment>
+        </SegmentGroup>
     )
 }

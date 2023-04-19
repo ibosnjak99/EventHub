@@ -32,14 +32,32 @@ export default observer (function EventsForm() {
         <>
             <Modal open={true} onClose={closeModal} style={{ maxWidth: '800px' }}>
                 <Modal.Header>Event</Modal.Header>
-                <Modal.Content>
+                <Modal.Content style={{maxHeight: 'calc(100vh - 200px)', overflowY: 'auto'}}>
                     <Form autoComplete='off'>
-                        <Form.Input placeholder='Title' value={event.title} name='title' onChange={handleInputChange} />
-                        <Form.TextArea placeholder='Description' value={event.description} name='description' onChange={handleInputChange} />
-                        <Form.Input placeholder='Category' value={event.category} name='category' onChange={handleInputChange} />
-                        <Form.Input type="date" placeholder='Date' value={event.date} name='date' onChange={handleInputChange} />
-                        <Form.Input placeholder='City' value={event.city} name='city' onChange={handleInputChange} />
-                        <Form.Input placeholder='Venue' value={event.venue} name='venue' onChange={handleInputChange} />
+                      <Form.Field>
+                        <label>Title</label>
+                        <input value={event.title} name="title" onChange={handleInputChange} />
+                      </Form.Field>
+                      <Form.Field>
+                        <label>Description</label>
+                        <textarea value={event.description} name="description" onChange={handleInputChange} />
+                      </Form.Field>
+                      <Form.Field>
+                        <label>Category</label>
+                        <input value={event.category} name="category" onChange={handleInputChange} />
+                      </Form.Field>
+                      <Form.Field>
+                        <label>Date</label>
+                        <input type="date" value={event.date} name="date" onChange={handleInputChange} />
+                      </Form.Field>
+                      <Form.Field>
+                        <label>City</label>
+                        <input value={event.city} name="city" onChange={handleInputChange} />
+                      </Form.Field>
+                      <Form.Field>
+                        <label>Venue</label>
+                        <input value={event.venue} name="venue" onChange={handleInputChange} />
+                      </Form.Field>
                     </Form>
                 </Modal.Content>
                 <Modal.Actions>

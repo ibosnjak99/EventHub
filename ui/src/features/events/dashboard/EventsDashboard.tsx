@@ -1,15 +1,22 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Grid } from "semantic-ui-react"
 import EventsForm from "../form/EventForm"
-import EventDetails from "./EventDetails"
 import EventsList from "./EventsList"
 import { useStore } from "../../../app/stores/store"
 import { observer } from "mobx-react-lite"
 import EventFilters from "./EventFilters"
+import LoadingComponent from "../../../app/layouts/LoadingComponent"
+import EventModal from "./EventModal"
 
 export default observer (function EventsDashboard() {
     const {eventStore} = useStore()
     const {selectedEvent, editMode} = eventStore
+
+    useEffect(() => {
+      eventStore.loadEvents()
+    }, [eventStore])
+  
+    if (eventStore.loadingInitial) return <LoadingComponent content='Loading...' />
 
     return (
         <>
@@ -21,7 +28,7 @@ export default observer (function EventsDashboard() {
                     <EventFilters />
                 </Grid.Column>
                     {selectedEvent &&
-                        <EventDetails /> 
+                        <EventModal /> 
                     }
                     {editMode &&
                         <EventsForm />
