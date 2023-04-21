@@ -29,7 +29,7 @@ export default function EventsListItem({event}: Props) {
             </Segment>
             <Segment style={{ backgroundColor: '#e3e3e3' }}>
                 <span>
-                    <Icon name='clock' /> {event.date} 
+                    <Icon name='clock' /> {new Date(event.date).toLocaleDateString('en-GB')}
                     <br/>
                     <Icon name='marker' /> {event.venue}, {event.city}
                 </span>

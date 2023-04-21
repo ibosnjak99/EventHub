@@ -107,7 +107,7 @@ export default function EventDetails() {
                             </Grid.Column>
                             <Grid.Column width={15}>
                                 <span>
-                                {event.date}
+                                {new Date(event.date).toLocaleDateString('en-GB')}
                                 </span>
                             </Grid.Column>
                         </Grid>
