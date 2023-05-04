@@ -12,6 +12,9 @@ export default function NavBar() {
                     <img src='/assets/logo.png' alt='logo' style={{ marginRight: 20 }} />
                     EventHub
                 </Menu.Item>
+                <Menu.Item header as={Link} to='errors'>
+                    Errors
+                </Menu.Item>
                 <Menu.Item position='right'>
                     <Button onClick={() => eventStore.openModal()} content='Create Event' />
                 </Menu.Item>
