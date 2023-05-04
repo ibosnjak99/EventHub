@@ -41,13 +41,30 @@ export default class EventStore {
         }
     }
 
+    loadEvent = async (id: string) => {
+        let event = this.getEvent(id)
+        if (event) this.selectedEvent = event
+        else {
+            this.setLoadingInitial(true)
+            try {
+                event = await client.Events.details(id)
+                this.setEvent(event)
+                this.selectedEvent = event
+                this.setLoadingInitial(false)
+            } catch (error) {
+                console.log(error)
+                this.setLoadingInitial(false)
+            }
+        }
+    }
+
     private setEvent = (event: Event) => {
         event.date = event.date.split('T')[0]
         this.eventRegistry.set(event.id, event)
     }
 
     private getEvent = (id: string) => {
-        this.eventRegistry.get(id)
+        return this.eventRegistry.get(id)
     }
 
     setLoadingInitial = (state: boolean) => {

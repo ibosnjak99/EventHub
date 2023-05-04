@@ -27,9 +27,9 @@ namespace API.Controllers
         /// Gets the events asynchronous.
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<List<Event>>> GetEventsAsync()
+        public async Task<IActionResult> GetEventsAsync()
         {
-            return await this.mediator.Send(new EventsService.GetAllEvents());
+            return HandleResult(await this.mediator.Send(new EventsService.GetAllEvents()));
         }
 
         // GET: /api/events/{id}
@@ -38,10 +38,11 @@ namespace API.Controllers
         /// </summary>
         /// <param name="id">The identifier.</param>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Event>> GetSingleEventAsync(Guid id)
+        public async Task<IActionResult> GetSingleEventAsync(Guid id)
         {
-            return await this.mediator.Send(new EventsService.GetEventById(id));
+            return HandleResult(await this.mediator.Send(new EventsService.GetEventById(id)));
         }
+
 
         // POST: /api/events
         /// <summary>
@@ -51,7 +52,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEventAsync(Event @event)
         {
-            return Ok(await this.mediator.Send(new EventsService.CreateEvent(@event)));
+            return HandleResult(await this.mediator.Send(new EventsService.CreateEvent(@event)));
         }
 
         // PUT: /api/events/{id}
@@ -63,7 +64,7 @@ namespace API.Controllers
         public async Task<IActionResult> EditEventAsync(Guid id, Event @event)
         {
             @event.Id = id;
-            return Ok(await this.mediator.Send(new EventsService.EditEvent(@event)));
+            return HandleResult(await this.mediator.Send(new EventsService.EditEvent(@event)));
         }
 
         // DELETE: /api/events/{id}
@@ -74,7 +75,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEventAsync(Guid id)
         {
-            return Ok(await this.mediator.Send(new EventsService.DeleteEvent(id)));
+            return HandleResult(await this.mediator.Send(new EventsService.DeleteEvent(id)));
         }
     }
 }

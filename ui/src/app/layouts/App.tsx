@@ -1,25 +1,17 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import {  Container } from 'semantic-ui-react'
 import NavBar from './NavBar'
-import EventsDashboard from '../../features/events/dashboard/EventsDashboard'
-import LoadingComponent from './LoadingComponent'
-import { useStore } from '../stores/store'
 import { observer } from 'mobx-react-lite'
+import { Outlet } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
-  const {eventStore} = useStore()
-
-  useEffect(() => {
-    eventStore.loadEvents()
-  }, [eventStore])
-
-  if (eventStore.loadingInitial) return <LoadingComponent content='Loading...' />
-
   return (
     <>
+    <ToastContainer position='bottom-right' theme='colored' autoClose={2000} />
       <NavBar />
       <Container style={{ marginTop: '6em'}}>
-        <EventsDashboard />
+        <Outlet />
       </Container>
     </>
   )

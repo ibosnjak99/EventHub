@@ -1,6 +1,8 @@
 ﻿using Application.Common;
 using Application.Events;
 using Domain;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +42,8 @@ namespace API.Extensions
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddMediatR(typeof(EventsService.GetAllEvents));
             services.RegisterDependencies();
+            services.AddFluentValidationAutoValidation();
+            services.AddValidatorsFromAssemblyContaining<EventsService>();
 
             return services;
         }

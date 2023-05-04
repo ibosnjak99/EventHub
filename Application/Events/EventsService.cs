@@ -1,5 +1,7 @@
-﻿using AutoMapper;
+﻿using Application.Core;
+using AutoMapper;
 using Domain;
+using FluentValidation;
 using Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,13 +17,37 @@ namespace Application.Events
         /// Get all events class.
         /// </summary>
         /// <seealso cref="IRequest{TResponse}"/>
-        public class GetAllEvents : IRequest<List<Event>>{}
+        public class GetAllEvents : IRequest<Result<List<Event>>>{ }
+
+        /// <summary>
+        /// The create event validator class.
+        /// </summary>
+        /// <seealso cref="AbstractValidator{CreateEvent}"/>
+        public class CreateEventValidator : AbstractValidator<CreateEvent>
+        {
+            public CreateEventValidator()
+            {
+                RuleFor(e => e.Event).SetValidator(new EventValidator());
+            }
+        }
+
+        /// <summary>
+        /// The edit event validator class.
+        /// </summary>
+        /// <seealso cref="AbstractValidator{EditEvent}"/>
+        public class EditEventValidator : AbstractValidator<EditEvent>
+        {
+            public EditEventValidator()
+            {
+                RuleFor(e => e.Event).SetValidator(new EventValidator());
+            }
+        }
 
         /// <summary>
         /// Get event class.
         /// </summary>
         /// <seealso cref="IRequest{TResponse}"/>
-        public class GetEventById : IRequest<Event>
+        public class GetEventById : IRequest<Result<Event>>
         {
             public GetEventById(Guid id)
             {
@@ -35,7 +61,7 @@ namespace Application.Events
         /// Create event class.
         /// </summary>
         /// <seealso cref="IRequest"/>
-        public class CreateEvent : IRequest
+        public class CreateEvent : IRequest<Result<Unit>>
         {
             public CreateEvent(Event @event)
             {
@@ -49,7 +75,7 @@ namespace Application.Events
         /// Edit event class.
         /// </summary>
         /// <seealso cref="IRequest"/>
-        public class EditEvent : IRequest
+        public class EditEvent : IRequest<Result<Unit>>
         {
             public EditEvent(Event @event)
             {
@@ -63,7 +89,7 @@ namespace Application.Events
         /// Delete event class.
         /// </summary>
         /// <seealso cref="IRequest"/>
-        public class DeleteEvent : IRequest
+        public class DeleteEvent : IRequest<Result<Unit>>
         {
             public DeleteEvent(Guid id)
             {
@@ -78,11 +104,11 @@ namespace Application.Events
         /// </summary>
         /// <seealso cref="IRequestHandler{TRequest}"/>
         public class EventsHandler : 
-            IRequestHandler<GetAllEvents, List<Event>>, 
-            IRequestHandler<GetEventById, Event>, 
-            IRequestHandler<CreateEvent>,
-            IRequestHandler<EditEvent>,
-            IRequestHandler<DeleteEvent>
+            IRequestHandler<GetAllEvents, Result<List<Event>>>, 
+            IRequestHandler<GetEventById, Result<Event>>, 
+            IRequestHandler<CreateEvent, Result<Unit>>,
+            IRequestHandler<EditEvent, Result<Unit>>,
+            IRequestHandler<DeleteEvent, Result<Unit>>
         {
             private readonly DataContext context;
             private readonly IMapper mapper;
@@ -103,9 +129,9 @@ namespace Application.Events
             /// </summary>
             /// <param name="request">The request</param>
             /// <param name="cancellationToken">Cancellation token</param>
-            public async Task<List<Event>> Handle(GetAllEvents request, CancellationToken cancellationToken)
+            public async Task<Result<List<Event>>> Handle(GetAllEvents request, CancellationToken cancellationToken)
             {
-                return await this.context.Events.ToListAsync();
+                return Result<List<Event>>.Success(await this.context.Events.ToListAsync());
             }
 
             /// <summary>
@@ -113,14 +139,13 @@ namespace Application.Events
             /// </summary>
             /// <param name="request">The request</param>
             /// <param name="cancellationToken">Cancellation token</param>
-            public async Task<Event> Handle(GetEventById request, CancellationToken cancellationToken)
+            public async Task<Result<Event>> Handle(GetEventById request, CancellationToken cancellationToken)
             {
                 var singleEvent = await this.context.Events.FindAsync(request.Id);
 
-                if (singleEvent != null)
-                    return singleEvent;
-                else
-                    throw new Exception("Event not found");
+                if (singleEvent == null) return Result<Event>.Failure("Failed to delete an event.");
+
+                return Result<Event>.Success(singleEvent);
             }
 
             /// <summary>
@@ -128,13 +153,15 @@ namespace Application.Events
             /// </summary>
             /// <param name="request">The request</param>
             /// <param name="cancellationToken">Cancellation token</param>
-            public async Task<Unit> Handle(CreateEvent request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(CreateEvent request, CancellationToken cancellationToken)
             {
                 this.context.Events.Add(request.Event);
 
-                await this.context.SaveChangesAsync();
+                var result = await this.context.SaveChangesAsync() > 0;
 
-                return Unit.Value;
+                if (!result) return Result<Unit>.Failure("Failed to create an event.");
+
+                return Result<Unit>.Success(Unit.Value);
             }
 
             /// <summary>
@@ -142,41 +169,40 @@ namespace Application.Events
             /// </summary>
             /// <param name="request">The request</param>
             /// <param name="cancellationToken">Cancellation token</param>
-            public async Task<Unit> Handle(EditEvent request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(EditEvent request, CancellationToken cancellationToken)
             {
-                var eventToEdit = await this.context.Events.FindAsync(request.Event.Id);
+                var @event = await this.context.Events.FindAsync(request.Event.Id);
 
-                if (eventToEdit == null)
-                {
-                    throw new Exception($"Event with Id {request.Event.Id} not found.");
-                }
+                if (@event == null) return Result<Unit>.Failure("Event not found.");
 
-                this.mapper.Map(request.Event, eventToEdit);
+                this.mapper.Map(request.Event, @event);
 
-                await this.context.SaveChangesAsync();
+                var result = await this.context.SaveChangesAsync() > 0;
 
-                return Unit.Value;
+                if (!result) return Result<Unit>.Failure("Failed to edit an event.");
+
+                return Result<Unit>.Success(Unit.Value);
             }
+
 
             /// <summary>
             /// Handles a DELETE request
             /// </summary>
             /// <param name="request">The request</param>
             /// <param name="cancellationToken">Cancellation token</param>
-            public async Task<Unit> Handle(DeleteEvent request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(DeleteEvent request, CancellationToken cancellationToken)
             {
-                var eventToDelete = await this.context.Events.FindAsync(request.Id);
+                var @event = await this.context.Events.FindAsync(request.Id);
 
-                if (eventToDelete == null)
-                {
-                    throw new Exception($"Event with Id {request.Id} not found.");
-                }
+                if (@event == null) return Result<Unit>.Failure("Event not found.");
 
-                this.context.Events.Remove(eventToDelete);
+                this.context.Events.Remove(@event);
 
-                await this.context.SaveChangesAsync();
+                var result = await this.context.SaveChangesAsync() > 0;
 
-                return Unit.Value;
+                if (!result) return Result<Unit>.Failure("Failed to delete an event.");
+
+                return Result<Unit>.Success(Unit.Value);
             }
         }
     }
