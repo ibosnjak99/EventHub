@@ -1,5 +1,6 @@
 ﻿using Application.Common;
 using Application.Events;
+using Application.Events.Queries;
 using Domain;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -40,10 +41,10 @@ namespace API.Extensions
             });
 
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-            services.AddMediatR(typeof(EventsService.GetAllEvents));
+            services.AddMediatR(typeof(GetAll));
             services.RegisterDependencies();
             services.AddFluentValidationAutoValidation();
-            services.AddValidatorsFromAssemblyContaining<EventsService>();
+            services.AddValidatorsFromAssemblyContaining<EventsHandler>();
 
             return services;
         }

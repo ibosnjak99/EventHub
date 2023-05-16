@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 export default function EventDetails() {
     const {eventStore} = useStore()
-    const {selectedEvent: event, openModal, closeModal, unselectEvent, deleteEvent} = eventStore
+    const {selectedEvent: event, openModal, unselectEvent, deleteEvent} = eventStore
     
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [eventIdToDelete, setEventIdToDelete] = useState('')
@@ -127,7 +127,6 @@ export default function EventDetails() {
                             <Button.Group widths='3'>
                                 <Button onClick={() => openModal(event.id)} color='blue' content='Edit' />
                                 <Button onClick={() => handleDeleteEvent(event.id)} color='red' content='Delete' />
-                                <Button onClick={() => {unselectEvent(); closeModal();}} content='Cancel' />
                             </Button.Group>
                         </Modal.Actions>
                         
