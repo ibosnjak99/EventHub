@@ -1,4 +1,6 @@
 ﻿using Application.Events;
+using Application.Events.Commands;
+using Application.Events.Queries;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +31,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEventsAsync()
         {
-            return HandleResult(await this.mediator.Send(new EventsService.GetAllEvents()));
+            return HandleResult(await this.mediator.Send(new GetAll()));
         }
 
         // GET: /api/events/{id}
@@ -40,7 +42,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleEventAsync(Guid id)
         {
-            return HandleResult(await this.mediator.Send(new EventsService.GetEventById(id)));
+            return HandleResult(await this.mediator.Send(new GetById(id)));
         }
 
 
@@ -52,7 +54,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEventAsync(Event @event)
         {
-            return HandleResult(await this.mediator.Send(new EventsService.CreateEvent(@event)));
+            return HandleResult(await this.mediator.Send(new Create(@event)));
         }
 
         // PUT: /api/events/{id}
@@ -64,7 +66,7 @@ namespace API.Controllers
         public async Task<IActionResult> EditEventAsync(Guid id, Event @event)
         {
             @event.Id = id;
-            return HandleResult(await this.mediator.Send(new EventsService.EditEvent(@event)));
+            return HandleResult(await this.mediator.Send(new Edit(@event)));
         }
 
         // DELETE: /api/events/{id}
@@ -75,7 +77,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEventAsync(Guid id)
         {
-            return HandleResult(await this.mediator.Send(new EventsService.DeleteEvent(id)));
+            return HandleResult(await this.mediator.Send(new Delete(id)));
         }
     }
 }
