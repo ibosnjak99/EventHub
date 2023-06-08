@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button, Card, Comment, Divider, Grid, Header, Icon, Image, Item, Label, List, Modal, Segment, Form } from 'semantic-ui-react'
 import { useStore } from '../../../app/stores/store'
 import { Link } from 'react-router-dom'
+import { format } from 'date-fns'
 
 export default function EventDetails() {
     const {eventStore} = useStore()
@@ -107,7 +108,7 @@ export default function EventDetails() {
                             </Grid.Column>
                             <Grid.Column width={15}>
                                 <span>
-                                {new Date(event.date).toLocaleDateString('en-GB')}
+                                {format(event.date!, 'dd/MM/yyyy HH:mm')}
                                 </span>
                             </Grid.Column>
                         </Grid>

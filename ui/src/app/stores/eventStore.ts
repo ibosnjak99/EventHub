@@ -2,26 +2,27 @@ import { makeAutoObservable, runInAction } from "mobx"
 import { Event } from "../models/event"
 import client from "../api/client"
 import { v4 as uuid } from "uuid"
+import { format } from 'date-fns'
 
 export default class EventStore {
     eventRegistry = new Map<string, Event>()
     selectedEvent: Event | null = null
     editMode = false
     loading = false
-    loadingInitial = true
+    loadingInitial = false
 
     constructor() {
         makeAutoObservable(this)
     }
 
     get eventsSortedByDate() {
-        return Array.from(this.eventRegistry.values()).sort((a, b) => Date.parse(a.date) - Date.parse(b.date))
+        return Array.from(this.eventRegistry.values()).sort((a, b) => a.date!.getTime() - b.date!.getTime())
     }
 
     get groupedEvents() {
         return Object.entries(
             this.eventsSortedByDate.reduce((events, event) => {
-                const date = event.date
+                const date = format(event.date!, 'dd/MM/yyyy HH:mm')
                 events[date] = events[date] ? [...events[date], event] : [event]
                 return events
             }, {} as {[key: string]: Event[]})
@@ -59,7 +60,7 @@ export default class EventStore {
     }
 
     private setEvent = (event: Event) => {
-        event.date = event.date.split('T')[0]
+        event.date = new Date(event.date!)
         this.eventRegistry.set(event.id, event)
     }
 

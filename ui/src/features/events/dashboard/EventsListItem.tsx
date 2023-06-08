@@ -3,6 +3,7 @@ import { Button, Icon, Item, Segment, SegmentGroup } from "semantic-ui-react";
 import { Event } from "../../../app/models/event";
 import { useStore } from "../../../app/stores/store";
 import { Link } from "react-router-dom";
+import { format } from 'date-fns'
 
 interface Props {
     event: Event
@@ -29,7 +30,7 @@ export default function EventsListItem({event}: Props) {
             </Segment>
             <Segment style={{ backgroundColor: '#e3e3e3' }}>
                 <span>
-                    <Icon name='clock' /> {new Date(event.date).toLocaleDateString('en-GB')}
+                    <Icon name='clock' /> {format(event.date!, 'dd/MM/yyyy HH:mm')}
                     <br/>
                     <Icon name='marker' /> {event.venue}, {event.city}
                 </span>
