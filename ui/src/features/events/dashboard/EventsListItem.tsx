@@ -2,7 +2,6 @@ import React from "react";
 import { Button, Icon, Item, Segment, SegmentGroup } from "semantic-ui-react";
 import { Event } from "../../../app/models/event";
 import { useStore } from "../../../app/stores/store";
-import { Link } from "react-router-dom";
 import { format } from 'date-fns'
 
 interface Props {
@@ -20,7 +19,7 @@ export default function EventsListItem({event}: Props) {
                         <Item>
                             <Item.Image size='tiny' circular src='assets/user.png' style={{ boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.3)' }}/>
                             <Item.Content style={{  margin: 'auto' }}>
-                                <Item.Header as={Link} to={`/events/${event.id}`}>
+                                <Item.Header>
                                     {event.title}
                                 </Item.Header>
                                 <Item.Description>Hosted by me</Item.Description>
