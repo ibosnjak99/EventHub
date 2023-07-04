@@ -11,6 +11,17 @@ namespace API.Services
     /// </summary>
     public class TokenService
     {
+        private readonly IConfiguration config;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenService" /> class.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        public TokenService(IConfiguration config)
+        {
+            this.config = config;
+        }
+
         public string CreateToken(AppUser user)
         {
             var claims = new List<Claim>
@@ -20,7 +31,7 @@ namespace API.Services
                 new Claim(ClaimTypes.Email, user.Email)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret keysuper secret keysuper secret keysuper secret key"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.config["TokenKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor

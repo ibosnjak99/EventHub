@@ -1,4 +1,6 @@
-﻿namespace API.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace API.DTOs
 {
     /// <summary>
     /// Register dto class.
@@ -11,6 +13,8 @@
         /// <value>
         /// The email.
         /// </value>
+        [Required]
+        [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
         /// <summary>
@@ -19,6 +23,8 @@
         /// <value>
         /// The password.
         /// </value>
+        [Required]
+        [RegularExpression("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{4,8}$", ErrorMessage = "Password must be complex")]
         public string Password { get; set; } = string.Empty;
 
         /// <summary>
@@ -27,6 +33,7 @@
         /// <value>
         /// The display name.
         /// </value>
+        [Required]
         public string DisplayName { get; set; } = string.Empty;
 
         /// <summary>
@@ -35,6 +42,7 @@
         /// <value>
         /// The username.
         /// </value>
+        [Required]
         public string Username { get; set; } = string.Empty;
 
     }
