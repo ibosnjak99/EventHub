@@ -203,7 +203,7 @@ export default function EventDetails() {
 
                 </Modal.Content>
             </Modal>
-            <Modal open={showDeleteModal} size='mini'>
+            <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false) } size='mini'>
                 <Modal.Header>Are you sure you want to delete this event?</Modal.Header>
                 <Modal.Content>
                     <p>This action cannot be undone.</p>
