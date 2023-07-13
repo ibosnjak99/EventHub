@@ -1,8 +1,8 @@
-﻿using Application.Events;
-using Application.Events.Commands;
+﻿using Application.Events.Commands;
 using Application.Events.Queries;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -11,6 +11,7 @@ namespace API.Controllers
     /// The events controller class.
     /// </summary>
     /// <seealso cref="BaseApiController" />
+    [AllowAnonymous]
     public class EventsController : BaseApiController
     {
         private readonly IMediator mediator;
