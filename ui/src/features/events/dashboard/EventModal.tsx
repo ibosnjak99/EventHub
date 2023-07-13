@@ -39,7 +39,7 @@ export default function EventDetails() {
                 <Modal.Header>{event.title}</Modal.Header>
                 <Modal.Content scrolling>
                     <Card fluid>
-                        <Image src={`/assets/categoryImages/${event.category}.jpg`} />
+                        <Image src={`/assets/categoryImages/${event.category}.jpg`} centered />
                         <Card.Content>
                         <Segment
                             textAlign='center'
