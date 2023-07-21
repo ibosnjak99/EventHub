@@ -1,4 +1,5 @@
-﻿using Domain.Models.Interfaces;
+﻿using Domain.Models;
+using Domain.Models.Interfaces;
 
 namespace Domain
 {
@@ -62,6 +63,14 @@ namespace Domain
         /// <value>
         /// The venue.
         /// </value>
-        public string Venue { get; set; } = string.Empty; 
+        public string Venue { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the attendees.
+        /// </summary>
+        /// <value>
+        /// The attendees.
+        /// </value>
+        public ICollection<EventAttendee> Attendees { get; set; }
     }
 }

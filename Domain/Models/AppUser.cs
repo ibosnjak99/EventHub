@@ -24,5 +24,13 @@ namespace Domain.Models
         /// The bio.
         /// </value>
         public string Bio { get; set; }
+
+        /// <summary>
+        /// Gets or sets the events.
+        /// </summary>
+        /// <value>
+        /// The events.
+        /// </value>
+        public ICollection<EventAttendee> Events { get; set; }
     }
 }
