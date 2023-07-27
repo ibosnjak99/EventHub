@@ -1,4 +1,5 @@
-﻿using Application.Events.Commands;
+﻿using Application.Events;
+using Application.Events.Commands;
 using Application.Events.Queries;
 using Domain;
 using MediatR;
@@ -11,7 +12,6 @@ namespace API.Controllers
     /// The events controller class.
     /// </summary>
     /// <seealso cref="BaseApiController" />
-    [AllowAnonymous]
     public class EventsController : BaseApiController
     {
         private readonly IMediator mediator;
@@ -79,6 +79,16 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteEventAsync(Guid id)
         {
             return HandleResult(await this.mediator.Send(new Delete(id)));
+        }
+
+        /// <summary>
+        /// Attends the specified identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        [HttpPost("{id}/attend")]
+        public async Task<IActionResult> Attend(Guid id)
+        {
+            return HandleResult(await this.mediator.Send(new UpdateAttendance.Command { Id=id }));
         }
     }
 }

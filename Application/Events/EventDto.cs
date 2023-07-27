@@ -1,11 +1,11 @@
-﻿using Domain.Models;
+﻿using Application.Profiles;
 
-namespace Domain
+namespace Application.Events
 {
     /// <summary>
-    /// The event class.
+    /// Event Dto.
     /// </summary>
-    public class Event
+    public class EventDto
     {
         /// <summary>
         /// Gets or sets the identifier.
@@ -64,6 +64,14 @@ namespace Domain
         public string Venue { get; set; } = string.Empty;
 
         /// <summary>
+        /// Gets or sets the host username.
+        /// </summary>
+        /// <value>
+        /// The host username.
+        /// </value>
+        public string HostUsername { get; set; } = string.Empty;
+
+        /// <summary>
         /// Gets or sets a value indicating whether this instance is cancelled.
         /// </summary>
         /// <value>
@@ -72,11 +80,11 @@ namespace Domain
         public bool IsCancelled { get; set; }
 
         /// <summary>
-        /// Gets or sets the attendees.
+        /// Gets or sets the profiles.
         /// </summary>
         /// <value>
-        /// The attendees.
+        /// The profiles.
         /// </value>
-        public ICollection<EventAttendee> Attendees { get; set; } = new List<EventAttendee>();
+        public ICollection<Profile> Attendees { get; set; } = new List<Profile>();
     }
 }

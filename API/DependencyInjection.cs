@@ -1,5 +1,4 @@
-﻿using Domain.Models.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Domain
 {
@@ -14,7 +13,7 @@ namespace Domain
         /// <param name="services">The services.</param>
         public static IServiceCollection RegisterDependencies(this IServiceCollection services)
         {
-            services.AddTransient<IEvent, Event>();
+            //services.AddTransient<IEvent, Event>();
 
             return services;
         }

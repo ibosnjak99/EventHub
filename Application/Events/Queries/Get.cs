@@ -8,7 +8,7 @@ namespace Application.Events.Queries
     /// Get event class.
     /// </summary>
     /// <seealso cref="IRequest{TResponse}"/>
-    public class GetById : IRequest<Result<Event>>
+    public class GetById : IRequest<Result<EventDto>>
     {
         public GetById(Guid id)
         {

@@ -8,5 +8,5 @@ namespace Application.Events.Queries
     /// Get all events class.
     /// </summary>
     /// <seealso cref="IRequest{TResponse}"/>
-    public class GetAll : IRequest<Result<List<Event>>> { }
+    public class GetAll : IRequest<Result<List<EventDto>>> { }
 }
