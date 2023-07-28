@@ -1,10 +1,12 @@
 ﻿using Application.Common;
 using Application.Events;
 using Application.Events.Queries;
+using Application.Interfaces;
 using Domain;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure;
+using Infrastructure.Security;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,6 +47,8 @@ namespace API.Extensions
             services.RegisterDependencies();
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining<EventsHandler>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<IUserAccessor, UserAccessor>();
 
             return services;
         }
