@@ -1,8 +1,10 @@
 import React from "react";
-import { Button, Icon, Item, Segment, SegmentGroup } from "semantic-ui-react";
+import { Button, Icon, Item, Label, Segment, SegmentGroup } from "semantic-ui-react";
 import { Event } from "../../../app/models/event";
 import { useStore } from "../../../app/stores/store";
 import { format } from 'date-fns'
+import EventListItemAttendee from "./EventListItemAttendee";
+import { Link } from "react-router-dom";
 
 interface Props {
     event: Event
@@ -11,6 +13,7 @@ interface Props {
 export default function EventsListItem({event}: Props) {
 
     const {eventStore} = useStore()
+    // console.log(event)
 
     return (
         <SegmentGroup style={{ backgroundColor: '#e3e3e3', padding: '10px' }}>
@@ -22,7 +25,28 @@ export default function EventsListItem({event}: Props) {
                                 <Item.Header>
                                     {event.title}
                                 </Item.Header>
-                                <Item.Description>Hosted by me</Item.Description>
+                                <Item.Description>
+                                    Hosted by <Link 
+                                                to={`/profiles/${event.hostUsername}`} 
+                                                style={{ textDecoration: 'none', color: 'inherit', fontWeight: 'bold' }} 
+                                                >
+                                                    {event.hostUsername}
+                                                </Link>
+                                </Item.Description>
+                                {event.isHost && (
+                                    <Item.Description>
+                                        <Label basic color='orange'>
+                                            You are the host
+                                        </Label>
+                                    </Item.Description>
+                                )}
+                                {event.isGoing && !event.isHost && (
+                                    <Item.Description>
+                                        <Label basic color='green'>
+                                            You are going
+                                        </Label>
+                                    </Item.Description>
+                                )}
                             </Item.Content>
                         </Item>
                 </Item.Group>
@@ -35,7 +59,7 @@ export default function EventsListItem({event}: Props) {
                 </span>
             </Segment >
             <Segment style={{ backgroundColor: '#e3e3e3' }}>
-                Attendees
+                <EventListItemAttendee attendees={event.attendees!} />
             </Segment>
             <Segment clearing style={{ backgroundColor: '#e3e3e3' }}>
                 <Button 

@@ -3,6 +3,8 @@ import { Event } from "../models/event"
 import client from "../api/client"
 import { v4 as uuid } from "uuid"
 import { format } from 'date-fns'
+import { store } from "./store"
+import { Profile } from "../models/profile"
 
 export default class EventStore {
     eventRegistry = new Map<string, Event>()
@@ -60,6 +62,14 @@ export default class EventStore {
     }
 
     private setEvent = (event: Event) => {
+        const user = store.userStore.user
+        if (user) {
+            event.isGoing = event.attendees!.some(
+                e => e.userName === user.username
+            )
+            event.isHost = event.hostUsername === user.username
+            event.host = event.attendees?.find(x => x.userName === event.hostUsername)
+        }
         event.date = new Date(event.date!)
         this.eventRegistry.set(event.id, event)
     }
@@ -141,6 +151,29 @@ export default class EventStore {
             runInAction(() => {
                 this.loading = false
             })
+        }
+    }
+
+    updateAttendance = async () => {
+        const user = store.userStore.user
+        this.loading = true
+        try {
+            await client.Events.attend(this.selectedEvent!.id)
+            runInAction(() => {
+                if (this.selectedEvent?.isGoing) {
+                    this.selectedEvent.attendees = this.selectedEvent.attendees?.filter(a => a.userName !== user?.username)
+                    this.selectedEvent.isGoing = false
+                } else {
+                    const attendee = new Profile(user!)
+                    this.selectedEvent?.attendees?.push(attendee)
+                    this.selectedEvent!.isGoing = true
+                }
+                this.eventRegistry.set(this.selectedEvent!.id, this.selectedEvent!)
+            })
+        } catch (error) {
+            console.log(error)
+        } finally {
+            runInAction(() => this.loading = false)
         }
     }
 }

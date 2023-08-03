@@ -60,7 +60,7 @@ namespace Application.Events
                 if (attendant != null && hostUsername == user.UserName)
                     @event.IsCancelled = !@event.IsCancelled;
 
-                if (attendant != null && hostUsername == user.UserName)
+                if (attendant != null && hostUsername != user.UserName)
                     @event.Attendees.Remove(attendant);
 
                 if (attendant == null)

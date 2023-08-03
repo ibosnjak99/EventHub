@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate, RouteObject } from "react-router-dom"
 import App from "../layouts/App"
 import EventsDashboard from "../../features/events/dashboard/EventsDashboard"
-import EventDetails from "../../features/events/dashboard/EventModal"
+import EventModal from "../../features/events/dashboard/EventModal"
 import TestErrors from "../../features/events/errors/TestError"
 import NotFound from "../../features/events/errors/NotFound"
 import ServerError from "../../features/events/errors/ServerError"
@@ -15,7 +15,7 @@ export const routes: RouteObject[] = [
         children: [
             {path: '', element: <Homepage />},
             {path: '/events', element: <EventsDashboard />},
-            {path: 'events/:id', element: <EventDetails />},
+            {path: 'events/:id', element: <EventModal />},
             {path: 'login', element: <LoginForm />},
             {path: 'errors', element: <TestErrors />},
             {path: 'not-found', element: <NotFound />},

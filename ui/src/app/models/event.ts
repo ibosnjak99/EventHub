@@ -1,3 +1,5 @@
+import { Profile } from "./profile"
+
 export interface Event {
     id: string
     title: string
@@ -6,4 +8,10 @@ export interface Event {
     category: string
     city: string
     venue: string
+    hostUsername?: string
+    isCancelled?: boolean
+    isGoing?: boolean
+    isHost?: boolean
+    host?: Profile
+    attendees?: Profile[]
   }

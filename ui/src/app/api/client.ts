@@ -72,7 +72,8 @@ const Events = {
     details: (id: string) => requests.get<Event>(`events/${id}`),
     create: (event: Event) => requests.post<void>('events', event),
     update: (event: Event) => requests.put<void>(`events/${event.id}`, event),
-    delete: (id: string) => requests.delete<void>(`events/${id}`)
+    delete: (id: string) => requests.delete<void>(`events/${id}`),
+    attend: (id: string) => requests.post<void>(`events/${id}/attend`, {})
 }
 
 const Account = {

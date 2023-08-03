@@ -3,10 +3,11 @@ import { Button, Card, Comment, Divider, Grid, Header, Icon, Image, Item, Label,
 import { useStore } from '../../../app/stores/store'
 import { Link } from 'react-router-dom'
 import { format } from 'date-fns'
+import { observer } from 'mobx-react-lite'
 
-export default function EventDetails() {
+export default observer(function EventModal() {
     const {eventStore} = useStore()
-    const {selectedEvent: event, openModal, unselectEvent, deleteEvent} = eventStore
+    const {selectedEvent: event, openModal, unselectEvent, deleteEvent, updateAttendance} = eventStore
     
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [eventIdToDelete, setEventIdToDelete] = useState('')
@@ -50,44 +51,34 @@ export default function EventDetails() {
                             color='teal'
                             onClick={handleGoingListClick}
                         >
-                            3 people going
+                            <Header as='h4'>
+                                {event.attendees!.length} {event.attendees!.length === 1 ? 'person' : 'people'} going
+                                <Icon name={showGoingList ? 'angle double up' : 'angle double down'} />
+                            </Header>
                         </Segment>
                         {showGoingList && (
                         <Segment attached='bottom' style={{ maxHeight: '200px', overflowY: 'auto' }}>
                             <List divided style={{ width: '90%', margin: 'auto' }}>
-                                <Item style={{ position: 'relative' }}>
-                                    <Label
-                                        style={{ position: 'absolute' }}
-                                        color='orange'
-                                        ribbon='right'
-                                    >
-                                        Host
-                                    </Label>
-                                    <Image size='mini' src={'/assets/user.png'} />
-                                    <Item.Content verticalAlign='middle'>
-                                        <Item.Header as='h4'>
-                                            <Link to={`#`}>Bob</Link>
-                                        </Item.Header>
-                                        <Item.Extra style={{ color: 'orange', fontSize: '.8em' }}>Following</Item.Extra>
-                                    </Item.Content>
-                                </Item>
-                                <Item style={{ position: 'relative' }}>
-                                    <Image size='mini' src={'/assets/user.png'} />
-                                    <Item.Content verticalAlign='middle'>
-                                        <Item.Header as='h4'>
-                                            <Link to={`#`}>Tom</Link>
-                                        </Item.Header>
-                                        <Item.Extra style={{ color: 'orange', fontSize: '.8em' }}>Following</Item.Extra>
-                                    </Item.Content>
-                                </Item>
-                                <Item style={{ position: 'relative' }}>
-                                    <Image size='mini' src={'/assets/user.png'} />
-                                    <Item.Content verticalAlign='middle'>
-                                        <Item.Header as='h4'>
-                                            <Link to={`#`}>Sally</Link>
-                                        </Item.Header>
-                                    </Item.Content>
-                                </Item>
+                                {event.attendees!.map(attendee => (
+                                    <Item style={{ position: 'relative' }} key={attendee.userName}>
+                                        {attendee.userName === event.host?.userName &&
+                                            <Label
+                                                style={{ position: 'absolute' }}
+                                                color='orange'
+                                                ribbon='right'
+                                            >
+                                                Host
+                                            </Label>
+                                        }
+                                        <Image size='mini' src={attendee.image ||'/assets/user.png'} />
+                                        <Item.Content verticalAlign='middle'>
+                                            <Item.Header as='h4'>
+                                                <Link to={`/profiles/${attendee.userName}`}>{attendee.displayName}</Link>
+                                            </Item.Header>
+                                            <Item.Extra style={{ color: 'orange', fontSize: '.8em' }}>Following</Item.Extra>
+                                        </Item.Content>
+                                    </Item>
+                                ))}
                             </List>
                         </Segment>
                         )}
@@ -123,33 +114,29 @@ export default function EventDetails() {
                             </Grid.Column>
                         </Grid>
                         </Card.Content>
-                        {/* if admin or moderator show modal.actions id=editor */}
-                        <Modal.Actions id='editor'>
-                            <Button.Group widths='3'>
-                                <Button onClick={() => openModal(event.id)} color='blue' content='Edit' />
-                                <Button onClick={() => handleDeleteEvent(event.id)} color='red' content='Delete' />
-                            </Button.Group>
-                        </Modal.Actions>
-                        
-                        {/* if user show modal.actions id=user */}
 
-                        {/* <Modal.Actions id='user'>
-                            <Button.Group widths='3'>
-                                <Button color='teal' content='Join event' />
-                                <Button content='Cancel attendance' />
-                            </Button.Group>
-                        </Modal.Actions> */}
+                        {event.isHost ? (
+                            <Modal.Actions id='editor'>
+                                <Button.Group widths='3'>
+                                    <Button onClick={() => openModal(event.id)} color='blue' content='Edit' />
+                                    <Button onClick={() => handleDeleteEvent(event.id)} color='red' content='Delete' />
+                                </Button.Group>
+                            </Modal.Actions>
+                        ) : event.isGoing ? (
+                            <Modal.Actions id='user'>
+                                <Button.Group widths='2'>
+                                    <Button onClick={updateAttendance} content='Cancel attendance' />
+                                </Button.Group>
+                            </Modal.Actions>
+                        ) : (
+                            <Modal.Actions id='user'>
+                                <Button.Group widths='2'>
+                                    <Button onClick={updateAttendance} color='blue' content='Join event' />
+                                </Button.Group>
+                            </Modal.Actions>
+                        )}
                     </Card>
                     <Divider />
-                    {/* <Button 
-                        fluid
-                        color='teal' 
-                        content='See more' 
-                        style={{ width: '50%', margin: '0 auto', height: '2.5em', fontSize: '1.2em' }}
-                        as={Link} to={`events/${event.id}`}
-                        onClick={() => {unselectEvent(); closeModal();}}
-                    /> */}
-
                     <Segment
                         textAlign='center'
                         attached='top'
@@ -214,5 +201,4 @@ export default function EventDetails() {
                 </Modal.Actions>
             </Modal>
         </>
-    )
-}
+)});
