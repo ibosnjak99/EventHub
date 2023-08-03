@@ -7,7 +7,7 @@ import { observer } from 'mobx-react-lite'
 
 export default observer(function EventModal() {
     const {eventStore} = useStore()
-    const {selectedEvent: event, openModal, unselectEvent, deleteEvent, updateAttendance} = eventStore
+    const {selectedEvent: event, openModal, unselectEvent, deleteEvent, updateAttendance, cancelEventToggle, loading} = eventStore
     
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [eventIdToDelete, setEventIdToDelete] = useState('')
@@ -37,7 +37,14 @@ export default observer(function EventModal() {
     return (
         <>
             <Modal open={true} onClose={unselectEvent} >
-                <Modal.Header>{event.title}</Modal.Header>
+                {event.isCancelled &&
+                    <Segment>
+                        <Label style={{ position: 'absolute', zIndex: 5, left: -14, top: 20 }} ribbon color='red' content='Cancelled' />
+                    </Segment>
+                }
+                <Modal.Header>
+                    {event.title}
+                </Modal.Header>
                 <Modal.Content scrolling>
                     <Card fluid>
                         <Image src={`/assets/categoryImages/${event.category}.jpg`} centered />
@@ -120,18 +127,23 @@ export default observer(function EventModal() {
                                 <Button.Group widths='3'>
                                     <Button onClick={() => openModal(event.id)} color='blue' content='Edit' />
                                     <Button onClick={() => handleDeleteEvent(event.id)} color='red' content='Delete' />
+                                    <Button 
+                                        onClick={cancelEventToggle} 
+                                        color={event.isCancelled ? 'green' : 'black'}  
+                                        content={event.isCancelled ? 'Reactivate' : 'Cancel event'}  
+                                    />
                                 </Button.Group>
                             </Modal.Actions>
                         ) : event.isGoing ? (
                             <Modal.Actions id='user'>
                                 <Button.Group widths='2'>
-                                    <Button onClick={updateAttendance} content='Cancel attendance' />
+                                    <Button onClick={updateAttendance} loading={loading} content='Cancel attendance' />
                                 </Button.Group>
                             </Modal.Actions>
                         ) : (
                             <Modal.Actions id='user'>
                                 <Button.Group widths='2'>
-                                    <Button onClick={updateAttendance} color='blue' content='Join event' />
+                                    <Button onClick={updateAttendance} loading={loading} color='blue' content='Join event' />
                                 </Button.Group>
                             </Modal.Actions>
                         )}

@@ -9,7 +9,6 @@ interface Props {
 }
 
 export default observer(function EventListItemAttendee({attendees}: Props) {
-    console.log(attendees[0]);
     return (
         <List horizontal>
             {attendees.map(attendee => (

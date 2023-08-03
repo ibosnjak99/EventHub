@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Modal } from 'semantic-ui-react';
 import { useStore } from '../../../app/stores/store';
 import { observer } from 'mobx-react-lite';
@@ -10,21 +10,15 @@ import CustomTextArea from '../../../app/common/form/CustomTextArea';
 import CustomSelectInput from '../../../app/common/form/CustomSelectInput';
 import { categoryOptions } from '../../../app/common/options/categoryOptions';
 import CustomDateInput from '../../../app/common/form/CustomDateInput';
-import { Event } from '../../../app/models/event';
+import { EventFormValues } from '../../../app/models/event';
+import { useParams } from 'react-router-dom';
 
 export default observer (function EventsForm() {
-    const {eventStore} = useStore()
-    const {selectedEvent, closeModal, createEvent, updateEvent, loading} = eventStore
+  const {eventStore} = useStore()
+  const { closeModal, createEvent, updateEvent, loadEvent, selectedEvent} = eventStore
+  const { id } = useParams<{ id: string }>()
 
-    const initialState = selectedEvent ?? {
-        id: '',
-        title: '',
-        category: '',
-        description: '',
-        date: null,
-        city: '',
-        venue: '',
-    }
+    const [event, setEvent] = useState<EventFormValues>(selectedEvent ? new EventFormValues(selectedEvent) : new EventFormValues())
 
     const validationSchema = Yup.object({
       title: Yup.string().required('The title is required'),
@@ -35,24 +29,32 @@ export default observer (function EventsForm() {
       venue: Yup.string().required('The venue is required'),
     })
 
-    function handleFormSubmit(event: Event) {
-      if (event.id.length === 0) {
+    useEffect(() => {
+      if (id) loadEvent(id)
+    }, [id, loadEvent])
+
+    function handleFormSubmit(event: EventFormValues) {
+      console.log(event)
+      if (!event.id) {
         let newEvent = {
           ...event,
           id: uuid()
         };
         createEvent(newEvent)
+        closeModal()
       }
       else {
         updateEvent(event)
+        closeModal()
       }
-    }
+    }    
 
     return (
       <>
         <Formik 
           validationSchema={validationSchema} 
-          initialValues={initialState} 
+          enableReinitialize
+          initialValues={event} 
           onSubmit={values => handleFormSubmit(values)}
         >
           {({ handleSubmit, isValid, dirty, isSubmitting }) => (
@@ -71,7 +73,13 @@ export default observer (function EventsForm() {
               <Modal.Actions>
                 <Button.Group widths='2'>
                   <Button onClick={closeModal} color='red' content='Cancel' />
-                  <Button disabled={isSubmitting || !dirty || !isValid} loading={loading} onClick={() => handleSubmit()} color='green' content='Submit' />
+                  <Button 
+                    disabled={isSubmitting || !dirty || !isValid} 
+                    loading={isSubmitting} 
+                    onClick={() => handleSubmit()} 
+                    color='green' 
+                    content='Submit' 
+                  />
                 </Button.Group>
               </Modal.Actions>
             </Modal>

@@ -13,10 +13,12 @@ interface Props {
 export default function EventsListItem({event}: Props) {
 
     const {eventStore} = useStore()
-    // console.log(event)
 
     return (
-        <SegmentGroup style={{ backgroundColor: '#e3e3e3', padding: '10px' }}>
+        <Segment.Group style={{ backgroundColor: '#e3e3e3', padding: '10px' }}>
+            { event.isCancelled &&
+                <Label attached='top' color='red' content='Cancelled' style={{ textAlign: 'center' }}/>
+            }
             <Segment style={{ backgroundColor: '#e3e3e3' }}>
                 <Item.Group>
                         <Item>
@@ -69,6 +71,6 @@ export default function EventsListItem({event}: Props) {
                     color='blue' 
                 />
             </Segment>
-        </SegmentGroup>
+        </Segment.Group>
     )
 }
