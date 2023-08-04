@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Button, Modal } from 'semantic-ui-react';
 import { useStore } from '../../../app/stores/store';
 import { observer } from 'mobx-react-lite';
@@ -11,15 +11,13 @@ import CustomSelectInput from '../../../app/common/form/CustomSelectInput';
 import { categoryOptions } from '../../../app/common/options/categoryOptions';
 import CustomDateInput from '../../../app/common/form/CustomDateInput';
 import { EventFormValues } from '../../../app/models/event';
-import { useParams } from 'react-router-dom';
 
 export default observer (function EventsForm() {
   const {eventStore} = useStore()
-  const { closeModal, createEvent, updateEvent, loadEvent, selectedEvent} = eventStore
-  const { id } = useParams<{ id: string }>()
+  const { closeModal, createEvent, updateEvent, selectedEvent} = eventStore
 
-    const [event, setEvent] = useState<EventFormValues>(selectedEvent ? new EventFormValues(selectedEvent) : new EventFormValues())
-
+    const event = selectedEvent ? new EventFormValues(selectedEvent) : new EventFormValues()
+  
     const validationSchema = Yup.object({
       title: Yup.string().required('The title is required'),
       description: Yup.string().required('The description is required'),
@@ -28,10 +26,6 @@ export default observer (function EventsForm() {
       city: Yup.string().required('The city is required'),
       venue: Yup.string().required('The venue is required'),
     })
-
-    useEffect(() => {
-      if (id) loadEvent(id)
-    }, [id, loadEvent])
 
     function handleFormSubmit(event: EventFormValues) {
       console.log(event)

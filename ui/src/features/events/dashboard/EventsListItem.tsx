@@ -1,16 +1,17 @@
 import React from "react";
-import { Button, Icon, Item, Label, Segment, SegmentGroup } from "semantic-ui-react";
+import { Button, Icon, Item, Label, Segment } from "semantic-ui-react";
 import { Event } from "../../../app/models/event";
 import { useStore } from "../../../app/stores/store";
 import { format } from 'date-fns'
 import EventListItemAttendee from "./EventListItemAttendee";
 import { Link } from "react-router-dom";
+import { observer } from "mobx-react-lite";
 
 interface Props {
     event: Event
 }
 
-export default function EventsListItem({event}: Props) {
+export default observer(function EventsListItem({event}: Props) {
 
     const {eventStore} = useStore()
 
@@ -72,5 +73,5 @@ export default function EventsListItem({event}: Props) {
                 />
             </Segment>
         </Segment.Group>
-    )
-}
+  );
+})
