@@ -85,6 +85,6 @@ namespace Application.Events
         /// <value>
         /// The profiles.
         /// </value>
-        public ICollection<Profile> Attendees { get; set; } = new List<Profile>();
+        public ICollection<AttendeeDto> Attendees { get; set; } = new List<AttendeeDto>();
     }
 }

@@ -1,11 +1,9 @@
-﻿using Domain.Models;
-
-namespace Application.Profiles
+﻿namespace Application.Events
 {
     /// <summary>
-    /// Profile class.
+    /// Attendee dto class.
     /// </summary>
-    public class Profile
+    public class AttendeeDto
     {
         /// <summary>
         /// Gets or sets the name of the user.
@@ -38,13 +36,5 @@ namespace Application.Profiles
         /// The image.
         /// </value>
         public string Image { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the photos.
-        /// </summary>
-        /// <value>
-        /// The photos.
-        /// </value>
-        public ICollection<Photo>? Photos { get; set; }
     }
 }

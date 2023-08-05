@@ -32,5 +32,13 @@ namespace Domain.Models
         /// The events.
         /// </value>
         public ICollection<EventAttendee> Events { get; set; }
+
+        /// <summary>
+        /// Gets or sets the photos.
+        /// </summary>
+        /// <value>
+        /// The photos.
+        /// </value>
+        public ICollection<Photo> Photos { get; set; }
     }
 }
