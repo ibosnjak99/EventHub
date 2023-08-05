@@ -36,6 +36,14 @@ namespace Infrastructure
         public DbSet<EventAttendee> EventAttendees { get; set; }
 
         /// <summary>
+        /// Gets or sets the photos.
+        /// </summary>
+        /// <value>
+        /// The photos.
+        /// </value>
+        public DbSet<Photo> Photos { get; set; }
+
+        /// <summary>
         /// Configures the schema needed for the identity framework.
         /// </summary>
         /// <param name="builder">

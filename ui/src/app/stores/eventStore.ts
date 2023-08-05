@@ -1,7 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx"
 import { Event, EventFormValues } from "../models/event"
 import client from "../api/client"
-import { v4 as uuid } from "uuid"
 import { format } from 'date-fns'
 import { store } from "./store"
 import { Profile } from "../models/profile"
