@@ -67,7 +67,7 @@ export default observer(function EventModal() {
                         <Segment attached='bottom' style={{ maxHeight: '200px', overflowY: 'auto' }}>
                             <List divided style={{ width: '90%', margin: 'auto' }}>
                                 {event.attendees!.map(attendee => (
-                                    <Item style={{ position: 'relative' }} key={attendee.userName}>
+                                    <Item style={{ position: 'relative' }} key={attendee.userName} as={Link} to={`/profile/${attendee.userName}`}>
                                         {attendee.userName === event.host?.userName &&
                                             <Label
                                                 style={{ position: 'absolute' }}
@@ -77,10 +77,10 @@ export default observer(function EventModal() {
                                                 Host
                                             </Label>
                                         }
-                                        <Image size='mini' src={attendee.image ||'/assets/user.png'} />
+                                        <Image size='mini' circular src={attendee.image ||'/assets/user.png'} />
                                         <Item.Content verticalAlign='middle'>
                                             <Item.Header as='h4'>
-                                                <Link to={`/profiles/${attendee.userName}`}>{attendee.displayName}</Link>
+                                                <Header size='tiny' to={`/profile/${attendee.userName}`}>{attendee.displayName}</Header>
                                             </Item.Header>
                                             <Item.Extra style={{ color: 'orange', fontSize: '.8em' }}>Following</Item.Extra>
                                         </Item.Content>

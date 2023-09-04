@@ -23,14 +23,14 @@ export default observer(function EventsListItem({event}: Props) {
             <Segment style={{ backgroundColor: '#e3e3e3' }}>
                 <Item.Group>
                         <Item>
-                            <Item.Image size='tiny' circular src='assets/user.png' style={{ boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.3)' }}/>
+                            <Item.Image size='tiny' circular src={event.host?.image || 'assets/user.png'} style={{ boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.3)' }}/>
                             <Item.Content style={{  margin: 'auto' }}>
                                 <Item.Header>
                                     {event.title}
                                 </Item.Header>
                                 <Item.Description>
                                     Hosted by <Link 
-                                                to={`/profiles/${event.hostUsername}`} 
+                                                to={`/profile/${event.hostUsername}`} 
                                                 style={{ textDecoration: 'none', color: 'inherit', fontWeight: 'bold' }} 
                                                 >
                                                     {event.hostUsername}

@@ -6,7 +6,7 @@ import { useStore } from "../../../app/stores/store"
 import { observer } from "mobx-react-lite"
 import EventFilters from "./EventFilters"
 import LoadingComponent from "../../../app/layouts/LoadingComponent"
-import EventModal from "./EventModal"
+import EventModal from "./EventDetailsModal"
 
 export default observer (function EventsDashboard() {
     const {eventStore} = useStore()
