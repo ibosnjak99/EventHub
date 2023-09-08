@@ -202,7 +202,7 @@ export default observer(function EventModal() {
 
                 </Modal.Content>
             </Modal>
-            <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false) } size='mini'>
+            <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false) } size='tiny'>
                 <Modal.Header>Are you sure you want to delete this event?</Modal.Header>
                 <Modal.Content>
                     <p>This action cannot be undone.</p>
