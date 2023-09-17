@@ -20,6 +20,9 @@ namespace Application.Profiles.Commands
         public string Bio { get; set; }
     }
 
+    /// <summary>
+    /// Edit profile validator class.
+    /// </summary>
     public class EditProfileValidator : AbstractValidator<Edit>
     {
         public EditProfileValidator()
