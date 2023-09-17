@@ -1,6 +1,7 @@
 export interface User {
     username: string
     displayName: string
+    bio: string
     token: string
     image?: string
 }

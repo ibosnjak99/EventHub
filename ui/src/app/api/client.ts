@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 import { router } from "../router/Routes"
 import { store } from "../stores/store"
 import { User, UserFormValues } from "../models/user"
+import { Photo, Profile } from "../models/profile"
 
 const sleep = (timeout: number) => {
     return new Promise ((resolve) => {
@@ -82,9 +83,24 @@ const Account = {
     register: (user: UserFormValues) => requests.post<User>('/account/register', user),
 }
 
+const Profiles = {
+    get: (username: string) => requests.get<Profile>(`/profiles/${username}`),
+    uploadPhoto: (file: Blob) => {
+        let formData = new FormData()
+        formData.append('File', file)
+        return axios.post<Photo>('photos', formData, {
+            headers: {'Content-type': 'multipart/form-data'}
+        })
+    },
+    setProfilePhoto: (id: string) => requests.post(`/photos/${id}/setProfile`, {}),
+    deletePhoto: (id: string) => requests.delete(`/photos/${id}`),
+    updateProfile: (profile: Partial<Profile>) => requests.put(`/profiles`, profile)
+}
+
 const client = {
     Events,
-    Account
+    Account,
+    Profiles
 }
 
 export default client
