@@ -1,10 +1,16 @@
 import { observer } from 'mobx-react-lite'
 import React from 'react'
-import { Button, Divider, Grid, Header, Item, Reveal, Segment, Statistic } from 'semantic-ui-react'
+import { Button, Divider, Grid, Header, Item, ItemDescription, Reveal, Segment, Statistic } from 'semantic-ui-react'
 import { Profile } from '../../../app/models/profile'
 
 interface Props {
     profile: Profile
+}
+
+function truncate(str: string | undefined) {
+    if (str) {
+    return str.length > 40 ? str.substring(0, 37) + '...' : str;
+    }
 }
 
 export default observer (function ProfileHeader({profile}: Props) {
@@ -17,6 +23,7 @@ export default observer (function ProfileHeader({profile}: Props) {
                             <Item.Image avatar size="small" src={profile.image || '/assets/user.png'} />
                             <Item.Content verticalAlign='middle'>
                                 <Header as='h1' content={profile.displayName} />
+                                <ItemDescription as='h2' content={truncate(profile.bio)} />
                             </Item.Content>
                         </Item>
                     </Item.Group>
