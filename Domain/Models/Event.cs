@@ -78,5 +78,13 @@ namespace Domain
         /// The attendees.
         /// </value>
         public ICollection<EventAttendee> Attendees { get; set; } = new List<EventAttendee>();
+
+        /// <summary>
+        /// Gets or sets the comments.
+        /// </summary>
+        /// <value>
+        /// The comments.
+        /// </value>
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }
