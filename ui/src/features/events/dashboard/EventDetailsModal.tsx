@@ -1,18 +1,31 @@
-import React, { useState } from 'react'
-import { Button, Card, Comment, Divider, Grid, Header, Icon, Image, Item, Label, List, Modal, Segment, Form } from 'semantic-ui-react'
+import React, { useEffect, useState } from 'react'
+import { Button, Card, Comment, Divider, Grid, Header, Icon, Image, Item, Label, List, Modal, Segment } from 'semantic-ui-react'
 import { useStore } from '../../../app/stores/store'
 import { Link } from 'react-router-dom'
-import { format } from 'date-fns'
+import { format, formatDistanceToNow } from 'date-fns'
 import { observer } from 'mobx-react-lite'
+import { Formik, Form } from 'formik'
+import CustomTextArea from '../../../app/common/form/CustomTextArea'
+import * as Yup from 'yup'
 
 export default observer(function EventModal() {
     const {eventStore} = useStore()
+    const {commentStore} = useStore()
     const {selectedEvent: event, openModal, unselectEvent, deleteEvent, updateAttendance, cancelEventToggle, loading} = eventStore
     
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [eventIdToDelete, setEventIdToDelete] = useState('')
     const [showGoingList, setShowGoingList] = useState(false)
 
+    useEffect(() => {
+        if (event!.id) {
+            commentStore.createHubConnection(event!.id)
+        }
+
+        return () => {
+            commentStore.clearComments()
+        }
+    }, [commentStore, event])
 
     if (!event) return null
 
@@ -158,45 +171,43 @@ export default observer(function EventModal() {
                     >
                         <Header>Comment Section</Header>
                     </Segment>
-                    <Segment attached>
-                        <Comment.Group>
-                            <Comment>
-                                <Comment.Avatar src='/assets/user.png'/>
-                                <Comment.Content>
-                                    <Comment.Author as='a'>Matt</Comment.Author>
-                                    <Comment.Metadata>
-                                        <div>Today at 5:42PM</div>
-                                    </Comment.Metadata>
-                                    <Comment.Text>How artistic!</Comment.Text>
-                                    <Comment.Actions>
-                                        <Comment.Action>Reply</Comment.Action>
-                                    </Comment.Actions>
-                                </Comment.Content>
-                            </Comment>
-
-                            <Comment>
-                                <Comment.Avatar src='/assets/user.png'/>
-                                <Comment.Content>
-                                    <Comment.Author as='a'>Joe Henderson</Comment.Author>
-                                    <Comment.Metadata>
-                                        <div>5 days ago</div>
-                                    </Comment.Metadata>
-                                    <Comment.Text>Dude, this is awesome. Thanks so much</Comment.Text>
-                                    <Comment.Actions>
-                                        <Comment.Action>Reply</Comment.Action>
-                                    </Comment.Actions>
-                                </Comment.Content>
-                            </Comment>
-
-                            <Form style={{ marginTop: '10px'}}>
-                                <Form.TextArea placeholder='Reply...' />
-                                <Button
-                                    content='Add Reply'
-                                    labelPosition='left'
-                                    icon='edit'
-                                    primary
-                                />
-                            </Form>
+                    <Segment attached clearing>
+                        <Formik 
+                            onSubmit={(values, {resetForm}) => commentStore.addComment(values).then(() => resetForm())}
+                            initialValues={{body: ''}}
+                            validationSchema={Yup.object({
+                                body: Yup.string().required()
+                            })}
+                        >
+                            {({ isSubmitting, isValid }) => (
+                                <Form style={{ marginTop: '10px'}} className='ui form'>
+                                    <CustomTextArea placeholder='Reply...' name='body' rows={2} />
+                                    <Button
+                                        loading={isSubmitting}
+                                        disabled={isSubmitting || !isValid}
+                                        content='Add Reply'
+                                        labelPosition='left'
+                                        icon='edit'
+                                        primary
+                                        type='submit'
+                                        floated='right'
+                                    />
+                                </Form>
+                            )}
+                        </Formik>
+                        <Comment.Group style={{maxWidth: '100%'}}>
+                            {commentStore.comments.map(comment => (
+                                <Comment key={comment.id}>
+                                    <Comment.Avatar src={comment.image || '/assets/user.png'}/>
+                                    <Comment.Content>
+                                        <Comment.Author as={Link} to={`/profiles/${comment.username}`}>{comment.displayName}</Comment.Author>
+                                        <Comment.Metadata>
+                                            <div>{formatDistanceToNow(comment.createdAt)} ago</div>
+                                        </Comment.Metadata>
+                                        <Comment.Text>{comment.body}</Comment.Text>
+                                    </Comment.Content>
+                                </Comment>
+                            ))}
                         </Comment.Group>
                     </Segment>
 

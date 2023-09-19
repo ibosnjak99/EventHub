@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace API.SignalR
 {
     /// <summary>
-    /// The chat hub class-
+    /// The chat hub class.
     /// </summary>
     public class ChatHub : Hub
     {

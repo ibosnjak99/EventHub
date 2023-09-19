@@ -14,7 +14,7 @@ export default class CommentStore {
     createHubConnection = (eventId: string) => {
         if (store.eventStore.selectedEvent) {
             this.hubConnection = new HubConnectionBuilder()
-                .withUrl('http://localhost:3000/chat?eventId=' + eventId, {
+                .withUrl('http://localhost:5025/chat?eventId=' + eventId, {
                     accessTokenFactory: () => store.userStore.user?.token!
                 })
                 .withAutomaticReconnect()
@@ -24,11 +24,19 @@ export default class CommentStore {
             this.hubConnection.start().catch(error => console.log('Error establishing hub connection: ', error))
 
             this.hubConnection.on('LoadComments', (comments: ChatComment[]) => {
-                runInAction(() => this.comments = comments)
+                runInAction(() => {
+                    comments.forEach(comment => {
+                        comment.createdAt = new Date(comment.createdAt + 'Z')
+                    })
+                    this.comments = comments
+                })
             })
 
             this.hubConnection.on('ReceiveComment', (comment: ChatComment) => {
-                runInAction(() => this.comments.push(comment))
+                runInAction(() => {
+                    comment.createdAt = new Date(comment.createdAt)
+                    this.comments.unshift(comment);
+                })
             })
         }
     }
@@ -40,5 +48,14 @@ export default class CommentStore {
     clearComments = () => {
         this.comments = []
         this.stopHubConnection()
+    }
+
+    addComment = async (values: any) => {
+        values.eventId = store.eventStore.selectedEvent?.id
+        try {
+            await this.hubConnection?.invoke('PostComment', values)
+        } catch (error) {
+            console.log(error)
+        }
     }
 }
