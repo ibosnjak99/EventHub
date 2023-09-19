@@ -44,6 +44,14 @@ namespace Infrastructure
         public DbSet<Photo> Photos { get; set; }
 
         /// <summary>
+        /// Gets or sets the comments.
+        /// </summary>
+        /// <value>
+        /// The comments.
+        /// </value>
+        public DbSet<Comment> Comments { get; set; }
+
+        /// <summary>
         /// Configures the schema needed for the identity framework.
         /// </summary>
         /// <param name="builder">
@@ -64,6 +72,11 @@ namespace Infrastructure
                 .HasOne(u => u.@event)
                 .WithMany(u => u.Attendees)
                 .HasForeignKey(u => u.EventId);
+
+            builder.Entity<Comment>()
+                .HasOne(e => e.Event)
+                .WithMany(c => c.Comments)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
