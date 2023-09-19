@@ -11,9 +11,13 @@ export default observer (function EventsList() {
   return (
     <>
       {groupedEvents.map(([group, events]) => {
-        const groupDate = new Date(group);
+        const [day, month, yearTime] = group.split('/');
+        const [year, time] = yearTime.split(' ');
+        const [hours, minutes] = time.split(':');
+        const groupDate = new Date(+year, +month - 1, +day, +hours, +minutes);
+        
         const formattedDate = groupDate.toLocaleDateString('en-GB');
-
+        
         return (
           <Fragment key={group}>
             <Header sub color='teal'>
