@@ -51,6 +51,12 @@ namespace Infrastructure
         /// </value>
         public DbSet<Comment> Comments { get; set; }
 
+        /// <summary>
+        /// Gets or sets the user followings.
+        /// </summary>
+        /// <value>
+        /// The user followings.
+        /// </value>
         public DbSet<UserFollowing> UserFollowings { get; set; }
 
         /// <summary>

@@ -9,12 +9,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Followers
 {
+    /// <summary>
+    /// The followers handler class.
+    /// </summary>
     public class FollowersHandler : IRequestHandler<List, Result<List<Profiles.Profile>>>
     {
         private readonly DataContext context;
         private readonly IMapper mapper;
         private readonly IUserAccessor accessor;
 
+        /// <summary>Initializes a new instance of the <see cref="FollowersHandler" /> class.</summary>
+        /// <param name="context">The context.</param>
+        /// <param name="mapper">The mapper.</param>
+        /// <param name="accessor">The accessor.</param>
         public FollowersHandler(DataContext context, IMapper mapper, IUserAccessor accessor)
         {
             this.context = context;
@@ -22,6 +29,10 @@ namespace Application.Followers
             this.accessor = accessor;
         }
 
+        /// <summary>Handles a request</summary>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Response from the request</returns>
         public async Task<Result<List<Profiles.Profile>>> Handle(List request, CancellationToken cancellationToken)
         {
             var profiles = new List<Profiles.Profile>();

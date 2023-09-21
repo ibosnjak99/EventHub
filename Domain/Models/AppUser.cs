@@ -41,8 +41,20 @@ namespace Domain.Models
         /// </value>
         public ICollection<Photo> Photos { get; set; }
 
+        /// <summary>
+        /// Gets or sets the followings.
+        /// </summary>
+        /// <value>
+        /// The followings.
+        /// </value>
         public ICollection<UserFollowing> Followings { get; set; }
 
+        /// <summary>
+        /// Gets or sets the followers.
+        /// </summary>
+        /// <value>
+        /// The followers.
+        /// </value>
         public ICollection<UserFollowing> Followers { get; set; }
     }
 }

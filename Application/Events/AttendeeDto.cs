@@ -37,10 +37,28 @@
         /// </value>
         public string Image { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="AttendeeDto" /> is following.
+        /// </summary>
+        /// <value>
+        /// True if following; otherwise, false.
+        /// </value>
         public bool Following { get; set; }
 
+        /// <summary>
+        /// Gets or sets the followers count.
+        /// </summary>
+        /// <value>
+        /// The followers count.
+        /// </value>
         public int FollowersCount { get; set; }
 
+        /// <summary>
+        /// Gets or sets the following count.
+        /// </summary>
+        /// <value>
+        /// The following count.
+        /// </value>
         public int FollowingCount { get; set; }
     }
 }

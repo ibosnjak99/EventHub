@@ -7,24 +7,46 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Followers
 {
+    /// <summary>
+    /// The follow toggle class.
+    /// </summary>
     public class FollowToggle
     {
+        /// <summary>
+        /// The command class.
+        /// </summary>
         public class Command : IRequest<Result<Unit>>
         {
+            /// <summary>
+            /// Gets or sets the target username.
+            /// </summary>
+            /// <value>
+            /// The target username.
+            /// </value>
             public string TargetUsername { get; set; } = string.Empty;
         }
 
+        /// <summary>
+        /// The handler class.
+        /// </summary>
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext context;
             private readonly IUserAccessor accessor;
 
+            /// <summary>Initializes a new instance of the <see cref="Handler" /> class.</summary>
+            /// <param name="context">The context.</param>
+            /// <param name="accessor">The accessor.</param>
             public Handler(DataContext context, IUserAccessor accessor)
             {
                 this.context = context;
                 this.accessor = accessor;
             }
 
+            /// <summary>Handles a request</summary>
+            /// <param name="request">The request</param>
+            /// <param name="cancellationToken">Cancellation token</param>
+            /// <returns>Response from the request</returns>
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var observer = await this.context.Users.FirstOrDefaultAsync(x => x.UserName == this.accessor.GetUsername());
