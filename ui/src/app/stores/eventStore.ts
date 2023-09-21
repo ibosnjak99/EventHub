@@ -185,4 +185,15 @@ export default class EventStore {
             runInAction(() => this.loading = false)
         }
     }
+
+    updateAttendeeFollowing = (username: string) => {
+        this.eventRegistry.forEach(event => {
+            event.attendees.forEach(attendee => {
+                if (attendee.userName === username) {
+                    attendee.following ? attendee.followersCount-- : attendee.followersCount++
+                    attendee.following = !attendee.following
+                }
+            })
+        })
+    }
 }

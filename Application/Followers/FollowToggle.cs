@@ -30,7 +30,7 @@ namespace Application.Followers
                 var observer = await this.context.Users.FirstOrDefaultAsync(x => x.UserName == this.accessor.GetUsername());
                 var target = await this.context.Users.FirstOrDefaultAsync(x => x.UserName == request.TargetUsername);
 
-                if (target == null) return null;
+                if (target == null) return Result<Unit>.Failure("Target not found."); ;
 
                 var following = await this.context.UserFollowings.FindAsync(observer!.Id, target.Id);
 

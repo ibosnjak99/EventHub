@@ -19,7 +19,7 @@ namespace API.Controllers
         [HttpGet("{username}")]
         public async Task<IActionResult> Get(string username)
         {
-            return HandleResult(await Mediator.Send(new Details.Query{ Username = username }));
+            return HandleResult(await Mediator!.Send(new Details { Username = username }));
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace API.Controllers
         [HttpPut]
         public async Task<IActionResult> Edit(Edit edit)
         {
-            return HandleResult(await Mediator.Send(edit));
+            return HandleResult(await Mediator!.Send(edit));
         }
     }
 }

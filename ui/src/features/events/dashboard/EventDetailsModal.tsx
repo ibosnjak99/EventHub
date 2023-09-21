@@ -95,7 +95,9 @@ export default observer(function EventModal() {
                                             <Item.Header as='h4'>
                                                 <Header size='tiny' to={`/profile/${attendee.userName}`}>{attendee.displayName}</Header>
                                             </Item.Header>
-                                            <Item.Extra style={{ color: 'orange', fontSize: '.8em' }}>Following</Item.Extra>
+                                            {attendee.following &&
+                                                <Item.Extra style={{ color: 'orange', fontSize: '.8em' }}>Following</Item.Extra>
+                                            }
                                         </Item.Content>
                                     </Item>
                                 ))}

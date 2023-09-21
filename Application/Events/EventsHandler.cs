@@ -40,28 +40,28 @@ namespace Application.Events
         }
 
         /// <summary>
-        /// Handles a GET request
+        /// Handles a GET all request
         /// </summary>
         /// <param name="request">The request</param>
         /// <param name="cancellationToken">Cancellation token</param>
         public async Task<Result<List<EventDto>>> Handle(GetAll request, CancellationToken cancellationToken)
         {
             var events = await this.context.Events
-                .ProjectTo<EventDto>(this.mapper.ConfigurationProvider)
+                .ProjectTo<EventDto>(this.mapper.ConfigurationProvider, new {currentUsername = this.userAccessor.GetUsername()})
                 .ToListAsync(cancellationToken);
 
             return Result<List<EventDto>>.Success(events);
         }
 
         /// <summary>
-        /// Handles a GET request
+        /// Handles a GET single request
         /// </summary>
         /// <param name="request">The request</param>
         /// <param name="cancellationToken">Cancellation token</param>
         public async Task<Result<EventDto>> Handle(GetById request, CancellationToken cancellationToken)
         {
             var singleEvent = await this.context.Events
-                .ProjectTo<EventDto>(this.mapper.ConfigurationProvider)
+                .ProjectTo<EventDto>(this.mapper.ConfigurationProvider, new { currentUsername = this.userAccessor.GetUsername() })
                 .FirstOrDefaultAsync(x => x.Id == request.Id);
 
             if (singleEvent == null) return Result<EventDto>.Failure("Failed to delete an event.");
