@@ -46,5 +46,29 @@ namespace Application.Profiles
         /// The photos.
         /// </value>
         public ICollection<Photo>? Photos { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="Profile" /> is following.
+        /// </summary>
+        /// <value>
+        /// True if following; otherwise, false.
+        /// </value>
+        public bool Following { get; set; }
+
+        /// <summary>
+        /// Gets or sets the followers count.
+        /// </summary>
+        /// <value>
+        /// The followers count.
+        /// </value>
+        public int FollowersCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the following count.
+        /// </summary>
+        /// <value>
+        /// The following count.
+        /// </value>
+        public int FollowingCount { get;set; }
     }
 }

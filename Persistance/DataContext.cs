@@ -52,6 +52,14 @@ namespace Infrastructure
         public DbSet<Comment> Comments { get; set; }
 
         /// <summary>
+        /// Gets or sets the user followings.
+        /// </summary>
+        /// <value>
+        /// The user followings.
+        /// </value>
+        public DbSet<UserFollowing> UserFollowings { get; set; }
+
+        /// <summary>
         /// Configures the schema needed for the identity framework.
         /// </summary>
         /// <param name="builder">
@@ -77,6 +85,21 @@ namespace Infrastructure
                 .HasOne(e => e.Event)
                 .WithMany(c => c.Comments)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserFollowing>(b =>
+            {
+                b.HasKey(k => new { k.ObserverId, k.TargetId });
+
+                b.HasOne(o => o.Observer)
+                    .WithMany(f => f.Followings)
+                    .HasForeignKey(o => o.ObserverId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                b.HasOne(t => t.Target)
+                    .WithMany(f => f.Followers)
+                    .HasForeignKey(t => t.TargetId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
         }
     }
 }

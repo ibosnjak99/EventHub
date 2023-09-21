@@ -53,22 +53,28 @@ namespace Application.Photos
             {
                 var user = await this.context.Users.Include(p => p.Photos)
                     .FirstOrDefaultAsync(x => x.UserName == this.userAccessor.GetUsername());
-                if (user == null) return null;
+                if (user == null)
+                    return Result<Unit>.Failure("User not found.");
 
                 var photo = user.Photos.FirstOrDefault(x => x.Id == request.Id);
-                if (photo == null) return null;
-                if (photo.IsProfile) return Result<Unit>.Failure("You can not delete your profile photo.");
+                if (photo == null)
+                    return Result<Unit>.Failure("Photo not found.");
+                if (photo.IsProfile)
+                    return Result<Unit>.Failure("You cannot delete your profile photo.");
 
                 var result = await this.photoAccessor.DeletePhoto(photo.Id);
-                if (result == null) return Result<Unit>.Failure("Problem deleting photo from cloud.");
+                if (result == null)
+                    return Result<Unit>.Failure("Problem deleting photo from cloud.");
 
                 user.Photos.Remove(photo);
                 var success = await this.context.SaveChangesAsync() > 0;
 
-                if (success) return Result<Unit>.Success(Unit.Value);
+                if (success)
+                    return Result<Unit>.Success(Unit.Value);
 
                 return Result<Unit>.Failure("Problem deleting photo from API.");
             }
+
         }
     }
 }
