@@ -5,14 +5,14 @@ import EventsList from "./EventsList"
 import { useStore } from "../../../app/stores/store"
 import { observer } from "mobx-react-lite"
 import EventFilters from "./EventFilters"
-import LoadingComponent from "../../../app/layouts/LoadingComponent"
 import EventModal from "./EventDetailsModal"
 import { PagingParams } from "../../../app/models/pagination"
 import InfiniteScroll from "react-infinite-scroller"
+import EventListItemPlaceholder from "./EventListItemPlaceholder"
 
 export default observer (function EventsDashboard() {
     const {eventStore} = useStore()
-    const {selectedEvent, editMode, setPagingParams, pagination, loadEvents} = eventStore
+    const {selectedEvent, editMode, setPagingParams, pagination, loadEvents, eventRegistry} = eventStore
     const [loadingNext, setLoadingNext] = useState(false)
 
     function handleGetNext() {
@@ -23,22 +23,27 @@ export default observer (function EventsDashboard() {
 
     useEffect(() => {
       eventStore.loadEvents()
-    }, [eventStore])
-  
-    if (eventStore.loadingInitial && !loadingNext) return <LoadingComponent content='Loading...' />
+    }, [eventStore, eventRegistry.size])
 
     return (
         <>
             <Grid>
                 <Grid.Column width='10'>
-                    <InfiniteScroll
-                        pageStart={0}
-                        loadMore={handleGetNext}
-                        hasMore={!loadingNext && !!pagination && pagination.currentPage < pagination.totalPages}
-                        initialLoad={false}    
-                    >
-                        <EventsList />
-                    </InfiniteScroll>
+                    {eventStore.loadingInitial && eventRegistry.size === 0 && !loadingNext ? (
+                        <>
+                            <EventListItemPlaceholder />
+                            <EventListItemPlaceholder />
+                        </>
+                    ) : (
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={handleGetNext}
+                            hasMore={!loadingNext && !!pagination && pagination.currentPage < pagination.totalPages}
+                            initialLoad={false}    
+                        >
+                            <EventsList />
+                        </InfiniteScroll>
+                    )}
                 </Grid.Column>
                 <Grid.Column width={6}>
                     <EventFilters />

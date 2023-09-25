@@ -1,17 +1,42 @@
+import { observer } from "mobx-react-lite"
 import React from "react"
 import Calendar from "react-calendar"
-import { Header, Menu } from "semantic-ui-react"
+import { Button, Header, Menu } from "semantic-ui-react"
+import { useStore } from "../../../app/stores/store"
 
-export default function EventFilters() {
+export default observer(function EventFilters() {
+    const {eventStore: {predicate, setPredicate}} = useStore()
+
     return (
         <>
             <Menu vertical size='large' style={{ width: '100%' }}>
                 <Header icon='filter' attached color='teal' content='Filters' />
-                <Menu.Item content='All events' />
-                <Menu.Item content='Attending' />
-                <Menu.Item content='Hosting' />
+                <Menu.Item
+                    content='All events' 
+                    active={predicate.has('all')}
+                    onClick={() => setPredicate('all', 'true')}
+                />
+                <Menu.Item 
+                    content='Attending'
+                    active={predicate.has('isGoing')}
+                    onClick={() => setPredicate('isGoing', 'true')}
+                />
+                <Menu.Item 
+                    content='Hosting' 
+                    active={predicate.has('isHost')}
+                    onClick={() => setPredicate('isHost', 'true')}
+                />
             </Menu>
-            <Calendar />
+            <Calendar 
+                onChange={(date) => setPredicate('startDate', date as Date)}
+                value={predicate.get('startDate') || new Date()}
+            />
+            <Button 
+                floated='right' 
+                onClick={() => [setPredicate('all', 'true'), () => setPredicate('isHost', 'true')]} 
+                content='Reset filters'
+                style={{ marginTop: '5px'}}
+            />
         </>
     )
-}
+})

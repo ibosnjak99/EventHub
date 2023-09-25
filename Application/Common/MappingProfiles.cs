@@ -43,6 +43,15 @@ namespace Application.Common
                 .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.Author.DisplayName))
                 .ForMember(d => d.Username, o => o.MapFrom(s => s.Author.UserName))
                 .ForMember(d => d.Image, o => o.MapFrom(s => s.Author.Photos.FirstOrDefault(x => x.IsProfile).Url));
+
+            CreateMap<EventAttendee, Profiles.UserEventDto>()
+            .ForMember(d => d.Id, o => o.MapFrom(s => s.@event.Id))
+            .ForMember(d => d.Date, o => o.MapFrom(s => s.@event.Date))
+            .ForMember(d => d.Title, o => o.MapFrom(s => s.@event.Title))
+            .ForMember(d => d.Category, o => o.MapFrom(s =>
+                s.@event.Category))
+            .ForMember(d => d.HostUsername, o => o.MapFrom(s =>
+                s.@event.Attendees.FirstOrDefault(x => x.IsHost).AppUser.UserName));
         }
     }
 }
