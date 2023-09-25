@@ -5,6 +5,7 @@ import { router } from "../router/Routes"
 import { store } from "../stores/store"
 import { User, UserFormValues } from "../models/user"
 import { Photo, Profile } from "../models/profile"
+import { PaginatedResult } from "../models/pagination"
 
 const sleep = (timeout: number) => {
     return new Promise ((resolve) => {
@@ -22,6 +23,12 @@ axios.interceptors.request.use(config => {
 
 axios.interceptors.response.use(async response => {
     await sleep(500)
+    const pagination = response.headers['pagination']
+    console.log(pagination)
+    if (pagination) {
+        response.data = new PaginatedResult(response.data, JSON.parse(pagination))
+        return response as AxiosResponse<PaginatedResult<unknown>>
+    }
     return response
 }, (error: AxiosError) => {
     const { data, status, config } = error.response as AxiosResponse
@@ -59,7 +66,7 @@ axios.interceptors.response.use(async response => {
     return Promise.reject(error)
 })
 
-const responseBody = <T> (response: AxiosResponse<T>) => response.data
+const responseBody = <T>(response: AxiosResponse<T>) => response.data
 
 const requests = {
     get: <T> (url: string) => axios.get<T>(url).then(responseBody),
@@ -69,7 +76,8 @@ const requests = {
 }
 
 const Events = {
-    list: () => requests.get<Event[]>('events'),
+    list: (params: URLSearchParams) => axios.get<PaginatedResult<Event[]>>('events', {params})
+        .then(responseBody),
     details: (id: string) => requests.get<Event>(`events/${id}`),
     create: (event: EventFormValues) => requests.post<void>('events', event),
     update: (event: EventFormValues) => requests.put<void>(`events/${event.id}`, event),

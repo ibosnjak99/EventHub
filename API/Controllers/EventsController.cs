@@ -1,4 +1,5 @@
-﻿using Application.Events;
+﻿using Application.Core;
+using Application.Events;
 using Application.Events.Commands;
 using Application.Events.Queries;
 using Domain;
@@ -30,9 +31,9 @@ namespace API.Controllers
         /// Gets the events asynchronous.
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetEventsAsync()
+        public async Task<IActionResult> GetEventsAsync([FromQuery] EventParams eventParams)
         {
-            return HandleResult(await this.mediator.Send(new GetAll()));
+            return HandlePagedResult(await this.mediator.Send(new GetAll { PagingParams = eventParams }));
         }
 
         // GET: /api/events/{id}

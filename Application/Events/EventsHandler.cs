@@ -4,7 +4,6 @@ using Application.Events.Queries;
 using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Domain;
 using Domain.Models;
 using Infrastructure;
 using MediatR;
@@ -17,7 +16,7 @@ namespace Application.Events
     /// </summary>
     /// <seealso cref="IRequestHandler{TRequest}"/>
     public class EventsHandler :
-        IRequestHandler<GetAll, Result<List<EventDto>>>,
+        IRequestHandler<GetAll, Result<PagedList<EventDto>>>,
         IRequestHandler<GetById, Result<EventDto>>,
         IRequestHandler<Create, Result<Unit>>,
         IRequestHandler<Edit, Result<Unit>>,
@@ -44,13 +43,27 @@ namespace Application.Events
         /// </summary>
         /// <param name="request">The request</param>
         /// <param name="cancellationToken">Cancellation token</param>
-        public async Task<Result<List<EventDto>>> Handle(GetAll request, CancellationToken cancellationToken)
+        public async Task<Result<PagedList<EventDto>>> Handle(GetAll request, CancellationToken cancellationToken)
         {
-            var events = await this.context.Events
-                .ProjectTo<EventDto>(this.mapper.ConfigurationProvider, new {currentUsername = this.userAccessor.GetUsername()})
-                .ToListAsync(cancellationToken);
+            var query = this.context.Events
+                .Where(d => d.Date >= request.PagingParams!.StartDate)
+                .OrderBy(d => d.Date)
+                .ProjectTo<EventDto>(this.mapper.ConfigurationProvider, new { currentUsername = this.userAccessor.GetUsername() })
+                .AsQueryable();
 
-            return Result<List<EventDto>>.Success(events);
+            if (request.PagingParams!.IsGoing && !request.PagingParams.IsHost)
+            {
+                query = query.Where(x => x.Attendees.Any(a => a.UserName == this.userAccessor.GetUsername()));
+            }
+
+            if (request.PagingParams!.IsHost)
+            {
+                query = query.Where(x => x.HostUsername == this.userAccessor.GetUsername());
+            }
+
+            return Result<PagedList<EventDto>>.Success(
+                await PagedList<EventDto>.CreateAsync(query, request.PagingParams!.PageNumber, request.PagingParams.PageSize)
+            );
         }
 
         /// <summary>
