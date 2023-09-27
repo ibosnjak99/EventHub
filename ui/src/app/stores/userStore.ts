@@ -40,10 +40,13 @@ export default class UserStore {
     }
 
     logout = () => {
-        store.commonStore.setToken(null)
-        this.user = null
-        router.navigate('/')
+        store.commonStore.setToken(null);
+        this.user = null;
+        
+        store.eventStore.reset();
+        router.navigate('/');
     }
+    
 
     getUser = async () => {
         try {

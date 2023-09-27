@@ -102,6 +102,12 @@ export default class EventStore {
         }
     }
 
+    reset() {
+        this.selectedEvent = null;
+        this.editMode = false;
+        this.eventRegistry.clear();
+    }
+
     setPagination = (pagination: Pagination) => {
         this.pagination = pagination
     }
