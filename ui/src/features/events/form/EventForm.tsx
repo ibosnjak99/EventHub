@@ -28,7 +28,6 @@ export default observer (function EventsForm() {
     })
 
     function handleFormSubmit(event: EventFormValues) {
-      console.log(event)
       if (!event.id) {
         let newEvent = {
           ...event,
@@ -56,12 +55,12 @@ export default observer (function EventsForm() {
               <Modal.Header>Event</Modal.Header>
               <Modal.Content >
                 <Form className='ui form' onSubmit={handleSubmit} autoComplete='off'>
-                  <CustomTextInput placeholder='Title' name='title' />
-                  <CustomTextArea rows={4} placeholder='Description' name='description' />
-                  <CustomSelectInput options={categoryOptions} placeholder='Category' name='category' />
+                  <CustomTextInput label='Title' name='title' />
+                  <CustomTextArea rows={4} label='Description' name='description' />
+                  <CustomSelectInput options={categoryOptions} label='Category' name='category' />
                   <CustomDateInput placeholderText='Date' name='date' showTimeSelect timeCaption='time' dateFormat='MMMM d, yyyy hh:mm aa'/>
-                  <CustomTextInput placeholder='City' name='city' />
-                  <CustomTextInput placeholder='Venue' name='venue' />
+                  <CustomTextInput label='City' name='city' />
+                  <CustomTextInput label='Venue' name='venue' />
                 </Form>
               </Modal.Content>
               <Modal.Actions>

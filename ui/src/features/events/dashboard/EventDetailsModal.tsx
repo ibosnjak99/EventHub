@@ -158,7 +158,7 @@ export default observer(function EventModal() {
                         ) : (
                             <Modal.Actions id='user'>
                                 <Button.Group widths='2'>
-                                    <Button onClick={updateAttendance} loading={loading} color='blue' content='Join event' />
+                                    <Button disabled={event.isCancelled} onClick={updateAttendance} loading={loading} color='blue' content='Join event' />
                                 </Button.Group>
                             </Modal.Actions>
                         )}
@@ -197,7 +197,7 @@ export default observer(function EventModal() {
                                 </Form>
                             )}
                         </Formik>
-                        <Comment.Group style={{maxWidth: '100%'}}>
+                        <Comment.Group style={{maxWidth: '100%', marginTop: '50px'}}>
                             {commentStore.comments.map(comment => (
                                 <Comment key={comment.id}>
                                     <Comment.Avatar src={comment.image || '/assets/user.png'}/>

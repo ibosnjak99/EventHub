@@ -12,7 +12,7 @@ namespace Application.Profiles.Commands
     /// <summary>
     /// Profiles handler class.
     /// </summary>
-    public class ProfilesHandler : IRequestHandler<Edit, Result<Unit>>, IRequestHandler<Details, Result<Profile>>
+    public class ProfilesHandler : IRequestHandler<Edit, Result<Unit>>, IRequestHandler<Details, Result<Profile>>, IRequestHandler<EventsList, Result<List<UserEventDto>>>
     {
         private readonly DataContext context;
         private readonly IUserAccessor accessor;
@@ -63,6 +63,26 @@ namespace Application.Profiles.Commands
                 .SingleOrDefaultAsync(x => x.UserName == request.Username);
 
             return Result<Profile>.Success(user!);
+        }
+
+        public async Task<Result<List<UserEventDto>>> Handle(EventsList request, CancellationToken cancellationToken)
+        {
+            var query = this.context.EventAttendees
+                .Where(u => u.AppUser.UserName == request.Username)
+                .OrderBy(e => e.@event.Date)
+                .ProjectTo<UserEventDto>(this.mapper.ConfigurationProvider)
+                .AsQueryable();
+
+            query = request.Predicate switch
+            {
+                "past" => query.Where(e => e.Date <= DateTime.Now),
+                "hosting" => query.Where(e => e.HostUsername == request.Username),
+                _ => query.Where(e => e.Date >= DateTime.Now),
+            };
+
+            var events = await query.ToListAsync();
+
+            return Result<List<UserEventDto>>.Success(events);
         }
     }
 }
