@@ -90,7 +90,7 @@ export default class EventStore {
         this.loadingInitial = true
         try {
             const result = await client.Events.list(this.axiosParams)
-console.log(result)
+
             result.data.forEach(event => {
                 this.setEvent(event)
             })

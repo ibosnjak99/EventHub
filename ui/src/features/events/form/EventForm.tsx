@@ -28,7 +28,6 @@ export default observer (function EventsForm() {
     })
 
     function handleFormSubmit(event: EventFormValues) {
-      console.log(event)
       if (!event.id) {
         let newEvent = {
           ...event,
