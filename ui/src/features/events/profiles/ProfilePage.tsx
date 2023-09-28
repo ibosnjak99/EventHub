@@ -6,11 +6,15 @@ import { observer } from 'mobx-react-lite'
 import { useParams } from 'react-router-dom'
 import { useStore } from '../../../app/stores/store'
 import LoadingComponent from '../../../app/layouts/LoadingComponent'
+import EventsForm from "../form/EventForm"
 
 export default observer(function ProfilePage() {
-    const {username} = useParams<{username: string}>()
-    const {profileStore} = useStore()
+    const {profileStore, eventStore} = useStore()
+    
     const {loadingProfile, loadProfile, profile, setActiveTab} = profileStore
+    const {editMode} = eventStore
+
+    const {username} = useParams<{username: string}>()
 
     useEffect(() => {
         if(username) loadProfile(username)
@@ -31,6 +35,9 @@ export default observer(function ProfilePage() {
                     </>
                 }
             </Grid.Column>
+            {editMode &&
+                        <EventsForm />
+                    }
         </Grid>
     )
 })

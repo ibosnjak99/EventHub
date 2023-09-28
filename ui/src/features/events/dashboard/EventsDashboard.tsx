@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Grid, Loader } from "semantic-ui-react"
+import {  Grid, Loader } from "semantic-ui-react"
 import EventsForm from "../form/EventForm"
 import EventsList from "./EventsList"
 import { useStore } from "../../../app/stores/store"

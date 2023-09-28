@@ -20,7 +20,7 @@ export default observer (function EventsList() {
         
         return (
           <Fragment key={group}>
-            <Header sub color='teal'>
+            <Header sub color='blue'>
               {formattedDate}
             </Header>
             <Divider />

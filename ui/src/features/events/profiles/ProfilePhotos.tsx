@@ -77,7 +77,7 @@ export default observer (function ProfilePhotos({profile}: Props) {
                                         <Label
                                             corner='right'
                                             icon='check'
-                                            color='green'
+                                            color='blue'
                                         />
                                     )}
                                 </Card>
@@ -92,7 +92,7 @@ export default observer (function ProfilePhotos({profile}: Props) {
                     {isCurrentUser && (
                         <Button.Group fluid widths={1} style={{ marginTop: '20px' }}>
                             <Button
-                                color='green'
+                                color='blue'
                                 content='Set as profile'
                                 loading={target === 'profile' + selectedPhoto?.id && loading}
                                 name={'profile' + selectedPhoto?.id}

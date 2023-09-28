@@ -1,34 +1,45 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Container, Header, Segment, Image } from "semantic-ui-react";
+import { Button, Container, Header, Segment, Image, Divider } from "semantic-ui-react";
 import { useStore } from '../../app/stores/store';
 import LoginForm from '../events/users/LoginForm';
 import RegisterForm from '../events/users/RegisterForm';
-// import register
 
 export default observer(function HomePage() {
     const { userStore, modalStore } = useStore();
+
     return (
-        <Segment inverted textAlign='center' vertical className='masthead' >
-            <Container text>
-                <Header as='h1' inverted>
-                    <Image size='massive' src='/assets/logo.png' alt='logo' style={{ marginBottom: 12 }} />
+        <Segment textAlign='center' vertical className='masthead' style={{ 
+            height: '80vh',
+            backgroundColor: '#ededed',
+            display: 'flex', 
+            flexDirection: 'column', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            overflow: 'hidden',
+            position: 'fixed'
+        }}>
+            <Container>
+                <Image centered size='medium' src='/assets/logo.png' alt='logo' style={{ marginBottom: 15 }} />
+                <Header as='h1' style={{ fontSize: '2em' }}>
                     EventHub
                 </Header>
+                <Divider hidden />
                 {userStore.isLoggedIn ? (
                     <>
-                        <Header as='h2' inverted content={`Welcome back ${userStore.user?.displayName}`} />
-                        <Button as={Link} to='/events' size='huge' inverted>
-                            Go to events!
+                        <Header as='h2' content={`Hello, ${userStore.user?.displayName}`} style={{ fontSize: '1.2em' }} />
+                        <Button as={Link} to='/events' size='large' style={{ marginTop: '10px' }}>
+                            Events
                         </Button>
                     </>
                 ) : (
                     <>
-                        <Button onClick={() => modalStore.openModal(<LoginForm />)} size='huge' inverted>
-                            Login!
+                        <Button onClick={() => modalStore.openModal(<LoginForm />)} size='large' style={{ margin: '10px' }}>
+                            Login
                         </Button>
-                        <Button onClick={() => modalStore.openModal(<RegisterForm/>)} size='huge' inverted>
+                        <Divider horizontal style={{ margin: '20px 0' }}>Or</Divider>
+                        <Button onClick={() => modalStore.openModal(<RegisterForm />)} size='large' style={{ margin: '10px' }}>
                             Register
                         </Button>
                     </>

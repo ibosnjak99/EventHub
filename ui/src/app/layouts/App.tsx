@@ -7,9 +7,12 @@ import { ToastContainer } from 'react-toastify'
 import { useStore } from '../stores/store'
 import LoadingComponent from './LoadingComponent'
 import ModalContainer from '../common/modals/ModalContainer'
+import { useLocation } from 'react-router-dom'
 
 function App() {
   const { commonStore, userStore } = useStore()
+  const location = useLocation();
+
   
   if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual';
@@ -30,7 +33,7 @@ function App() {
     <ScrollRestoration />
     <ModalContainer />
     <ToastContainer position='bottom-right' theme='colored' autoClose={2000} />
-      <NavBar />
+    {location.pathname !== '/' && <NavBar />}
       <Container style={{ marginTop: '6em'}}>
         <Outlet />
       </Container>
