@@ -103,9 +103,9 @@ export default class EventStore {
     }
 
     reset() {
-        this.selectedEvent = null;
-        this.editMode = false;
-        this.eventRegistry.clear();
+        this.selectedEvent = null
+        this.editMode = false
+        this.eventRegistry.clear()
     }
 
     setPagination = (pagination: Pagination) => {
@@ -135,7 +135,7 @@ export default class EventStore {
             event.isGoing = event.attendees!.some(
                 e => e.userName === user.username
             )
-            event.isHost = event.hostUsername === user.username
+            event.isHost = (event.hostUsername === user.username)
             event.host = event.attendees?.find(x => x.userName === event.hostUsername)
         }
         event.date = new Date(event.date!)
@@ -202,7 +202,9 @@ export default class EventStore {
     deleteEvent = async (id: string) => {
         this.loading = true
         try {
+            console.log(id)
             await client.Events.delete(id)
+            console.log('123')
             runInAction(() => {
                 this.eventRegistry.delete(id)
                 this.selectedEvent = null

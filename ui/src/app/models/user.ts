@@ -4,6 +4,7 @@ export interface User {
     bio: string
     token: string
     image?: string
+    isModerator: boolean
 }
 
 export interface UserFormValues {

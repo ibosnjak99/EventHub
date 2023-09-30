@@ -14,7 +14,7 @@ export default observer(function LoginForm() {
         >
             {({handleSubmit, isSubmitting, errors}) => (
                 <Form className='ui form' onSubmit={handleSubmit} autoComplete='off'>
-                    <Header as='h2' content='Login to EventHub' color='teal' align='center' />
+                    <Header as='h2' content='Login to EventHub' color='blue' align='center' />
                     <CustomTextInput placeholder='Email' name='email' />
                     <CustomTextInput placeholder='Password' name='password' type='password' />
                     <ErrorMessage
@@ -28,7 +28,7 @@ export default observer(function LoginForm() {
                             />
                         }
                     />
-                    <Button loading={isSubmitting} positive content='Login' type='submit' fluid />
+                    <Button loading={isSubmitting} style={{ backgroundColor: 'lightBlue' }} content='Login' type='submit' fluid />
                 </Form>
             )}
         </Formik>

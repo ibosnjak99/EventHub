@@ -47,6 +47,7 @@ export default class ProfileStore {
         this.loadingProfile = true
         try {
             const profile = await client.Profiles.get(username)
+            console.log(profile)
             runInAction(() => {
                 this.profile = profile
                 this.loadingProfile = false
@@ -176,7 +177,6 @@ export default class ProfileStore {
     }
 
     loadUserEvents = async (username: string, predicate?: string) => {
-        console.log(predicate)
         this.loadingEvents= true
         try {
             const events = await client.Profiles.listEvents(username, predicate!)

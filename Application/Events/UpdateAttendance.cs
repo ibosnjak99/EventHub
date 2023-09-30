@@ -40,6 +40,11 @@ namespace Application.Events
                 this.userAccessor = userAccessor;
             }
 
+            /// <summary>
+            /// Handles the specified request.
+            /// </summary>
+            /// <param name="request">The request.</param>
+            /// <param name="cancellationToken">The cancellation token.</param>
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var @event = await this.context.Events

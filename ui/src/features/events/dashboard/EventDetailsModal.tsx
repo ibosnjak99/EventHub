@@ -9,8 +9,7 @@ import CustomTextArea from '../../../app/common/form/CustomTextArea'
 import * as Yup from 'yup'
 
 export default observer(function EventModal() {
-    const {eventStore} = useStore()
-    const {commentStore} = useStore()
+    const {eventStore, commentStore, userStore: {user}} = useStore();
     const {selectedEvent: event, openModal, unselectEvent, deleteEvent, updateAttendance, cancelEventToggle, loading} = eventStore
     
     const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -67,7 +66,7 @@ export default observer(function EventModal() {
                             attached='top'
                             secondary
                             inverted
-                            color='teal'
+                            color='blue'
                             onClick={handleGoingListClick}
                         >
                             <Header as='h4'>
@@ -79,7 +78,7 @@ export default observer(function EventModal() {
                         <Segment attached='bottom' style={{ maxHeight: '200px', overflowY: 'auto' }}>
                             <List divided style={{ width: '90%', margin: 'auto' }}>
                                 {event.attendees!.map(attendee => (
-                                    <Item style={{ position: 'relative' }} key={attendee.userName} as={Link} to={`/profile/${attendee.userName}`}>
+                                    <Item style={{ position: 'relative', display: 'flex', alignItems: 'center' }} key={attendee.userName} as={Link} to={`/profile/${attendee.userName}`}>
                                         {attendee.userName === event.host?.userName &&
                                             <Label
                                                 style={{ position: 'absolute' }}
@@ -106,7 +105,7 @@ export default observer(function EventModal() {
                         <Divider/>
                         <Grid>
                             <Grid.Column width={1}>
-                                <Icon size='large' color='teal' name='info'/>
+                                <Icon size='large' color='blue' name='info'/>
                             </Grid.Column>
                             <Grid.Column width={15}>
                                 <p>{event.description}</p>
@@ -116,7 +115,7 @@ export default observer(function EventModal() {
 
                         <Grid verticalAlign='middle'>
                             <Grid.Column width={1}>
-                                <Icon name='calendar' size='large' color='teal'/>
+                                <Icon name='calendar' size='large' color='blue'/>
                             </Grid.Column>
                             <Grid.Column width={15}>
                                 <span>
@@ -128,7 +127,7 @@ export default observer(function EventModal() {
 
                         <Grid verticalAlign='middle'>
                             <Grid.Column width={1}>
-                                <Icon name='marker' size='large' color='teal'/>
+                                <Icon name='marker' size='large' color='blue'/>
                             </Grid.Column>
                             <Grid.Column width={11}>
                                 <span>{event.venue}, {event.city}</span>
@@ -137,7 +136,7 @@ export default observer(function EventModal() {
                         </Card.Content>
                         </Card.Content>
                         <Card.Content extra>
-                            {event.isHost ? (
+                            {event.isHost || user?.isModerator ? (
                                 <Button.Group widths='3'>
                                     <Button onClick={() => openModal(event.id)} color='blue' icon='edit' content='Edit' />
                                     <Button onClick={() => handleDeleteEvent(event.id)} color='red' icon='delete' content='Delete' />
@@ -206,16 +205,17 @@ export default observer(function EventModal() {
                     </Segment>
                 </Modal.Content>
             </Modal>
-            <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false) } basic size='tiny'>
+            <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false) } size='tiny'>
                 <Modal.Header>Delete Event</Modal.Header>
                 <Modal.Content>
-                    <p>Are you sure you want to delete this event? This action cannot be undone.</p>
+                    <p>Are you sure you want to delete this event?</p>
+                    <p>This action cannot be undone.</p>
                 </Modal.Content>
                 <Modal.Actions>
-                    <Button basic inverted onClick={handleCancelDelete}>
+                    <Button onClick={handleCancelDelete}>
                         <Icon name='remove' /> No
                     </Button>
-                    <Button color='red' inverted onClick={handleConfirmDelete}>
+                    <Button color='red' onClick={handleConfirmDelete}>
                         <Icon name='checkmark' /> Yes
                     </Button>
                 </Modal.Actions>

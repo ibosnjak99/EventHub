@@ -70,7 +70,7 @@ export default observer (function EventsForm() {
                     disabled={isSubmitting || !dirty || !isValid} 
                     loading={isSubmitting} 
                     onClick={() => handleSubmit()} 
-                    color='green' 
+                    color='blue' 
                     content='Submit' 
                   />
                 </Button.Group>

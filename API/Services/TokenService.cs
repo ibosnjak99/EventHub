@@ -28,8 +28,14 @@ namespace API.Services
             {
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email),
+
             };
+
+            if (user.IsModerator)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, "Moderator"));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.config["TokenKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

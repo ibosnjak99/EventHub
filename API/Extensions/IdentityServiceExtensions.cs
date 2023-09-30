@@ -51,11 +51,13 @@ namespace API.Extensions
 
             services.AddAuthorization(opt =>
             {
-                opt.AddPolicy("IsEventHost", policy =>
+                opt.AddPolicy("IsEventHostOrModerator", policy =>
                 {
                     policy.Requirements.Add(new IsHostRequirement());
+                    policy.RequireRole("Moderator");
                 });
             });
+
 
             services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
             services.AddScoped<TokenService>();

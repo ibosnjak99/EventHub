@@ -44,8 +44,6 @@ export default observer(function ProfileEvents() {
                     <Card.Group itemsPerRow={4}>
                         {userEvents.map((event: UserEvent) => (
                             <Card
-                                // as={Link}
-                                // to={`/Events/${event.id}`}
                                 key={event.id}
                             >
                                 <Image
