@@ -204,7 +204,6 @@ export default class EventStore {
         try {
             console.log(id)
             await client.Events.delete(id)
-            console.log('123')
             runInAction(() => {
                 this.eventRegistry.delete(id)
                 this.selectedEvent = null

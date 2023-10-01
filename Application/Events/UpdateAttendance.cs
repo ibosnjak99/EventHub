@@ -62,7 +62,7 @@ namespace Application.Events
 
                 var attendant = @event.Attendees.FirstOrDefault(x => x.AppUser.UserName == user.UserName);
 
-                if (attendant != null && hostUsername == user.UserName)
+                if ((attendant != null && hostUsername == user.UserName) || user.IsModerator) 
                     @event.IsCancelled = !@event.IsCancelled;
 
                 if (attendant != null && hostUsername != user.UserName)

@@ -17,6 +17,7 @@ export class Profile implements Profile {
         this.displayName = user.displayName
         this.image = user.image
         this.bio = user.bio
+        this.isModerator = user.isModerator
     }
 
     userName: string
@@ -27,6 +28,7 @@ export class Profile implements Profile {
     followingCount = 0
     following = false
     photos?: Photo[]
+    isModerator: boolean
 }
 
 export interface Photo {

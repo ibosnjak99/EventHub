@@ -51,9 +51,9 @@ export default observer (function EventsForm() {
           onSubmit={values => handleFormSubmit(values)}
         >
           {({ handleSubmit, isValid, dirty, isSubmitting }) => (
-            <Modal open={true} onClose={closeModal}>
-              <Modal.Header>Event</Modal.Header>
-              <Modal.Content >
+            <Modal open={true} onClose={closeModal} size="small" style={{ maxHeight: '90%' }}>
+              <Modal.Header style={{ paddingTop: '8px', paddingBottom: '8px' }}>Event</Modal.Header>
+              <Modal.Content style={{ overflowY: 'auto', paddingTop: '4px', paddingBottom: '4px' }}>
                 <Form className='ui form' onSubmit={handleSubmit} autoComplete='off'>
                   <CustomTextInput label='Title' name='title' />
                   <CustomTextArea rows={4} label='Description' name='description' />

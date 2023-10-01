@@ -9,7 +9,7 @@ import LoadingComponent from '../../../app/layouts/LoadingComponent'
 import EventsForm from "../form/EventForm"
 
 export default observer(function ProfilePage() {
-    const {profileStore, eventStore} = useStore()
+    const {profileStore, eventStore, userStore: {user}} = useStore()
     
     const {loadingProfile, loadProfile, profile, setActiveTab} = profileStore
     const {editMode} = eventStore
@@ -28,7 +28,12 @@ export default observer(function ProfilePage() {
     return(
         <Grid>
             <Grid.Column width={16}>
-                {profile &&
+                {profile && user?.isModerator && profile.isModerator &&
+                    <>
+                        <ProfileHeader profile={profile} />
+                    </>
+                }
+                {profile && !profile?.isModerator &&
                     <>
                         <ProfileHeader profile={profile} />
                         <ProfileContent profile={profile} />

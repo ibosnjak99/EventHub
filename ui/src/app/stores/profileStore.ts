@@ -47,7 +47,6 @@ export default class ProfileStore {
         this.loadingProfile = true
         try {
             const profile = await client.Profiles.get(username)
-            console.log(profile)
             runInAction(() => {
                 this.profile = profile
                 this.loadingProfile = false

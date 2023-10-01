@@ -5,7 +5,6 @@ using Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection.Metadata;
 using System.Text;
 
 namespace API.Extensions

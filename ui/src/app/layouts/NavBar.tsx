@@ -9,32 +9,28 @@ export default observer(function NavBar() {
 
     return (
         <Menu fixed='top' borderless inverted color='blue' style={{ opacity: 0.95 }}>
-            <Container>
+            <Container style={{justifyContent: 'space-between'}}>
                 <Menu.Item header as={Link} to='/events'>
                     <img src='/assets/logo.png' alt='logo' style={{ marginRight: 15 }} />
                     EventHub
                 </Menu.Item>
-                {/* <Menu.Item header as={Link} to='errors'>
-                    Errors
-                </Menu.Item>
-                <Menu.Item header as={Link} to='/'>
-                    Login
-                </Menu.Item> */}
-                <Menu.Menu position='right'>
+                {/* <Menu.Menu position='right'> */}
                     <Menu.Item>
-                        <Button 
-                            onClick={() => openModal()} 
-                            content='Create Event' 
-                            style={{
-                                color: 'white',
-                                backgroundColor: '#1e1e1f',
-                                borderColor: '#ddd', 
-                                borderWidth: '2px' 
-                            }} 
-                        />
+                        { !user?.isModerator && 
+                            <Button 
+                                onClick={() => openModal()} 
+                                content='Create Event' 
+                                style={{
+                                    color: 'white',
+                                    backgroundColor: '#1e1e1f',
+                                    borderColor: '#ddd', 
+                                    borderWidth: '2px' 
+                                }} 
+                            />
+                        }
                     </Menu.Item>
                     <Menu.Item>
-                        <Image 
+                        <Image
                             src={user?.image || '/assets/user.png'} 
                             avatar 
                             spaced='right' 
@@ -47,7 +43,7 @@ export default observer(function NavBar() {
                             </Dropdown.Menu>
                         </Dropdown>
                     </Menu.Item>
-                </Menu.Menu>
+                {/* </Menu.Menu> */}
             </Container>
         </Menu>
     )

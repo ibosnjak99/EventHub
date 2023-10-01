@@ -43,14 +43,11 @@ namespace Infrastructure.Security
         {
             var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (context.User.IsInRole("Moderator"))
-            {
-                context.Succeed(requirement);
-            }
+            if (context.User.IsInRole("Moderator")) context.Succeed(requirement);
 
             if (userId == null) return Task.CompletedTask;
 
-            var eventId = 
+            var eventId =
                 Guid.Parse(this.accessor.HttpContext?.Request.RouteValues
                 .SingleOrDefault(x => x.Key == "id").Value?
                 .ToString());

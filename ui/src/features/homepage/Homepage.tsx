@@ -10,19 +10,19 @@ export default observer(function HomePage() {
     const { userStore, modalStore } = useStore();
 
     return (
-        <Segment textAlign='center' vertical className='masthead' style={{ 
-            height: '80vh',
-            backgroundColor: '#ededed',
+        <Segment textAlign='center' style={{ 
+            // height: '100vh',
+            backgroundColor: '#cfcfcf',
             display: 'flex', 
             flexDirection: 'column', 
             justifyContent: 'center', 
             alignItems: 'center', 
-            overflow: 'hidden',
-            position: 'fixed'
+            overflowX: 'hidden',
+            // position: 'fixed'
         }}>
             <Container>
-                <Image centered size='medium' src='/assets/logo.png' alt='logo' style={{ marginBottom: 15 }} />
-                <Header as='h1' style={{ fontSize: '2em' }}>
+                <Image centered size='small' src='/assets/logo.png' alt='logo' />
+                <Header as='h2' style={{ fontSize: '1.7em' }}>
                     EventHub
                 </Header>
                 <Divider hidden />

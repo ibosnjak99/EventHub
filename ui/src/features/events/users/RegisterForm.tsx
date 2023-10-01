@@ -33,7 +33,7 @@ export default observer(function RegisterForm() {
                             <ValidationError errors={errors.error} />
                         }
                     />
-                    <Button disabled={!isValid || !dirty || isSubmitting} loading={isSubmitting} positive content='Register' type='submit' fluid />
+                    <Button disabled={!isValid || !dirty || isSubmitting} loading={isSubmitting} color='blue' content='Register' type='submit' fluid />
                 </Form>
             )}
         </Formik>

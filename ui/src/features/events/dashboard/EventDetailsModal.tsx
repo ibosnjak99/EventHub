@@ -9,7 +9,7 @@ import CustomTextArea from '../../../app/common/form/CustomTextArea'
 import * as Yup from 'yup'
 
 export default observer(function EventModal() {
-    const {eventStore, commentStore, userStore: {user}} = useStore();
+    const {eventStore, commentStore, userStore: {user}} = useStore()
     const {selectedEvent: event, openModal, unselectEvent, deleteEvent, updateAttendance, cancelEventToggle, loading} = eventStore
     
     const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -48,14 +48,14 @@ export default observer(function EventModal() {
 
       return (
         <>
-            <Modal open={true} onClose={unselectEvent} dimmer size="large">
+            <Modal open={true} onClose={unselectEvent} dimmer size="large" style={{ height: '90%'}}>
                 {event.isCancelled &&
                     <Label attached='top' color='red' content='Cancelled' />
                 }
                 <Modal.Header>
                     <Header as='h2'>{event.title}</Header>
                 </Modal.Header>
-                <Modal.Content scrolling>
+                <Modal.Content>
                     <Card fluid raised>
                         <Image src={`/assets/categoryImages/${event.category}.jpg`} centered wrapped ui={false} />
                         <Card.Content>
@@ -165,42 +165,55 @@ export default observer(function EventModal() {
                         </Header>
                     </Divider>
                     <Segment attached clearing>
-                        <Formik 
-                            onSubmit={(values, {resetForm}) => commentStore.addComment(values).then(() => resetForm())}
-                            initialValues={{body: ''}}
-                            validationSchema={Yup.object({
-                                body: Yup.string().required()
-                            })}
-                        >
-                            {({ isSubmitting, isValid }) => (
-                                <Form style={{ marginTop: '10px'}} className='ui form'>
-                                    <CustomTextArea placeholder='Reply...' name='body' rows={2} />
-                                    <Button
-                                        loading={isSubmitting}
-                                        disabled={isSubmitting || !isValid}
-                                        content='Add Reply'
-                                        labelPosition='left'
-                                        icon='edit'
-                                        primary
-                                        type='submit'
-                                        floated='right'
-                                    />
-                                </Form>
+                        { !user?.isModerator &&
+                            <Formik 
+                                onSubmit={(values, {resetForm}) => commentStore.addComment(values).then(() => resetForm())}
+                                initialValues={{body: ''}}
+                                validationSchema={Yup.object({
+                                    body: Yup.string().required()
+                                })}
+                            >
+                                {({ isSubmitting, isValid }) => (
+                                    <Form style={{ marginTop: '10px'}} className='ui form'>
+                                        <CustomTextArea placeholder='Reply...' name='body' rows={2} />
+                                        <Button
+                                            loading={isSubmitting}
+                                            disabled={isSubmitting || !isValid}
+                                            content='Add Reply'
+                                            labelPosition='left'
+                                            icon='edit'
+                                            primary
+                                            type='submit'
+                                            floated='right'
+                                        />
+                                    </Form>
+                                )}
+                            </Formik>
+                        }
+                        <Comment.Group style={{ maxWidth: '100%', marginTop: '20px' }}>
+                            {commentStore.comments.length > 0 ? (
+                                commentStore.comments.map(comment => (
+                                    <Comment key={comment.id}>
+                                        <Comment.Avatar src={comment.image || '/assets/user.png'} />
+                                        <Comment.Content>
+                                            <Comment.Author as={Link} to={`/profile/${comment.username}`}>
+                                                {comment.displayName}
+                                            </Comment.Author>
+                                            <Comment.Metadata>
+                                                <div>{formatDistanceToNow(comment.createdAt)} ago</div>
+                                            </Comment.Metadata>
+                                            <Comment.Text>{comment.body}</Comment.Text>
+                                        </Comment.Content>
+                                    </Comment>
+                                ))
+                            ) : (
+                                <Label style={{ 
+                                    margin: '0 auto',
+                                    fontSize: '1em'
+                                }}>
+                                    No comments...(yet)
+                                </Label>
                             )}
-                        </Formik>
-                        <Comment.Group style={{maxWidth: '100%', marginTop: '50px'}}>
-                            {commentStore.comments.map(comment => (
-                                <Comment key={comment.id}>
-                                    <Comment.Avatar src={comment.image || '/assets/user.png'}/>
-                                    <Comment.Content>
-                                        <Comment.Author as={Link} to={`/profile/${comment.username}`}>{comment.displayName}</Comment.Author>
-                                        <Comment.Metadata>
-                                            <div>{formatDistanceToNow(comment.createdAt)} ago</div>
-                                        </Comment.Metadata>
-                                        <Comment.Text>{comment.body}</Comment.Text>
-                                    </Comment.Content>
-                                </Comment>
-                            ))}
                         </Comment.Group>
                     </Segment>
                 </Modal.Content>

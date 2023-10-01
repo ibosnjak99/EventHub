@@ -11,7 +11,7 @@ import InfiniteScroll from "react-infinite-scroller"
 import EventListItemPlaceholder from "./EventListItemPlaceholder"
 
 export default observer (function EventsDashboard() {
-    const {eventStore} = useStore()
+    const {eventStore, userStore: {user}} = useStore()
     const {selectedEvent, editMode, setPagingParams, pagination, loadEvents, eventRegistry} = eventStore
     const [loadingNext, setLoadingNext] = useState(false)
 
@@ -27,37 +27,35 @@ export default observer (function EventsDashboard() {
 
     return (
         <>
-            <Grid>
-                <Grid.Column width='10'>
-                    {eventStore.loadingInitial && eventRegistry.size === 0 && !loadingNext ? (
-                        <>
-                            <EventListItemPlaceholder />
-                            <EventListItemPlaceholder />
-                        </>
-                    ) : (
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={handleGetNext}
-                            hasMore={!loadingNext && !!pagination && pagination.currentPage < pagination.totalPages}
-                            initialLoad={false}    
-                        >
-                            <EventsList />
-                        </InfiniteScroll>
-                    )}
-                </Grid.Column>
-                <Grid.Column width={6}>
-                    <EventFilters />
-                </Grid.Column>
-                    {selectedEvent &&
-                        <EventModal /> 
-                    }
-                    {editMode &&
-                        <EventsForm />
-                    }
-                <Grid.Column width={10}>
-                    <Loader active={loadingNext} />
-                </Grid.Column>
-            </Grid>
+          <Grid>
+            <Grid.Column mobile={16} tablet={10} computer={10}>
+              {eventStore.loadingInitial && eventRegistry.size === 0 && !loadingNext ? (
+                <>
+                  <EventListItemPlaceholder />
+                  <EventListItemPlaceholder />
+                </>
+              ) : (
+                <InfiniteScroll
+                  pageStart={0}
+                  loadMore={handleGetNext}
+                  hasMore={!loadingNext && !!pagination && pagination.currentPage < pagination.totalPages}
+                  initialLoad={false}
+                >
+                  <EventsList />
+                </InfiniteScroll>
+              )}
+            </Grid.Column>
+            {!user?.isModerator && (
+              <Grid.Column mobile={16} tablet={6} computer={6}>
+                <EventFilters />
+              </Grid.Column>
+            )}
+            {selectedEvent && <EventModal />}
+            {editMode && <EventsForm />}
+            <Grid.Column mobile={16} tablet={10} computer={10}>
+              <Loader active={loadingNext} />
+            </Grid.Column>
+          </Grid>
         </>
-    )
-})
+      );
+    });
