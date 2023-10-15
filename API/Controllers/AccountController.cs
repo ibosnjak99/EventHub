@@ -135,6 +135,9 @@ namespace API.Controllers
             };
         }
 
+        /// <summary>
+        /// Refreshes the token.
+        /// </summary>
         [Authorize]
         [HttpPost("refreshToken")]
         public async Task<ActionResult<UserDto>> RefreshToken()
@@ -155,6 +158,10 @@ namespace API.Controllers
             return CreateUser(user);
         }
 
+        /// <summary>
+        /// Sets the refresh token.
+        /// </summary>
+        /// <param name="user">The user.</param>
         private async Task SetRefreshToken(AppUser user)
         {
             var refreshToken = this.tokenService.GenerateRefreshToken();
