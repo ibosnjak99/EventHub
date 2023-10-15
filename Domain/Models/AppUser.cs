@@ -64,5 +64,13 @@ namespace Domain.Models
         /// True if this instance is moderator; otherwise, false.
         /// </value>
         public bool IsModerator { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets the refresh tokens.
+        /// </summary>
+        /// <value>
+        /// The refresh tokens.
+        /// </value>
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }
