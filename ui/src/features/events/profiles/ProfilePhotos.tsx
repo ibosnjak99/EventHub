@@ -86,7 +86,7 @@ export default observer (function ProfilePhotos({profile}: Props) {
                     )}
                 </Grid.Column>
             </Grid>
-            <Modal open={!!selectedPhoto} onClose={closeModal} style={{ margin: 'auto' }}>
+            <Modal open={!!selectedPhoto} onClose={closeModal} style={{ margin: 'auto' }} size='tiny'>
                 <Modal.Content>
                     <Image size="big" src={selectedPhoto?.url || ''} centered />
                     {isCurrentUser && (

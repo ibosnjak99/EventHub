@@ -10,7 +10,7 @@ export default observer(function EventFilters() {
     return (
         <>
             <Menu vertical size='large' style={{ width: '100%' }}>
-                <Header icon='filter' attached color='teal' content='Filters' />
+                <Header icon='filter' attached color='blue' content='Filters' />
                 <Menu.Item
                     content='All events' 
                     active={predicate.has('all')}
@@ -35,7 +35,13 @@ export default observer(function EventFilters() {
                 floated='right' 
                 onClick={() => [setPredicate('all', 'true'), () => setPredicate('isHost', 'true')]} 
                 content='Reset filters'
-                style={{ marginTop: '5px'}}
+                style={{
+                    color: 'white',
+                    backgroundColor: '#1e1e1f',
+                    borderColor: '#ddd', 
+                    borderWidth: '2px' ,
+                    marginTop: '5px'
+                }} 
             />
         </>
     )

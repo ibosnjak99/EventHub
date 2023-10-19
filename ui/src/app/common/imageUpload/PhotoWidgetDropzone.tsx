@@ -17,7 +17,7 @@ export default function PhotoWidgetDropzone({setFiles}: Props) {
     }
 
     const dropzoneStylesActive = {
-        borderColor: 'green',
+        borderColor: 'blue',
     }
 
     const onDrop = useCallback((acceptedFiles: object[]) => {

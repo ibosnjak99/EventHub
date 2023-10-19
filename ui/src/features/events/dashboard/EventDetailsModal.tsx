@@ -47,20 +47,20 @@ export default observer(function EventModal() {
         setShowGoingList(!showGoingList)
       }
 
-    return (
+      return (
         <>
-            <Modal open={true} onClose={unselectEvent} >
+            <Modal open={true} onClose={unselectEvent} dimmer size='large'>
                 {event.isCancelled &&
-                    <Segment>
-                        <Label style={{ position: 'absolute', zIndex: 5, left: -14, top: 20 }} ribbon color='red' content='Cancelled' />
-                    </Segment>
+                    <Label attached='top' color='red' content='Cancelled' />
                 }
                 <Modal.Header>
-                    {event.title}
+                    <Header as='h2'>{event.title}</Header>
                 </Modal.Header>
                 <Modal.Content scrolling>
-                    <Card fluid>
-                        <Image src={`/assets/categoryImages/${event.category}.jpg`} centered />
+                    <Card fluid raised>
+                        <Image src={`/assets/categoryImages/${event.category}.jpg`} centered wrapped ui={false} style={{width: '70%', margin: 'auto'}} 
+/>
+                        <Card.Content>
                         <Card.Content>
                         <Segment
                             textAlign='center'
@@ -136,43 +136,36 @@ export default observer(function EventModal() {
                             </Grid.Column>
                         </Grid>
                         </Card.Content>
-
-                        {event.isHost ? (
-                            <Modal.Actions id='editor'>
+                        </Card.Content>
+                        <Card.Content extra>
+                            {event.isHost ? (
                                 <Button.Group widths='3'>
-                                    <Button onClick={() => openModal(event.id)} color='blue' content='Edit' />
-                                    <Button onClick={() => handleDeleteEvent(event.id)} color='red' content='Delete' />
+                                    <Button onClick={() => openModal(event.id)} color='blue' icon='edit' content='Edit' />
+                                    <Button onClick={() => handleDeleteEvent(event.id)} color='red' icon='delete' content='Delete' />
                                     <Button 
                                         onClick={cancelEventToggle} 
-                                        color={event.isCancelled ? 'green' : 'black'}  
-                                        content={event.isCancelled ? 'Reactivate' : 'Cancel event'}  
+                                        color={event.isCancelled ? 'green' : 'black'} 
+                                        icon={event.isCancelled ? 'redo' : 'cancel'}
+                                        content={event.isCancelled ? 'Reactivate' : 'Cancel'}  
                                     />
                                 </Button.Group>
-                            </Modal.Actions>
-                        ) : event.isGoing ? (
-                            <Modal.Actions id='user'>
+                            ) : event.isGoing ? (
                                 <Button.Group widths='2'>
-                                    <Button onClick={updateAttendance} loading={loading} content='Cancel attendance' />
+                                    <Button onClick={updateAttendance} loading={loading} color='red' content='Cancel attendance' />
                                 </Button.Group>
-                            </Modal.Actions>
-                        ) : (
-                            <Modal.Actions id='user'>
+                            ) : (
                                 <Button.Group widths='2'>
                                     <Button disabled={event.isCancelled} onClick={updateAttendance} loading={loading} color='blue' content='Join event' />
                                 </Button.Group>
-                            </Modal.Actions>
-                        )}
+                            )}
+                        </Card.Content>
                     </Card>
-                    <Divider />
-                    <Segment
-                        textAlign='center'
-                        attached='top'
-                        inverted
-                        color='teal'
-                        style={{border: 'none'}}
-                    >
-                        <Header>Comment Section</Header>
-                    </Segment>
+                    <Divider horizontal style={{ marginTop: '20px' }}>
+                        <Header as='h3'>
+                            <Icon name='comment' />
+                            Comments
+                        </Header>
+                    </Divider>
                     <Segment attached clearing>
                         <Formik 
                             onSubmit={(values, {resetForm}) => commentStore.addComment(values).then(() => resetForm())}
@@ -202,7 +195,7 @@ export default observer(function EventModal() {
                                 <Comment key={comment.id}>
                                     <Comment.Avatar src={comment.image || '/assets/user.png'}/>
                                     <Comment.Content>
-                                        <Comment.Author as={Link} to={`/profiles/${comment.username}`}>{comment.displayName}</Comment.Author>
+                                        <Comment.Author as={Link} to={`/profile/${comment.username}`}>{comment.displayName}</Comment.Author>
                                         <Comment.Metadata>
                                             <div>{formatDistanceToNow(comment.createdAt)} ago</div>
                                         </Comment.Metadata>
@@ -212,18 +205,22 @@ export default observer(function EventModal() {
                             ))}
                         </Comment.Group>
                     </Segment>
-
                 </Modal.Content>
             </Modal>
-            <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false) } size='tiny'>
-                <Modal.Header>Are you sure you want to delete this event?</Modal.Header>
+            <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} size='tiny'>
+                <Modal.Header>Delete Event</Modal.Header>
                 <Modal.Content>
-                    <p>This action cannot be undone.</p>
+                    <p>Are you sure you want to delete this event? This action cannot be undone.</p>
                 </Modal.Content>
                 <Modal.Actions>
-                    <Button onClick={handleCancelDelete}>Cancel</Button>
-                    <Button onClick={handleConfirmDelete} color='red'>Confirm</Button>
+                    <Button basic onClick={handleCancelDelete}>
+                        <Icon name='remove' /> No
+                    </Button>
+                    <Button color='red' onClick={handleConfirmDelete}>
+                        <Icon name='checkmark' /> Yes
+                    </Button>
                 </Modal.Actions>
             </Modal>
         </>
-)});
+    );
+});
