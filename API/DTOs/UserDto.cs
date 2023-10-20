@@ -36,5 +36,13 @@
         /// The username.
         /// </value>
         public string Username { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is moderator.
+        /// </summary>
+        /// <value>
+        /// True if this instance is moderator; otherwise, false.
+        /// </value>
+        public bool IsModerator { get; set; }
     }
 }

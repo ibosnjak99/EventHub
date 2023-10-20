@@ -7,12 +7,13 @@ import { useParams } from 'react-router-dom'
 import { useStore } from '../../../app/stores/store'
 import LoadingComponent from '../../../app/layouts/LoadingComponent'
 import EventsForm from "../form/EventForm"
+import EventDetailsModal from '../dashboard/EventDetailsModal'
 
 export default observer(function ProfilePage() {
     const {profileStore, eventStore} = useStore()
     
     const {loadingProfile, loadProfile, profile, setActiveTab} = profileStore
-    const {editMode} = eventStore
+    const {editMode, selectedEvent} = eventStore
 
     const {username} = useParams<{username: string}>()
 
@@ -35,9 +36,12 @@ export default observer(function ProfilePage() {
                     </>
                 }
             </Grid.Column>
+            {selectedEvent &&
+                <EventDetailsModal /> 
+            }
             {editMode &&
-                        <EventsForm />
-                    }
+                <EventsForm />
+            }
         </Grid>
     )
 })

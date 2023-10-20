@@ -12,13 +12,9 @@ const panes = [
 ];
 
 export default observer(function ProfileEvents() {
-    const { profileStore } = useStore();
-    const {
-        loadUserEvents,
-        profile,
-        loadingEvents,
-        userEvents
-    } = profileStore;
+    const { profileStore, eventStore } = useStore();
+    const { loadUserEvents, profile, loadingEvents, userEvents } = profileStore
+    const { selectEvent } = eventStore
 
     useEffect(() => {
         loadUserEvents(profile!.userName);
@@ -44,9 +40,8 @@ export default observer(function ProfileEvents() {
                     <Card.Group itemsPerRow={4}>
                         {userEvents.map((event: UserEvent) => (
                             <Card
-                                // as={Link}
-                                // to={`/Events/${event.id}`}
                                 key={event.id}
+                                onClick={() => selectEvent(event.id)}
                             >
                                 <Image
                                     src={`/assets/categoryImages/${event.category}.jpg`}

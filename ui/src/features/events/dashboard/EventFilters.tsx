@@ -33,7 +33,7 @@ export default observer(function EventFilters() {
             />
             <Button 
                 floated='right' 
-                onClick={() => [setPredicate('all', 'true'), () => setPredicate('isHost', 'true')]} 
+                onClick={() => [setPredicate('all', 'true'), setPredicate('startDate', new Date())]} 
                 content='Reset filters'
                 style={{
                     color: 'white',

@@ -4,8 +4,8 @@ using Infrastructure;
 using Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection.Metadata;
 using System.Text;
 
 namespace API.Extensions
@@ -51,13 +51,10 @@ namespace API.Extensions
 
             services.AddAuthorization(opt =>
             {
-                opt.AddPolicy("IsEventHost", policy =>
-                {
-                    policy.Requirements.Add(new IsHostRequirement());
-                });
+                opt.AddPolicy("IsEventHostOrModerator", policy => policy.Requirements.Add(new IsHostOrModeratorRequirement()));
             });
 
-            services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
+            services.AddTransient<IAuthorizationHandler, IsHostOrModeratorRequirementHandler>();
             services.AddScoped<TokenService>();
 
             return services;

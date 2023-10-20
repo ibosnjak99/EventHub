@@ -8,14 +8,14 @@ namespace Infrastructure.Security
     /// <summary>
     /// Is host requirement class.
     /// </summary>
-    public class IsHostRequirement : IAuthorizationRequirement
+    public class IsHostOrModeratorRequirement : IAuthorizationRequirement
     {
     }
 
     /// <summary>
     /// Is host requirement handler.
     /// </summary>
-    public class IsHostRequirementHandler : AuthorizationHandler<IsHostRequirement>
+    public class IsHostOrModeratorRequirementHandler : AuthorizationHandler<IsHostOrModeratorRequirement>
     {
         private readonly DataContext dbContext;
         private readonly IHttpContextAccessor accessor;
@@ -25,7 +25,7 @@ namespace Infrastructure.Security
         /// </summary>
         /// <param name="dbContext">The database context.</param>
         /// <param name="accessor">The accessor.</param>
-        public IsHostRequirementHandler(DataContext dbContext, IHttpContextAccessor accessor)
+        public IsHostOrModeratorRequirementHandler(DataContext dbContext, IHttpContextAccessor accessor)
         {
             this.dbContext = dbContext;
             this.accessor = accessor;
@@ -39,8 +39,13 @@ namespace Infrastructure.Security
         /// <returns>
         /// Task.
         /// </returns>
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsHostRequirement requirement)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsHostOrModeratorRequirement requirement)
         {
+            if (context.User.IsInRole("Moderator"))
+            {
+                context.Succeed(requirement);
+            }
+
             var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null) return Task.CompletedTask;

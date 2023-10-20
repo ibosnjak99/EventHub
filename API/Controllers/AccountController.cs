@@ -127,7 +127,8 @@ namespace API.Controllers
                 DisplayName = user.DisplayName,
                 Image = user.Photos?.FirstOrDefault(x => x.IsProfile)?.Url,
                 Token = tokenService.CreateToken(user),
-                Username = user.UserName
+                Username = user.UserName,
+                IsModerator = user.IsModerator
             };
         }
     }

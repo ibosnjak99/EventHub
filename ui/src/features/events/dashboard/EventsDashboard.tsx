@@ -5,7 +5,7 @@ import EventsList from "./EventsList"
 import { useStore } from "../../../app/stores/store"
 import { observer } from "mobx-react-lite"
 import EventFilters from "./EventFilters"
-import EventModal from "./EventDetailsModal"
+import EventDetailsModal from "./EventDetailsModal"
 import { PagingParams } from "../../../app/models/pagination"
 import InfiniteScroll from "react-infinite-scroller"
 import EventListItemPlaceholder from "./EventListItemPlaceholder"
@@ -49,7 +49,7 @@ export default observer (function EventsDashboard() {
                     <EventFilters />
                 </Grid.Column>
                     {selectedEvent &&
-                        <EventModal /> 
+                        <EventDetailsModal /> 
                     }
                     {editMode &&
                         <EventsForm />
