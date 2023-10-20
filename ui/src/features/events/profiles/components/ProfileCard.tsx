@@ -4,12 +4,15 @@ import { Profile } from '../../../../app/models/profile';
 import { observer } from "mobx-react-lite";
 import { Link } from "react-router-dom";
 import FollowButon from './FollowButon';
+import { useStore } from '../../../../app/stores/store';
 
 interface Props {
     profile: Profile
 }
 
 export default observer(function ProfileCard({ profile }: Props) {
+    const {userStore: {user}} = useStore()
+
     function truncate(str: string | undefined) {
         if (str) {
             return str.length > 40 ? str.substring(0, 37) + '...' : str;
@@ -29,7 +32,9 @@ export default observer(function ProfileCard({ profile }: Props) {
                 <Icon name='user' />
                 {profile.followersCount} Followers
             </Card.Content>
-            <FollowButon profile={profile} />
+            {!user?.isModerator &&
+                <FollowButon profile={profile} />
+            }
         </Card>
     )
 })

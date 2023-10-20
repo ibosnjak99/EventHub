@@ -8,10 +8,10 @@ import { Formik, Form } from 'formik'
 import CustomTextArea from '../../../app/common/form/CustomTextArea'
 import * as Yup from 'yup'
 
-export default observer(function EventDetailsModal() {
-    const {eventStore, commentStore, userStore: {user}} = useStore();
+export default observer(function EventModal() {
+    const {eventStore, commentStore, userStore: {user}} = useStore()
     const {selectedEvent: event, openModal, unselectEvent, deleteEvent, updateAttendance, cancelEventToggle, loading} = eventStore
-
+    
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [eventIdToDelete, setEventIdToDelete] = useState('')
     const [showGoingList, setShowGoingList] = useState(false)
@@ -48,16 +48,16 @@ export default observer(function EventDetailsModal() {
 
       return (
         <>
-            <Modal open={true} onClose={unselectEvent} dimmer size="large">
+            <Modal open={true} onClose={unselectEvent} dimmer size="large" style={{ height: '90%'}}>
                 {event.isCancelled &&
                     <Label attached='top' color='red' content='Cancelled' />
                 }
                 <Modal.Header>
                     <Header as='h2'>{event.title}</Header>
                 </Modal.Header>
-                <Modal.Content scrolling>
+                <Modal.Content>
                     <Card fluid raised>
-                        <Image src={`/assets/categoryImages/${event.category}.jpg`} centered wrapped style={{width: '70%', margin: 'auto'}} ui={false} />
+                        <Image src={`/assets/categoryImages/${event.category}.jpg`} centered wrapped ui={false} />
                         <Card.Content>
                         <Card.Content>
                         <Segment
@@ -78,7 +78,13 @@ export default observer(function EventDetailsModal() {
                         <Segment attached='bottom' style={{ maxHeight: '200px', overflowY: 'auto' }}>
                             <List divided style={{ width: '90%', margin: 'auto' }}>
                                 {event.attendees!.map(attendee => (
-                                    <Item style={{ position: 'relative', display: 'flex', alignItems: 'center' }} key={attendee.userName} as={Link} to={`/profile/${attendee.userName}`}>
+                                    <Item 
+                                        style={{ position: 'relative', display: 'flex', alignItems: 'center' }} 
+                                        key={attendee.userName} 
+                                        as={Link} 
+                                        to={`/profile/${attendee.userName}`}
+                                        onClick={() => { unselectEvent()}}
+                                    >
                                         {attendee.userName === event.host?.userName &&
                                             <Label
                                                 style={{ position: 'absolute' }}
@@ -136,7 +142,7 @@ export default observer(function EventDetailsModal() {
                         </Card.Content>
                         </Card.Content>
                         <Card.Content extra>
-                            {event.isHost || user?.isModerator ? (
+                            {event.isHost ? (
                                 <Button.Group widths='3'>
                                     <Button onClick={() => openModal(event.id)} color='blue' icon='edit' content='Edit' />
                                     <Button onClick={() => handleDeleteEvent(event.id)} color='red' icon='delete' content='Delete' />
@@ -150,6 +156,11 @@ export default observer(function EventDetailsModal() {
                             ) : event.isGoing ? (
                                 <Button.Group widths='2'>
                                     <Button onClick={updateAttendance} loading={loading} color='red' content='Cancel attendance' />
+                                </Button.Group>
+                            ) : user?.isModerator ? (
+                                <Button.Group widths='3'>
+                                    <Button onClick={() => openModal(event.id)} color='blue' icon='edit' content='Edit' />
+                                    <Button onClick={() => handleDeleteEvent(event.id)} color='red' icon='delete' content='Delete' />
                                 </Button.Group>
                             ) : (
                                 <Button.Group widths='2'>
@@ -165,42 +176,55 @@ export default observer(function EventDetailsModal() {
                         </Header>
                     </Divider>
                     <Segment attached clearing>
-                        <Formik 
-                            onSubmit={(values, {resetForm}) => commentStore.addComment(values).then(() => resetForm())}
-                            initialValues={{body: ''}}
-                            validationSchema={Yup.object({
-                                body: Yup.string().required()
-                            })}
-                        >
-                            {({ isSubmitting, isValid }) => (
-                                <Form style={{ marginTop: '10px'}} className='ui form'>
-                                    <CustomTextArea placeholder='Reply...' name='body' rows={2} />
-                                    <Button
-                                        loading={isSubmitting}
-                                        disabled={isSubmitting || !isValid}
-                                        content='Add Reply'
-                                        labelPosition='left'
-                                        icon='edit'
-                                        primary
-                                        type='submit'
-                                        floated='right'
-                                    />
-                                </Form>
+                        { !user?.isModerator &&
+                            <Formik 
+                                onSubmit={(values, {resetForm}) => commentStore.addComment(values).then(() => resetForm())}
+                                initialValues={{body: ''}}
+                                validationSchema={Yup.object({
+                                    body: Yup.string().required()
+                                })}
+                            >
+                                {({ isSubmitting, isValid }) => (
+                                    <Form style={{ marginTop: '10px'}} className='ui form'>
+                                        <CustomTextArea placeholder='Reply...' name='body' rows={2} />
+                                        <Button
+                                            loading={isSubmitting}
+                                            disabled={isSubmitting || !isValid}
+                                            content='Add Reply'
+                                            labelPosition='left'
+                                            icon='edit'
+                                            primary
+                                            type='submit'
+                                            floated='right'
+                                        />
+                                    </Form>
+                                )}
+                            </Formik>
+                        }
+                        <Comment.Group style={{ maxWidth: '100%', marginTop: '20px' }}>
+                            {commentStore.comments.length > 0 ? (
+                                commentStore.comments.map(comment => (
+                                    <Comment key={comment.id}>
+                                        <Comment.Avatar src={comment.image || '/assets/user.png'} />
+                                        <Comment.Content>
+                                            <Comment.Author as={Link} to={`/profile/${comment.username}`}>
+                                                {comment.displayName}
+                                            </Comment.Author>
+                                            <Comment.Metadata>
+                                                <div>{formatDistanceToNow(comment.createdAt)} ago</div>
+                                            </Comment.Metadata>
+                                            <Comment.Text>{comment.body}</Comment.Text>
+                                        </Comment.Content>
+                                    </Comment>
+                                ))
+                            ) : (
+                                <Label style={{ 
+                                    margin: '0 auto',
+                                    fontSize: '1em'
+                                }}>
+                                    No comments...(yet)
+                                </Label>
                             )}
-                        </Formik>
-                        <Comment.Group style={{maxWidth: '100%', marginTop: '50px'}}>
-                            {commentStore.comments.map(comment => (
-                                <Comment key={comment.id}>
-                                    <Comment.Avatar src={comment.image || '/assets/user.png'}/>
-                                    <Comment.Content>
-                                        <Comment.Author as={Link} to={`/profile/${comment.username}`}>{comment.displayName}</Comment.Author>
-                                        <Comment.Metadata>
-                                            <div>{formatDistanceToNow(comment.createdAt)} ago</div>
-                                        </Comment.Metadata>
-                                        <Comment.Text>{comment.body}</Comment.Text>
-                                    </Comment.Content>
-                                </Comment>
-                            ))}
                         </Comment.Group>
                     </Segment>
                 </Modal.Content>

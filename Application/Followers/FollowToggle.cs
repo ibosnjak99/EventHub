@@ -52,7 +52,9 @@ namespace Application.Followers
                 var observer = await this.context.Users.FirstOrDefaultAsync(x => x.UserName == this.accessor.GetUsername());
                 var target = await this.context.Users.FirstOrDefaultAsync(x => x.UserName == request.TargetUsername);
 
-                if (target == null) return Result<Unit>.Failure("Target not found."); ;
+                if (target == null) return Result<Unit>.Failure("Target not found.");
+                if (target.IsModerator) return Result<Unit>.Failure("Cannot follow moderator.");
+                if (observer!.IsModerator) return Result<Unit>.Failure("Cannot follow as moderator.");
 
                 var following = await this.context.UserFollowings.FindAsync(observer!.Id, target.Id);
 

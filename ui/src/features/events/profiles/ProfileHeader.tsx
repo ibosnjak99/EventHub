@@ -3,6 +3,7 @@ import React from 'react'
 import { Divider, Grid, Header, Item, ItemDescription, Segment, Statistic } from 'semantic-ui-react'
 import { Profile } from '../../../app/models/profile'
 import FollowButon from './components/FollowButon'
+import { useStore } from '../../../app/stores/store'
 
 interface Props {
     profile: Profile
@@ -15,6 +16,8 @@ function truncate(str: string | undefined) {
 }
 
 export default observer (function ProfileHeader({profile}: Props) {
+    const {userStore: {user}} = useStore()
+
     return (
         <Segment>
             <Grid>
@@ -35,7 +38,9 @@ export default observer (function ProfileHeader({profile}: Props) {
                         <Statistic label="Following" value={profile.followingCount} />
                     </Statistic.Group>
                     <Divider/>
-                    <FollowButon profile={profile}/>
+                    { !user?.isModerator &&
+                        <FollowButon profile={profile}/>
+                    }
                 </Grid.Column>
             </Grid>
         </Segment>

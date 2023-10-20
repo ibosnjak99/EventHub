@@ -58,12 +58,13 @@ namespace Application.Events
                     .FirstOrDefaultAsync(x => x.UserName == this.userAccessor.GetUsername());
 
                 if (user == null) return null;
+                if (user.IsModerator) return Result<Unit>.Failure("Cannot attend or cancel as moderator.");
 
                 var hostUsername = @event.Attendees.FirstOrDefault(x => x.IsHost)?.AppUser?.UserName;
 
                 var attendant = @event.Attendees.FirstOrDefault(x => x.AppUser.UserName == user.UserName);
 
-                if (attendant != null && hostUsername == user.UserName)
+                if ((attendant != null && hostUsername == user.UserName) || user.IsModerator)
                     @event.IsCancelled = !@event.IsCancelled;
 
                 if (attendant != null && hostUsername != user.UserName)

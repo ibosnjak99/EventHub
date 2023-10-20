@@ -21,7 +21,7 @@ namespace Infrastructure.Security
         private readonly IHttpContextAccessor accessor;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="IsHostRequirementHandler" /> class.
+        /// Initializes a new instance of the <see cref="IsHostOrModeratorRequirementHandler" /> class.
         /// </summary>
         /// <param name="dbContext">The database context.</param>
         /// <param name="accessor">The accessor.</param>
@@ -41,10 +41,7 @@ namespace Infrastructure.Security
         /// </returns>
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsHostOrModeratorRequirement requirement)
         {
-            if (context.User.IsInRole("Moderator"))
-            {
-                context.Succeed(requirement);
-            }
+            if (context.User.IsInRole("Moderator")) context.Succeed(requirement);
 
             var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
