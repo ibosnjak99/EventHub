@@ -27,7 +27,7 @@ export default observer(function HomePage() {
                 {userStore.isLoggedIn ? (
                     <>
                         <Header as='h2' content={`Hello, ${userStore.user?.displayName}`} style={{ fontSize: '1.2em' }} />
-                        <Button as={Link} to='/events' size='large' style={{ marginTop: '10px' }}>
+                        <Button as={Link} to='/events' size='large' color='blue' style={{ marginTop: '10px' }}>
                             Events
                         </Button>
                     </>

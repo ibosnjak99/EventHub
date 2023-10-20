@@ -36,7 +36,7 @@ namespace Application.Profiles.Commands
         /// <param name="cancellationToken">The cancellation token.</param>
         public async Task<Result<Unit>> Handle(Edit request, CancellationToken cancellationToken)
         {
-            var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == accessor.GetUsername());
+            var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == this.accessor.GetUsername());
 
             user!.DisplayName = request.DisplayName ?? user.DisplayName;
             user.Bio = request.Bio ?? user.Bio;
@@ -58,12 +58,23 @@ namespace Application.Profiles.Commands
         /// </returns>
         public async Task<Result<Profile>> Handle(Details request, CancellationToken cancellationToken)
         {
-            var user = await this.context.Users
-                .ProjectTo<Profile>(this.mapper.ConfigurationProvider, new {currentUsername = this.accessor.GetUsername()})
-                .SingleOrDefaultAsync(x => x.UserName == request.Username);
+            var currentUser = await context.Users.FirstOrDefaultAsync(x => x.UserName == this.accessor.GetUsername());
 
-            return Result<Profile>.Success(user!);
+            var requestedUser = await context.Users.FirstOrDefaultAsync(x => x.UserName == request.Username);
+
+            if (requestedUser == null || (!currentUser!.IsModerator && requestedUser!.IsModerator))
+            {
+                return Result<Profile>.Failure("Requested user not found.");
+            }
+
+            var profile = await context.Users
+                .Where(u => u.Id == requestedUser.Id)
+                .ProjectTo<Profile>(this.mapper.ConfigurationProvider, new { currentUsername = this.accessor.GetUsername() })
+                .SingleOrDefaultAsync();
+
+            return Result<Profile>.Success(profile!);
         }
+
 
         public async Task<Result<List<UserEventDto>>> Handle(EventsList request, CancellationToken cancellationToken)
         {
