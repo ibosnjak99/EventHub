@@ -26,6 +26,11 @@ export default observer(function EventFilters() {
                     active={predicate.has('isHost')}
                     onClick={() => setPredicate('isHost', 'true')}
                 />
+                <Menu.Item
+                    content='Following' 
+                    active={predicate.has('isFollowing')}
+                    onClick={() => setPredicate('isFollowing', 'true')}
+                />
             </Menu>
             <Calendar 
                 onChange={(date) => setPredicate('startDate', date as Date)}

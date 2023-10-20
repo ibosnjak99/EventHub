@@ -61,6 +61,23 @@ namespace Application.Events
                 query = query.Where(x => x.HostUsername == this.userAccessor.GetUsername());
             }
 
+            if (request.PagingParams!.IsFollowing)
+            {
+                var user = await this.context.Users
+                    .Include(u => u.Followings)
+                    .FirstOrDefaultAsync(x => x.UserName == this.userAccessor.GetUsername());
+
+                var followingIds = user!.Followings.Select(f => f.TargetId).ToList();
+
+                var followingUsernames = await this.context.Users
+                    .Where(u => followingIds.Contains(u.Id))
+                    .Select(u => u.UserName)
+                    .ToListAsync();
+
+                query = query.Where(x => followingUsernames.Contains(x.HostUsername));
+            }
+
+
             return Result<PagedList<EventDto>>.Success(
                 await PagedList<EventDto>.CreateAsync(query, request.PagingParams!.PageNumber, request.PagingParams.PageSize)
             );

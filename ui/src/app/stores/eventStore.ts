@@ -52,6 +52,10 @@ export default class EventStore {
                 resetPredicate()
                 this.predicate.set('isHost', true)
                 break
+            case 'isFollowing':
+                resetPredicate()
+                this.predicate.set('isFollowing', true)
+                break
             case 'startDate':
                 this.predicate.delete('startDate')
                 this.predicate.set('startDate', value)
