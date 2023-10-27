@@ -1,8 +1,8 @@
 import { makeAutoObservable, runInAction } from "mobx"
-import { User, UserFormValues } from "../models/user";
-import client from "../api/client";
-import { store } from "./store";
-import { router } from "../router/Routes";
+import { User, UserFormValues } from "../models/user"
+import client from "../api/client"
+import { store } from "./store"
+import { router } from "../router/Routes"
 
 export default class UserStore {
     user: User | null = null
@@ -12,7 +12,7 @@ export default class UserStore {
     }
 
     get isLoggedIn() {
-        return !!this.user;
+        return !!this.user
     }
 
     login = async (creds: UserFormValues) => {
@@ -40,11 +40,11 @@ export default class UserStore {
     }
 
     logout = () => {
-        store.commonStore.setToken(null);
-        this.user = null;
+        store.commonStore.setToken(null)
+        this.user = null
         
-        store.eventStore.reset();
-        router.navigate('/');
+        store.eventStore.reset()
+        router.navigate('/')
     }
     
 
@@ -66,6 +66,6 @@ export default class UserStore {
     }
 
     setDisplayName = (name: string) => {
-        if (this.user) this.user.displayName = name;
+        if (this.user) this.user.displayName = name
     }
 }

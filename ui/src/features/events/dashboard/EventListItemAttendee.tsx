@@ -1,11 +1,11 @@
-import { observer } from 'mobx-react-lite';
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Image, List } from 'semantic-ui-react';
-import { Profile } from '../../../app/models/profile';
+import { observer } from 'mobx-react-lite'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { Image, List } from 'semantic-ui-react'
+import { Profile } from '../../../app/models/profile'
 
 interface Props {
-    attendees: Profile[];
+    attendees: Profile[]
 }
 
 export default observer(function EventListItemAttendee({attendees}: Props) {
@@ -25,5 +25,5 @@ export default observer(function EventListItemAttendee({attendees}: Props) {
                 </List.Item>
             ))}
         </List>
-    );
-});
+    )
+})

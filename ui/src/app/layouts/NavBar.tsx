@@ -1,10 +1,9 @@
-import { Button, Container, Dropdown, Image, Menu } from 'semantic-ui-react'
+import { Container, Dropdown, Image, Menu } from 'semantic-ui-react'
 import { useStore } from '../stores/store'
 import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 
 export default observer(function NavBar() {
-    const {eventStore: {openModal}} = useStore()
     const {userStore: {user, logout}} = useStore()
 
     return (
@@ -14,21 +13,7 @@ export default observer(function NavBar() {
                     <img src='/assets/logo.png' alt='logo' style={{ marginRight: 15 }} />
                     EventHub
                 </Menu.Item>
-                <Menu.Item>
-                    { !user?.isModerator && 
-                        <Button 
-                            onClick={() => openModal()} 
-                            content='Create Event' 
-                            style={{
-                                color: 'white',
-                                backgroundColor: '#1e1e1f',
-                                borderColor: '#ddd', 
-                                borderWidth: '2px' 
-                            }} 
-                        />
-                    }
-                </Menu.Item>
-                <Menu.Item>
+                 <Menu.Item>
                     <Image
                         src={user?.image || '/assets/user.png'} 
                         avatar 

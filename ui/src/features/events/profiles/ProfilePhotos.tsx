@@ -13,16 +13,16 @@ export default observer (function ProfilePhotos({profile}: Props) {
     const {profileStore: {isCurrentUser, uploadPhoto, uploading, loading, setProfilePhoto, deletePhoto}} = useStore()
     const [addPhotoMode, setAddPhotoMode] = useState(false)
     const [target, setTarget] = useState('')
-    const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null)
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
 
 
     function openModal(photo: Photo) {
-        setSelectedPhoto(photo);
+        setSelectedPhoto(photo)
     }
 
     function closeModal() {
-        setSelectedPhoto(null);
+        setSelectedPhoto(null)
     }
 
     function handlePhotoUpload(file: Blob) {
@@ -36,20 +36,20 @@ export default observer (function ProfilePhotos({profile}: Props) {
     }
 
     function handleDeletePhoto(id: string, e: SyntheticEvent<HTMLButtonElement>) {
-        setTarget(e.currentTarget.name);
-        setShowDeleteModal(true);
+        setTarget(e.currentTarget.name)
+        setShowDeleteModal(true)
     }
 
     function handleConfirmDelete() {
         if (selectedPhoto) {
-            deletePhoto(selectedPhoto.id);
-            setShowDeleteModal(false);
-            closeModal();
+            deletePhoto(selectedPhoto.id)
+            setShowDeleteModal(false)
+            closeModal()
         }
     }
     
     function handleCancelDelete() {
-        setShowDeleteModal(false);
+        setShowDeleteModal(false)
     }
     
     return (
@@ -122,4 +122,4 @@ export default observer (function ProfilePhotos({profile}: Props) {
             </Modal>
         </Tab.Pane>
     )
-});
+})

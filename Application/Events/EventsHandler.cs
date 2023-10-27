@@ -8,6 +8,7 @@ using Domain.Models;
 using Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Events
 {
@@ -50,6 +51,20 @@ namespace Application.Events
                 .OrderBy(d => d.Date)
                 .ProjectTo<EventDto>(this.mapper.ConfigurationProvider, new { currentUsername = this.userAccessor.GetUsername() })
                 .AsQueryable();
+
+            if (!string.IsNullOrEmpty(request.PagingParams?.SearchTerm))
+            {
+                var searchTerm = request.PagingParams.SearchTerm.Trim().ToLower();
+
+                query = query.Where(x =>
+                    (x.Title != null && x.Title.ToLower().Contains(searchTerm)) ||
+                    (x.Description != null && x.Description.ToLower().Contains(searchTerm)) ||
+                    (x.Category != null && x.Category.ToLower().Contains(searchTerm)) ||
+                    (x.City != null && x.City.ToLower().Contains(searchTerm)) ||
+                    (x.Venue != null && x.Venue.ToLower().Contains(searchTerm))
+                );
+            }
+
 
             if (request.PagingParams!.IsGoing && !request.PagingParams.IsHost)
             {

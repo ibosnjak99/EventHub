@@ -1,10 +1,10 @@
-import React from 'react';
-import { Card, Icon, Image } from "semantic-ui-react";
-import { Profile } from '../../../../app/models/profile';
-import { observer } from "mobx-react-lite";
-import { Link } from "react-router-dom";
-import FollowButon from './FollowButon';
-import { useStore } from '../../../../app/stores/store';
+import React from 'react'
+import { Card, Icon, Image } from "semantic-ui-react"
+import { Profile } from '../../../../app/models/profile'
+import { observer } from "mobx-react-lite"
+import { Link } from "react-router-dom"
+import FollowButon from './FollowButon'
+import { useStore } from '../../../../app/stores/store'
 
 interface Props {
     profile: Profile
@@ -15,7 +15,7 @@ export default observer(function ProfileCard({ profile }: Props) {
 
     function truncate(str: string | undefined) {
         if (str) {
-            return str.length > 40 ? str.substring(0, 37) + '...' : str;
+            return str.length > 40 ? str.substring(0, 37) + '...' : str
         }
     }
 

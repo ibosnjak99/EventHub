@@ -1,13 +1,13 @@
-import { observer } from 'mobx-react-lite';
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Container, Header, Segment, Image, Divider } from "semantic-ui-react";
-import { useStore } from '../../app/stores/store';
-import LoginForm from '../events/users/LoginForm';
-import RegisterForm from '../events/users/RegisterForm';
+import { observer } from 'mobx-react-lite'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { Button, Container, Header, Segment, Image, Divider } from "semantic-ui-react"
+import { useStore } from '../../app/stores/store'
+import LoginForm from '../events/users/LoginForm'
+import RegisterForm from '../events/users/RegisterForm'
 
 export default observer(function HomePage() {
-    const { userStore, modalStore } = useStore();
+    const { userStore, modalStore } = useStore()
 
     return (
         <Segment textAlign='center' style={{ 

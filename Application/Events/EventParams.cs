@@ -38,5 +38,13 @@ namespace Application.Events
         /// The start date.
         /// </value>
         public DateTime StartDate { get; set; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Gets or sets the search term.
+        /// </summary>
+        /// <value>
+        /// The search term.
+        /// </value>
+        public string SearchTerm { get; set; } = string.Empty;
     }
 }

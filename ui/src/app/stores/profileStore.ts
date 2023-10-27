@@ -1,7 +1,7 @@
-import { makeAutoObservable, runInAction, reaction } from "mobx";
-import { Photo, Profile, UserEvent } from "../models/profile";
-import client from "../api/client";
-import { store } from "./store";
+import { makeAutoObservable, runInAction, reaction } from "mobx"
+import { Photo, Profile, UserEvent } from "../models/profile"
+import client from "../api/client"
+import { store } from "./store"
 
 export default class ProfileStore {
     profile: Profile | null = null

@@ -8,13 +8,14 @@ import { useStore } from '../stores/store'
 import LoadingComponent from './LoadingComponent'
 import ModalContainer from '../common/modals/ModalContainer'
 import { useLocation } from 'react-router-dom'
+import FloatingActionButton from '../common/form/FloatingCreateButton'
 
 function App() {
   const { commonStore, userStore } = useStore()
-  const location = useLocation();
+  const location = useLocation()
 
   if ('scrollRestoration' in window.history) {
-    window.history.scrollRestoration = 'manual';
+    window.history.scrollRestoration = 'manual'
   }
 
   useEffect(() => {
@@ -33,6 +34,7 @@ function App() {
     <ModalContainer />
     <ToastContainer position='bottom-right' theme='colored' autoClose={2000} />
     { location.pathname !== '/' && <NavBar /> }
+    { userStore.isLoggedIn && <FloatingActionButton /> }
       <Container style={{ marginTop: '6em'}}>
         <Outlet />
       </Container>

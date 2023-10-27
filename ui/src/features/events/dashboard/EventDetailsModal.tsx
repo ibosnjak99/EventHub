@@ -185,7 +185,7 @@ export default observer(function EventModal() {
                                 })}
                             >
                                 {({ isSubmitting, isValid }) => (
-                                    <Form style={{ marginTop: '10px'}} className='ui form'>
+                                    <Form className='ui form'>
                                         <CustomTextArea placeholder='Reply...' name='body' rows={2} />
                                         <Button
                                             loading={isSubmitting}
@@ -201,7 +201,7 @@ export default observer(function EventModal() {
                                 )}
                             </Formik>
                         }
-                        <Comment.Group style={{ maxWidth: '100%', marginTop: '20px' }}>
+                        <Comment.Group style={{ maxWidth: '100%', marginTop: '50px' }}>
                             {commentStore.comments.length > 0 ? (
                                 commentStore.comments.map(comment => (
                                     <Comment key={comment.id}>
@@ -245,5 +245,5 @@ export default observer(function EventModal() {
                 </Modal.Actions>
             </Modal>
         </>
-    );
-});
+    )
+})

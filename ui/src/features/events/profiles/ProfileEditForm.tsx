@@ -1,17 +1,17 @@
-import { Form, Formik } from "formik";
-import { observer } from "mobx-react-lite";
-import { Button } from "semantic-ui-react";
-import CustomTextArea from "../../../app/common/form/CustomTextArea";
-import CustomTextInput from "../../../app/common/form/CustomTextInput";
-import { useStore } from "../../../app/stores/store";
-import * as Yup from 'yup';
+import { Form, Formik } from "formik"
+import { observer } from "mobx-react-lite"
+import { Button } from "semantic-ui-react"
+import CustomTextArea from "../../../app/common/form/CustomTextArea"
+import CustomTextInput from "../../../app/common/form/CustomTextInput"
+import { useStore } from "../../../app/stores/store"
+import * as Yup from 'yup'
 
 interface Props {
-    setEditMode: (editMode: boolean) => void;
+    setEditMode: (editMode: boolean) => void
 }
 
 export default observer(function ProfileEditForm({ setEditMode }: Props) {
-    const { profileStore: { profile, updateProfile } } = useStore();
+    const { profileStore: { profile, updateProfile } } = useStore()
 
     return (
         <Formik
@@ -21,8 +21,8 @@ export default observer(function ProfileEditForm({ setEditMode }: Props) {
             }}
             onSubmit={values => {
                 updateProfile(values).then(() => {
-                    setEditMode(false);
-                });
+                    setEditMode(false)
+                })
             }}
             validationSchema={Yup.object({
                 displayName: Yup.string().required()
@@ -43,5 +43,5 @@ export default observer(function ProfileEditForm({ setEditMode }: Props) {
                 </Form>
             )}
         </Formik>
-    );
-});
+    )
+})

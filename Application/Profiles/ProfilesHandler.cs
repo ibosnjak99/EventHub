@@ -76,6 +76,14 @@ namespace Application.Profiles.Commands
         }
 
 
+        /// <summary>
+        /// Handles the specified request.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>
+        /// Response from the request.
+        /// </returns>
         public async Task<Result<List<UserEventDto>>> Handle(EventsList request, CancellationToken cancellationToken)
         {
             var query = this.context.EventAttendees

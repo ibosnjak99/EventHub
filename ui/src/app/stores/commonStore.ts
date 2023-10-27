@@ -1,9 +1,9 @@
-import { makeAutoObservable, reaction } from "mobx";
-import { ServerError } from "../models/serverError";
+import { makeAutoObservable, reaction } from "mobx"
+import { ServerError } from "../models/serverError"
 
 export default class CommonStore {
     error: ServerError | null = null
-    token: string | null = localStorage.getItem('jwt')
+    token: string | null = this.getCookie('jwt')
     appLoaded = false
 
     constructor() {
@@ -13,9 +13,9 @@ export default class CommonStore {
             () => this.token,
             token => {
                 if (token) {
-                    localStorage.setItem('jwt', token)
+                    this.setCookie('jwt', token)
                 } else {
-                    localStorage.removeItem('jwt')
+                    this.deleteCookie('jwt')
                 }
             }
         )
@@ -31,5 +31,24 @@ export default class CommonStore {
 
     setAppLoaded = () => {
         this.appLoaded = true
+    }
+
+    setCookie(name: string, value: string) {
+        document.cookie = name + "=" + (value || "") + " path=/ Secure"
+    }
+
+    getCookie(name: string): string | null {
+        const value = " " + document.cookie
+        const parts = value.split(" " + name + "=")
+        if (parts.length === 2) {
+            const poppedValue = parts.pop()
+            const result = poppedValue && poppedValue.split("").shift()
+            return result || null
+        }
+        return null
+    }
+
+    deleteCookie(name: string) {
+        document.cookie = name + '= Path=/ Expires=Thu, 01 Jan 1970 00:00:01 GMT'
     }
 }

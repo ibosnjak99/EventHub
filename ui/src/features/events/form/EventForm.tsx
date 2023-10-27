@@ -1,16 +1,16 @@
-import React from 'react';
-import { Button, Modal } from 'semantic-ui-react';
-import { useStore } from '../../../app/stores/store';
-import { observer } from 'mobx-react-lite';
-import { v4 as uuid } from 'uuid';
-import { Formik, Form, } from 'formik';
+import React from 'react'
+import { Button, Modal } from 'semantic-ui-react'
+import { useStore } from '../../../app/stores/store'
+import { observer } from 'mobx-react-lite'
+import { v4 as uuid } from 'uuid'
+import { Formik, Form, } from 'formik'
 import * as Yup from 'yup'
-import CustomTextInput from '../../../app/common/form/CustomTextInput';
-import CustomTextArea from '../../../app/common/form/CustomTextArea';
-import CustomSelectInput from '../../../app/common/form/CustomSelectInput';
-import { categoryOptions } from '../../../app/common/options/categoryOptions';
-import CustomDateInput from '../../../app/common/form/CustomDateInput';
-import { EventFormValues } from '../../../app/models/event';
+import CustomTextInput from '../../../app/common/form/CustomTextInput'
+import CustomTextArea from '../../../app/common/form/CustomTextArea'
+import CustomSelectInput from '../../../app/common/form/CustomSelectInput'
+import { categoryOptions } from '../../../app/common/options/categoryOptions'
+import CustomDateInput from '../../../app/common/form/CustomDateInput'
+import { EventFormValues } from '../../../app/models/event'
 
 export default observer (function EventsForm() {
   const {eventStore} = useStore()
@@ -32,7 +32,7 @@ export default observer (function EventsForm() {
         let newEvent = {
           ...event,
           id: uuid()
-        };
+        }
         createEvent(newEvent)
         closeModal()
       }
@@ -79,5 +79,5 @@ export default observer (function EventsForm() {
           )}
         </Formik>
       </>
-    );
+    )
   })
