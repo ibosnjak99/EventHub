@@ -63,6 +63,7 @@ namespace Application.Comments
             var comment = new Comment
             {
                 Author = user,
+                AuthorId = user.Id,
                 Event = @event,
                 Body = request.Body,
             };

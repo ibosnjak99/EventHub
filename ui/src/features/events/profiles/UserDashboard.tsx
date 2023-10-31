@@ -5,22 +5,22 @@ import { Button, Image, List, Modal, Icon } from 'semantic-ui-react'
 
 export default observer(function UserDashboard() {
     const { userStore } = useStore()
-    const { users, getAllUsers } = userStore
+    const { users, getAllUsers, deleteUser } = userStore
 
     useEffect(() => {
         getAllUsers()
-    })
+    }, [getAllUsers])
 
     const [showDeleteModal, setShowDeleteModal] = useState(false)
-    const [userIdToDelete, setUserIdToDelete] = useState('')
+    const [userToDelete, setUserToDelete] = useState('')
 
-    function handleDeleteUser(id: string) {
-        setUserIdToDelete(id)
+    function handleDeleteUser(username: string) {
+        setUserToDelete(username)
         setShowDeleteModal(true)
     }
 
     function handleConfirmDelete() {
-        userStore.deleteUser(userIdToDelete)
+        deleteUser(userToDelete)
         setShowDeleteModal(false)
     }
 
@@ -34,12 +34,14 @@ export default observer(function UserDashboard() {
         <>
             <List divided relaxed>
                 {users.map(user => (
-                    <List.Item key={user.username}>
-                        <Image avatar src={user.image || '/assets/user.png'} />
-                        <List.Content>
-                            <List.Header>{user.displayName}</List.Header>
-                        </List.Content>
-                        <List.Content floated='right'>
+                    <List.Item key={user.username} style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+                            <Image avatar size='tiny' src={user.image || '/assets/user.png'} />
+                            <List.Content>
+                                <List.Header>{user.displayName}</List.Header>
+                            </List.Content>
+                        </div>
+                        <List.Content style={{ justifyContent: 'flex-end' }}>
                             <Button color='red' onClick={() => handleDeleteUser(user.username)}>
                                 Delete
                             </Button>

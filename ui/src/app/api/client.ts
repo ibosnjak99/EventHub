@@ -100,7 +100,7 @@ const Account = {
     login: (user: UserFormValues) => requests.post<User>('/account/login', user),
     register: (user: UserFormValues) => requests.post<User>('/account/register', user),
     all: () => requests.get<User[]>('/account/all'),
-    delete: (id: string) => requests.delete<void>(`/account/${id}`),
+    delete: (username: string) => requests.delete<void>(`/account/${username}`),
 }
 
 const Profiles = {

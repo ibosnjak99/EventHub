@@ -22,12 +22,15 @@ namespace API.Controllers
         private readonly TokenService tokenService;
         private readonly DataContext context;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AccountController" /> class.
-        /// </summary>
+        /// <summary>Initializes a new instance of the <see cref="AccountController" /> class.</summary>
         /// <param name="userManager">The user manager.</param>
         /// <param name="tokenService">The token service.</param>
-        public AccountController(UserManager<AppUser> userManager, TokenService tokenService, DataContext context)
+        /// <param name="context"></param>
+        public AccountController(
+            UserManager<AppUser> userManager,
+            TokenService tokenService, 
+            DataContext context
+            )
         {
             this.userManager = userManager;
             this.tokenService = tokenService;
@@ -136,19 +139,15 @@ namespace API.Controllers
         /// <summary>
         /// Deletes the user.
         /// </summary>
+        /// <param name="username">Username.</param>
         /// <returns>
         /// Success message.
         /// </returns>
         [Authorize]
-        [HttpDelete]
-        public async Task<ActionResult> DeleteUser(string id)
+        [HttpDelete("{username}")]
+        public async Task<ActionResult> DeleteUser(string username)
         {
-            var user = await this.context.Users.FindAsync(id);
-
-            if (user == null) return NotFound("User not found.");
-
-            this.context.Users.Remove(user);
-            await this.context.SaveChangesAsync();
+            await DeleteUserAndAssociatedDataAsync(username);
 
             return Ok("User and associated data successfully deleted.");
         }
@@ -171,5 +170,44 @@ namespace API.Controllers
                 IsModerator = user.IsModerator
             };
         }
+
+        /// <summary>
+        /// Deletes the user and associated data asynchronous.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        public async Task<bool> DeleteUserAndAssociatedDataAsync(string username)
+        {
+            var user = await this.userManager.Users.SingleOrDefaultAsync(u => u.UserName == username) ?? throw new ArgumentException("User not found.");
+
+            try
+            {
+                if (user.Comments != null) this.context.Comments.RemoveRange(user.Comments);
+
+                if (user.Photos != null) this.context.Photos.RemoveRange(user.Photos);
+
+                if (user.Events != null)
+                {
+                    var eventIds = user.Events.Select(e => e.EventId).ToList();
+
+                    this.context.EventAttendees.RemoveRange(this.context.EventAttendees.Where(ea => eventIds.Contains(ea.EventId)));
+
+                    this.context.Events.RemoveRange(this.context.Events.Where(e => eventIds.Contains(e.Id)));
+                }
+
+                if (user.Followers != null) this.context.UserFollowings.RemoveRange(user.Followers);
+                if (user.Followings != null) this.context.UserFollowings.RemoveRange(user.Followings);
+
+                this.context.Users.Remove(user);
+
+                await this.context.SaveChangesAsync();
+            }
+            catch
+            {
+                throw new Exception("Something went wrong during the deletion process.");
+            }
+
+            return true;
+        }
+
     }
 }

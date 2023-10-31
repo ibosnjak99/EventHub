@@ -73,9 +73,12 @@ export default class UserStore {
         }
     }
 
-    deleteUser = async (id: string) => {
+    deleteUser = async (username: string) => {
         try {
-            await client.Account.delete(id)
+            await client.Account.delete(username)
+            runInAction(() => {
+                if (this.users) this.users = this.users.filter(user => user.username !== username)
+            })
         } catch (error) {
             console.log(error)
         }

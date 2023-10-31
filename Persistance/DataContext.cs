@@ -82,8 +82,8 @@ namespace Infrastructure
                 .HasForeignKey(u => u.EventId);
 
             builder.Entity<Comment>()
-                .HasOne(e => e.Event)
-                .WithMany(c => c.Comments)
+                .HasOne(c => c.Event)
+                .WithMany(e => e.Comments)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Photo>()
@@ -95,7 +95,7 @@ namespace Infrastructure
             builder.Entity<Comment>()
                 .HasOne(c => c.Author)
                 .WithMany(u => u.Comments)
-                .HasForeignKey(c => c.Author.Id)
+                .HasForeignKey(c => c.AuthorId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<EventAttendee>()
