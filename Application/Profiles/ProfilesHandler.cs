@@ -1,11 +1,10 @@
 ﻿using Application.Core;
 using Application.Interfaces;
-using AutoMapper.QueryableExtensions;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Application.Profiles.Commands
 {
@@ -58,16 +57,16 @@ namespace Application.Profiles.Commands
         /// </returns>
         public async Task<Result<Profile>> Handle(Details request, CancellationToken cancellationToken)
         {
-            var currentUser = await context.Users.FirstOrDefaultAsync(x => x.UserName == this.accessor.GetUsername());
+            var currentUser = await this.context.Users.FirstOrDefaultAsync(x => x.UserName == this.accessor.GetUsername());
 
-            var requestedUser = await context.Users.FirstOrDefaultAsync(x => x.UserName == request.Username);
+            var requestedUser = await this.context.Users.FirstOrDefaultAsync(x => x.UserName == request.Username);
 
             if (requestedUser == null || (!currentUser!.IsModerator && requestedUser!.IsModerator))
             {
                 return Result<Profile>.Failure("Requested user not found.");
             }
 
-            var profile = await context.Users
+            var profile = await this.context.Users
                 .Where(u => u.Id == requestedUser.Id)
                 .ProjectTo<Profile>(this.mapper.ConfigurationProvider, new { currentUsername = this.accessor.GetUsername() })
                 .SingleOrDefaultAsync();

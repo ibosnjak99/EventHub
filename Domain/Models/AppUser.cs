@@ -58,6 +58,14 @@ namespace Domain.Models
         public ICollection<UserFollowing> Followers { get; set; }
 
         /// <summary>
+        /// Gets or sets the comments.
+        /// </summary>
+        /// <value>
+        /// The comments.
+        /// </value>
+        public ICollection<Comment> Comments { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether this instance is moderator.
         /// </summary>
         /// <value>

@@ -33,22 +33,23 @@ export default class CommonStore {
         this.appLoaded = true
     }
 
-    setCookie(name: string, value: string) {
-        document.cookie = name + "=" + (value || "") + " path=/ Secure"
+    setCookie(name: string, value: string, days: number = 7) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        const expires = "expires=" + date.toUTCString();
+        document.cookie = `${name}=${value};${expires};path=/;Secure`;
     }
 
     getCookie(name: string): string | null {
-        const value = " " + document.cookie
-        const parts = value.split(" " + name + "=")
+        const value = `; ${document.cookie}`
+        const parts = value.split(`; ${name}=`)
         if (parts.length === 2) {
-            const poppedValue = parts.pop()
-            const result = poppedValue && poppedValue.split("").shift()
-            return result || null
+            return parts.pop()?.split(';').shift() || null
         }
         return null
     }
 
     deleteCookie(name: string) {
-        document.cookie = name + '= Path=/ Expires=Thu, 01 Jan 1970 00:00:01 GMT'
+        document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Secure`
     }
 }

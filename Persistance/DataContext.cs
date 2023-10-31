@@ -86,6 +86,36 @@ namespace Infrastructure
                 .WithMany(c => c.Comments)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<Photo>()
+                .HasOne<AppUser>()
+                .WithMany(u => u.Photos)
+                .HasForeignKey(p => p.AppUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Comment>()
+                .HasOne(c => c.Author)
+                .WithMany(u => u.Comments)
+                .HasForeignKey(c => c.Author.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<EventAttendee>()
+                .HasOne(ea => ea.AppUser)
+                .WithMany(u => u.Events)
+                .HasForeignKey(ea => ea.AppUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserFollowing>()
+                .HasOne(uf => uf.Observer)
+                .WithMany(u => u.Followings)
+                .HasForeignKey(uf => uf.ObserverId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserFollowing>()
+                .HasOne(uf => uf.Target)
+                .WithMany(u => u.Followers)
+                .HasForeignKey(uf => uf.TargetId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<UserFollowing>(b =>
             {
                 b.HasKey(k => new { k.ObserverId, k.TargetId });

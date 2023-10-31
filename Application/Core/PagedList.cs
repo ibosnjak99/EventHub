@@ -2,6 +2,10 @@
 
 namespace Application.Core
 {
+    /// <summary>
+    /// The paged list.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class PagedList<T> : List<T>
     {
         public PagedList(IEnumerable<T> items, int count, int pageNumber, int pageSize)

@@ -1,6 +1,7 @@
 ﻿using API.DTOs;
 using API.Services;
 using Domain.Models;
+using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,16 +20,18 @@ namespace API.Controllers
     {
         private readonly UserManager<AppUser> userManager;
         private readonly TokenService tokenService;
+        private readonly DataContext context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController" /> class.
         /// </summary>
         /// <param name="userManager">The user manager.</param>
         /// <param name="tokenService">The token service.</param>
-        public AccountController(UserManager<AppUser> userManager, TokenService tokenService)
+        public AccountController(UserManager<AppUser> userManager, TokenService tokenService, DataContext context)
         {
             this.userManager = userManager;
             this.tokenService = tokenService;
+            this.context = context;
         }
 
         /// <summary>
@@ -111,6 +114,43 @@ namespace API.Controllers
                 .FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
 
             return CreateUser(user);
+        }
+
+        /// <summary>
+        /// Gets all users.
+        /// </summary>
+        /// <returns>
+        /// User dto.
+        /// </returns>
+        [Authorize]
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
+        {
+            var users = await this.userManager.Users.ToListAsync();
+
+            var userDtos = users.Select(u => CreateUser(u));
+
+            return Ok(userDtos);
+        }
+
+        /// <summary>
+        /// Deletes the user.
+        /// </summary>
+        /// <returns>
+        /// Success message.
+        /// </returns>
+        [Authorize]
+        [HttpDelete]
+        public async Task<ActionResult> DeleteUser(string id)
+        {
+            var user = await this.context.Users.FindAsync(id);
+
+            if (user == null) return NotFound("User not found.");
+
+            this.context.Users.Remove(user);
+            await this.context.SaveChangesAsync();
+
+            return Ok("User and associated data successfully deleted.");
         }
 
         /// <summary>

@@ -32,10 +32,10 @@ axios.interceptors.response.use(async response => {
         const method = response.config.method?.toUpperCase()
         switch (method) {
             case 'PUT':
-                toast.success('Event updated successfully!')
+                toast.success('Successfully updated!')
                 break
             case 'DELETE':
-                toast.success('Event deleted successfully!')
+                toast.success('Successfully deleted!')
                 break
         }
     }
@@ -99,6 +99,8 @@ const Account = {
     current: () => requests.get<User>('/account'),
     login: (user: UserFormValues) => requests.post<User>('/account/login', user),
     register: (user: UserFormValues) => requests.post<User>('/account/register', user),
+    all: () => requests.get<User[]>('/account/all'),
+    delete: (id: string) => requests.delete<void>(`/account/${id}`),
 }
 
 const Profiles = {

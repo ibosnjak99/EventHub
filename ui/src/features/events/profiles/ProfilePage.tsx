@@ -8,12 +8,14 @@ import { useStore } from '../../../app/stores/store'
 import LoadingComponent from '../../../app/layouts/LoadingComponent'
 import EventsForm from "../form/EventForm"
 import EventDetailsModal from '../dashboard/EventDetailsModal'
+import UserDashboard from './UserDashboard'
 
 export default observer(function ProfilePage() {
-    const {profileStore, eventStore} = useStore()
+    const {profileStore, eventStore, userStore} = useStore()
     
     const {loadingProfile, loadProfile, profile, setActiveTab} = profileStore
     const {editMode, selectedEvent} = eventStore
+    const {user} = userStore
 
     const {username} = useParams<{username: string}>()
 
@@ -33,6 +35,11 @@ export default observer(function ProfilePage() {
                     <>
                         <ProfileHeader profile={profile} />
                         <ProfileContent profile={profile} />
+                    </>
+                }
+                {user?.isModerator &&
+                    <>
+                        <UserDashboard />
                     </>
                 }
             </Grid.Column>

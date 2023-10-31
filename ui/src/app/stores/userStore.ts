@@ -6,6 +6,7 @@ import { router } from "../router/Routes"
 
 export default class UserStore {
     user: User | null = null
+    users: User[] | null = null
 
     constructor() {
         makeAutoObservable(this)
@@ -40,14 +41,16 @@ export default class UserStore {
     }
 
     logout = () => {
-        store.commonStore.setToken(null)
-        this.user = null
-        
-        store.eventStore.reset()
-        router.navigate('/')
+        setTimeout(() => {
+            runInAction(() => {
+                store.commonStore.setToken(null)
+                this.user = null
+                store.eventStore.reset()
+            })
+            router.navigate('/')
+        }, 500)
     }
     
-
     getUser = async () => {
         try {
             const user = await client.Account.current()
@@ -59,6 +62,25 @@ export default class UserStore {
         }
     }
 
+    getAllUsers = async () => {
+        try {
+            const users = await client.Account.all()
+            runInAction(() => {
+                this.users = users
+            })
+        } catch (error) {
+                console.log(error)
+        }
+    }
+
+    deleteUser = async (id: string) => {
+        try {
+            await client.Account.delete(id)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    
     setImage = (image: string) => {
         if (this.user) {
             this.user.image = image
