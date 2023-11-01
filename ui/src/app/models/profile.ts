@@ -1,6 +1,7 @@
 import { User } from "./user"
 
 export interface Profile {
+    appUserId: string
     userName: string
     displayName: string
     image?: string
@@ -13,12 +14,14 @@ export interface Profile {
 
 export class Profile implements Profile {
     constructor(user: User) {
+        this.appUserId = user.appUserId
         this.userName = user.username
         this.displayName = user.displayName
         this.image = user.image
         this.bio = user.bio
     }
 
+    appUserId: string
     userName: string
     displayName: string
     image?: string

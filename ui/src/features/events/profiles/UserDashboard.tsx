@@ -1,18 +1,21 @@
-import { observer } from 'mobx-react-lite'
 import React, { useEffect, useState } from 'react'
+import { observer } from 'mobx-react-lite'
+import { Button, Header, Icon, Image, List, Modal, Segment } from 'semantic-ui-react'
 import { useStore } from '../../../app/stores/store'
-import { Button, Image, List, Modal, Icon } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
 
 export default observer(function UserDashboard() {
-    const { userStore } = useStore()
-    const { users, getAllUsers, deleteUser } = userStore
+    const { userStore, profileStore } = useStore()
+    const { deleteUser } = userStore
+    const { profiles, getAllProfiles } = profileStore
 
     useEffect(() => {
-        getAllUsers()
-    }, [getAllUsers])
+        getAllProfiles()
+    }, [getAllProfiles])
 
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [userToDelete, setUserToDelete] = useState('')
+    const [showUserList, setShowUserList] = useState(false)
 
     function handleDeleteUser(username: string) {
         setUserToDelete(username)
@@ -28,27 +31,45 @@ export default observer(function UserDashboard() {
         setShowDeleteModal(false)
     }
 
-    if (!users) return null
+    function handleToggleUserList() {
+        getAllProfiles()
+        setShowUserList(!showUserList)
+    }
+
+    if (!profiles) return null
 
     return (
         <>
-            <List divided relaxed>
-                {users.map(user => (
-                    <List.Item key={user.username} style={{ display: 'flex', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-                            <Image avatar size='tiny' src={user.image || '/assets/user.png'} />
-                            <List.Content>
-                                <List.Header>{user.displayName}</List.Header>
+            <Segment
+                textAlign='center'
+                style={{ cursor: 'pointer', marginTop: '20px' }}
+                secondary
+                inverted
+                color='blue'
+                onClick={handleToggleUserList}
+            >
+                <Header as='h4'>
+                    List of Users
+                    <Icon name={showUserList ? 'angle double up' : 'angle double down'}/>
+                </Header>
+            </Segment>
+            {showUserList && (
+                <List divided relaxed>
+                    {profiles.map(profile => (
+                        <List.Item key={profile.userName} style={{ display: 'flex', alignItems: 'center' }}>
+                            <Image avatar size='tiny' src={profile.image || '/assets/user.png'} />
+                            <List.Content style={{ marginLeft: '10px' }}>
+                                <List.Header as={Link} to={`/profile/${profile.userName}`}>
+                                    {profile.displayName}
+                                </List.Header>
                             </List.Content>
-                        </div>
-                        <List.Content style={{ justifyContent: 'flex-end' }}>
-                            <Button color='red' onClick={() => handleDeleteUser(user.username)}>
+                            <Button color='red' onClick={() => handleDeleteUser(profile.userName)} style={{ marginLeft: 'auto' }}>
                                 Delete
                             </Button>
-                        </List.Content>
-                    </List.Item>
-                ))}
-            </List>
+                        </List.Item>
+                    ))}
+                </List>
+            )}
 
             <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} size='tiny'>
                 <Modal.Header>Delete User</Modal.Header>

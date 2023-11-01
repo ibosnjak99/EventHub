@@ -1,5 +1,6 @@
 ﻿using Application.Core;
 using Application.Interfaces;
+using Application.Profiles.Queries;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Infrastructure;
@@ -11,7 +12,11 @@ namespace Application.Profiles.Commands
     /// <summary>
     /// Profiles handler class.
     /// </summary>
-    public class ProfilesHandler : IRequestHandler<Edit, Result<Unit>>, IRequestHandler<Details, Result<Profile>>, IRequestHandler<EventsList, Result<List<UserEventDto>>>
+    public class ProfilesHandler : 
+        IRequestHandler<Edit, Result<Unit>>,
+        IRequestHandler<Details, Result<Profile>>,
+        IRequestHandler<ProfileEventsList, Result<List<UserEventDto>>>,
+        IRequestHandler<GetAll, Result<List<Profile>>>
     {
         private readonly DataContext context;
         private readonly IUserAccessor accessor;
@@ -83,7 +88,28 @@ namespace Application.Profiles.Commands
         /// <returns>
         /// Response from the request.
         /// </returns>
-        public async Task<Result<List<UserEventDto>>> Handle(EventsList request, CancellationToken cancellationToken)
+        public async Task<Result<List<Profile>>> Handle(GetAll request, CancellationToken cancellationToken)
+        {
+            var currentUser = await this.context.Users.FirstOrDefaultAsync(x => x.UserName == this.accessor.GetUsername());
+
+            if (currentUser == null || currentUser!.IsModerator == false) return Result<List<Profile>>.Failure("Cannot retrieve list of users.");
+
+            var profiles = await this.context.Users
+                .ProjectTo<Profile>(this.mapper.ConfigurationProvider, new { currentUsername = this.accessor.GetUsername() })
+                .ToListAsync(cancellationToken);
+
+            return Result<List<Profile>>.Success(profiles);
+        }
+
+        /// <summary>
+        /// Handles the specified request.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>
+        /// Response from the request.
+        /// </returns>
+        public async Task<Result<List<UserEventDto>>> Handle(ProfileEventsList request, CancellationToken cancellationToken)
         {
             var query = this.context.EventAttendees
                 .Where(u => u.AppUser.UserName == request.Username)

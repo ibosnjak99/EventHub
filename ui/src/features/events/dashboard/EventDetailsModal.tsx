@@ -45,7 +45,7 @@ export default observer(function EventModal() {
     function handleGoingListClick() {
         setShowGoingList(!showGoingList)
       }
-
+console.log(event.attendees)
       return (
         <>
             <Modal open={true} onClose={unselectEvent} dimmer size="large" style={{ height: '90%'}}>

@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    /// <summary>
+    /// The bugs test controller.
+    /// </summary>
     public class BugsController : BaseApiController
     {
         [HttpGet("not-found")]

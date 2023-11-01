@@ -5,6 +5,7 @@ import { store } from "./store"
 
 export default class ProfileStore {
     profile: Profile | null = null
+    profiles: Profile[] | null = null
     loadingProfile = false
     uploading = false
     loading = false
@@ -54,6 +55,17 @@ export default class ProfileStore {
         } catch (error) {
             console.log(error)
             runInAction(() => this.loadingProfile = false)
+        }
+    }
+
+    getAllProfiles = async () => {
+        try {
+            const profiles = await client.Profiles.all()
+            runInAction(() => {
+                this.profiles = profiles
+            })
+        } catch (error) {
+                console.log(error)
         }
     }
 

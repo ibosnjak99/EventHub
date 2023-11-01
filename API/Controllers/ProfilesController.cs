@@ -1,5 +1,6 @@
 ﻿using Application.Profiles;
 using Application.Profiles.Commands;
+using Application.Profiles.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -23,6 +24,15 @@ namespace API.Controllers
         }
 
         /// <summary>
+        /// Gets all.
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            return HandleResult(await Mediator!.Send(new GetAll()));
+        }
+
+        /// <summary>
         /// Edits the specified edit.
         /// </summary>
         /// <param name="edit">
@@ -37,7 +47,7 @@ namespace API.Controllers
         [HttpGet("{username}/events")]
         public async Task<IActionResult> GetUserEvents(string username, string predicate)
         {
-            return HandleResult(await Mediator!.Send(new EventsList { Username = username, Predicate = predicate }));
+            return HandleResult(await Mediator!.Send(new ProfileEventsList { Username = username, Predicate = predicate }));
         }
     }
 }

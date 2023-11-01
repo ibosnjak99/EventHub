@@ -34,6 +34,7 @@ namespace Application.Common
                 .ForMember(d => d.Following, o => o.MapFrom(s => s.AppUser.Followers.Any(x => x.Observer.UserName == currentUsername))); ;
 
             CreateMap<AppUser, Profiles.Profile>()
+                .ForMember(dest => dest.AppUserId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(d => d.Image, s => s.MapFrom(o => o.Photos.FirstOrDefault(x => x.IsProfile).Url))
                 .ForMember(d => d.FollowersCount, o => o.MapFrom(s => s.Followers.Count))
                 .ForMember(d => d.FollowingCount, o => o.MapFrom(s => s.Followings.Count))

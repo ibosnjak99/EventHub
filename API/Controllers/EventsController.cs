@@ -47,7 +47,6 @@ namespace API.Controllers
             return HandleResult(await this.mediator.Send(new GetById(id)));
         }
 
-
         // POST: /api/events
         /// <summary>
         /// Creates new event asynchronous.

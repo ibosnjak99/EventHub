@@ -178,7 +178,7 @@ namespace API.Controllers
         public async Task<bool> DeleteUserAndAssociatedDataAsync(string username)
         {
             var user = await this.userManager.Users.SingleOrDefaultAsync(u => u.UserName == username) ?? throw new ArgumentException("User not found.");
-
+            if (user.IsModerator) throw new ArgumentException("Cannot delete moderator.");
             try
             {
                 if (user.Comments != null) this.context.Comments.RemoveRange(user.Comments);

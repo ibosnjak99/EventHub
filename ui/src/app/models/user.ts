@@ -1,4 +1,5 @@
 export interface User {
+    appUserId: string
     username: string
     displayName: string
     bio: string
