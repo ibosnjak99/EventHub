@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Icon } from 'semantic-ui-react'
 import { useStore } from '../../stores/store'
 
-const FloatingActionButton = () => {
+const MobileCreateButton = () => {
     const {eventStore: {openModal}} = useStore()
     const {userStore: {user}} = useStore()
 
@@ -14,19 +14,13 @@ const FloatingActionButton = () => {
             icon
             onClick={() => openModal()} 
             style={{
-                position: 'fixed',
-                bottom: '3em',
-                right: '3em',
-                zIndex: 5,
                 color: 'white',
                 backgroundColor: '#3687d9',
-                borderColor: '#ddd', 
-                borderWidth: '2px'
             }} 
         >
-            <Icon size='large' name='plus' />
+            <Icon size='small' name='plus' />
         </Button>
     )
 }
 
-export default FloatingActionButton
+export default MobileCreateButton

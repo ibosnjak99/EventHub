@@ -45,10 +45,10 @@ export default observer(function EventModal() {
     function handleGoingListClick() {
         setShowGoingList(!showGoingList)
       }
-console.log(event.attendees)
+
       return (
         <>
-            <Modal open={true} onClose={unselectEvent} dimmer size="large" style={{ height: '90%'}}>
+            <Modal open={true} onClose={unselectEvent} dimmer size="small" style={{ height: '90%'}}>
                 {event.isCancelled &&
                     <Label attached='top' color='red' content='Cancelled' />
                 }
@@ -110,20 +110,20 @@ console.log(event.attendees)
                         )}
                         <Divider/>
                         <Grid>
-                            <Grid.Column width={1}>
+                            <Grid.Column width={2}>
                                 <Icon size='large' color='blue' name='info'/>
                             </Grid.Column>
-                            <Grid.Column width={15}>
+                            <Grid.Column width={10}>
                                 <p>{event.description}</p>
                             </Grid.Column>
                         </Grid>
                         <Divider style={{ opacity: '0.5' }}/>
 
                         <Grid verticalAlign='middle'>
-                            <Grid.Column width={1}>
+                            <Grid.Column width={2}>
                                 <Icon name='calendar' size='large' color='blue'/>
                             </Grid.Column>
-                            <Grid.Column width={15}>
+                            <Grid.Column width={10}>
                                 <span>
                                 {format(event.date!, 'dd/MM/yyyy HH:mm')}
                                 </span>
@@ -132,10 +132,10 @@ console.log(event.attendees)
                         <Divider style={{ opacity: '0.5' }}/>
 
                         <Grid verticalAlign='middle'>
-                            <Grid.Column width={1}>
+                            <Grid.Column width={2}>
                                 <Icon name='marker' size='large' color='blue'/>
                             </Grid.Column>
-                            <Grid.Column width={11}>
+                            <Grid.Column width={10}>
                                 <span>{event.venue}, {event.city}</span>
                             </Grid.Column>
                         </Grid>
@@ -201,7 +201,7 @@ console.log(event.attendees)
                                 )}
                             </Formik>
                         }
-                        <Comment.Group style={{ maxWidth: '100%', marginTop: '50px' }}>
+                        <Comment.Group style={{ maxWidth: '100%', marginTop: '70px' }}>
                             {commentStore.comments.length > 0 ? (
                                 commentStore.comments.map(comment => (
                                     <Comment key={comment.id}>

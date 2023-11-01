@@ -4,7 +4,7 @@ import Calendar from "react-calendar"
 import { Button, Header, Icon, Input, Menu } from "semantic-ui-react"
 import { useStore } from "../../../app/stores/store"
 
-export default observer(function EventFilters() {
+function EventFilters({ closeModal }: { closeModal: () => void }) {
     const { eventStore: { predicate, setPredicate } } = useStore()
     const [searchTerm, setSearchTerm] = useState('')
 
@@ -15,6 +15,7 @@ export default observer(function EventFilters() {
     const handleIconClick = () => {
         setPredicate('searchTerm', searchTerm)
         setSearchTerm('')
+        closeModal()
     } 
 
     return (
@@ -24,22 +25,34 @@ export default observer(function EventFilters() {
                 <Menu.Item
                     content='All events' 
                     active={predicate.has('all')}
-                    onClick={() => setPredicate('all', 'true')}
+                    onClick={() => {
+                        setPredicate('all', 'true')
+                        closeModal()
+                    }}
                 />
                 <Menu.Item 
                     content='Attending'
                     active={predicate.has('isGoing')}
-                    onClick={() => setPredicate('isGoing', 'true')}
+                    onClick={() => {
+                        setPredicate('isGoing', 'true')
+                        closeModal()
+                    }}
                 />
                 <Menu.Item 
                     content='Hosting' 
                     active={predicate.has('isHost')}
-                    onClick={() => setPredicate('isHost', 'true')}
+                    onClick={() => {
+                        setPredicate('isHost', 'true')
+                        closeModal()
+                    }}
                 />
                 <Menu.Item
                     content='Following' 
                     active={predicate.has('isFollowing')}
-                    onClick={() => setPredicate('isFollowing', 'true')}
+                    onClick={() => {
+                        setPredicate('isFollowing', 'true')
+                        closeModal()
+                    }}
                 />
             </Menu>
             <Input 
@@ -51,12 +64,20 @@ export default observer(function EventFilters() {
                 icon={<Icon name='search' link onClick={handleIconClick} />}
             />
             <Calendar 
-                onChange={(date) => setPredicate('startDate', date as Date)}
+                onChange={(date) => {
+                    setPredicate('startDate', date as Date)
+                    closeModal()
+                }}
                 value={predicate.get('startDate') || new Date()}
             />
             <Button 
                 floated='right' 
-                onClick={() => [setPredicate('all', 'true'), setPredicate('startDate', new Date()), setSearchTerm('')]} 
+                onClick={() => {
+                    setPredicate('all', 'true')
+                    setPredicate('startDate', new Date())
+                    setSearchTerm('')
+                    closeModal()
+                }} 
                 content='Reset filters'
                 style={{
                     color: 'white',
@@ -68,4 +89,6 @@ export default observer(function EventFilters() {
             />
         </>
     )
-})
+}
+
+export default observer(EventFilters)

@@ -9,6 +9,8 @@ interface Props {
     profile: Profile
 }
 
+const isMobile = window.innerWidth <= 768;
+
 export default observer (function ProfilePhotos({profile}: Props) {
     const {profileStore: {isCurrentUser, uploadPhoto, uploading, loading, setProfilePhoto, deletePhoto}} = useStore()
     const [addPhotoMode, setAddPhotoMode] = useState(false)
@@ -69,7 +71,7 @@ export default observer (function ProfilePhotos({profile}: Props) {
                     {addPhotoMode ? (
                         <PhotoUploadWidget uploadPhoto={handlePhotoUpload} loading={uploading}/>
                     ) : (
-                        <Card.Group itemsPerRow={5}>
+                        <Card.Group itemsPerRow={isMobile ? 3 : 5}>
                             {profile.photos?.map(photo => (
                                 <Card key={photo.id} onClick={() => openModal(photo)}>
                                     <Image src={photo.url} />

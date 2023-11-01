@@ -11,6 +11,8 @@ const panes = [
     { menuItem: 'Hosting', pane: { key: 'hosting' } }
 ]
 
+const isMobile = window.innerWidth <= 768;
+
 export default observer(function ProfileEvents() {
     const { profileStore, eventStore } = useStore()
     const { loadUserEvents, profile, loadingEvents, userEvents } = profileStore
@@ -37,7 +39,7 @@ export default observer(function ProfileEvents() {
                         onTabChange={(e, data) => handleTabChange(e, data)}
                     />
                     <br />
-                    <Card.Group itemsPerRow={4}>
+                    <Card.Group itemsPerRow={isMobile ? 2 : 4}>
                         {userEvents.map((event: UserEvent) => (
                             <Card
                                 key={event.id}

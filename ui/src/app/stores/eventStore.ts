@@ -34,7 +34,6 @@ export default class EventStore {
     }
 
     setPredicate = (predicate: string, value: string | Date) => {
-        console.log(predicate, value)
         const resetPredicate = () => {
             this.predicate.forEach((value, key) => {
                 if (key !== 'startDate') this.predicate.delete(key)

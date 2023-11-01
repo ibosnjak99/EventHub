@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import {  Container } from 'semantic-ui-react'
+import {  Container, Segment } from 'semantic-ui-react'
 import NavBar from './NavBar'
 import { observer } from 'mobx-react-lite'
 import { Outlet, ScrollRestoration } from 'react-router-dom'
@@ -8,7 +8,6 @@ import { useStore } from '../stores/store'
 import LoadingComponent from './LoadingComponent'
 import ModalContainer from '../common/modals/ModalContainer'
 import { useLocation } from 'react-router-dom'
-import FloatingActionButton from '../common/form/FloatingCreateButton'
 
 function App() {
   const { commonStore, userStore } = useStore()
@@ -29,16 +28,15 @@ function App() {
   if (!commonStore.appLoaded) return <LoadingComponent content='Loading...' />
 
   return (
-    <>
-    <ScrollRestoration />
-    <ModalContainer />
-    <ToastContainer position='bottom-right' theme='colored' autoClose={2000} />
-    { location.pathname !== '/' && <NavBar /> }
-    { userStore.isLoggedIn && <FloatingActionButton /> }
-      <Container style={{ marginTop: '6em'}}>
-        <Outlet />
-      </Container>
-    </>
+    <Segment style={{ overflowX: 'hidden', backgroundColor: '#f0f3f7'}}>
+      <ScrollRestoration />
+      <ModalContainer />
+      <ToastContainer position='bottom-right' theme='colored' autoClose={2000} />
+      { location.pathname !== '/' && <NavBar /> }
+        <Container style={{ marginTop: '6em'}}>
+          <Outlet />
+        </Container>
+    </Segment>
   )
 }
 
