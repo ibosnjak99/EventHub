@@ -59,87 +59,86 @@ export default observer(function EventModal() {
                     <Card fluid raised>
                         <Image src={`/assets/categoryImages/${event.category}.jpg`} centered wrapped ui={false} />
                         <Card.Content>
-                        <Card.Content>
-                        <Segment
-                            textAlign='center'
-                            style={{ border: 'none', cursor: 'pointer' }}
-                            attached='top'
-                            secondary
-                            inverted
-                            color='blue'
-                            onClick={handleGoingListClick}
-                        >
-                            <Header as='h4'>
-                                {event.attendees!.length} {event.attendees!.length === 1 ? 'person' : 'people'} going
-                                <Icon name={showGoingList ? 'angle double up' : 'angle double down'} />
-                            </Header>
-                        </Segment>
-                        {showGoingList && (
-                        <Segment attached='bottom' style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                            <List divided style={{ width: '90%', margin: 'auto' }}>
-                                {event.attendees!.map(attendee => (
-                                    <Item 
-                                        style={{ position: 'relative', display: 'flex', alignItems: 'center' }} 
-                                        key={attendee.userName} 
-                                        as={Link} 
-                                        to={`/profile/${attendee.userName}`}
-                                        onClick={() => { unselectEvent()}}
-                                    >
-                                        {attendee.userName === event.host?.userName &&
-                                            <Label
-                                                style={{ position: 'absolute' }}
-                                                color='orange'
-                                                ribbon='right'
-                                            >
-                                                Host
-                                            </Label>
-                                        }
-                                        <Image size='mini' circular src={attendee.image ||'/assets/user.png'} />
-                                        <Item.Content verticalAlign='middle'>
-                                            <Item.Header as='h4'>
-                                                <Header size='tiny' to={`/profile/${attendee.userName}`}>{attendee.displayName}</Header>
-                                            </Item.Header>
-                                            {attendee.following &&
-                                                <Item.Extra style={{ color: 'orange', fontSize: '.8em' }}>Following</Item.Extra>
+                            <Segment
+                                textAlign='center'
+                                style={{ border: 'none', cursor: 'pointer' }}
+                                attached='top'
+                                secondary
+                                inverted
+                                color='blue'
+                                onClick={handleGoingListClick}
+                            >
+                                <Header as='h4'>
+                                    {event.attendees!.length} {event.attendees!.length === 1 ? 'person' : 'people'} going
+                                    <Icon name={showGoingList ? 'angle double up' : 'angle double down'} />
+                                </Header>
+                            </Segment>
+                            {showGoingList && (
+                            <Segment attached='bottom' style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                                <List divided style={{ width: '90%', margin: 'auto' }}>
+                                    {event.attendees!.map(attendee => (
+                                        <Item 
+                                            style={{ position: 'relative', display: 'flex', alignItems: 'center' }} 
+                                            key={attendee.userName} 
+                                            as={Link} 
+                                            to={`/profile/${attendee.userName}`}
+                                            onClick={() => { unselectEvent()}}
+                                        >
+                                            {attendee.userName === event.host?.userName &&
+                                                <Label
+                                                    style={{ position: 'absolute' }}
+                                                    color='orange'
+                                                    ribbon='right'
+                                                >
+                                                    Host
+                                                </Label>
                                             }
-                                        </Item.Content>
-                                    </Item>
-                                ))}
-                            </List>
-                        </Segment>
-                        )}
-                        <Divider/>
-                        <Grid>
-                            <Grid.Column width={2}>
-                                <Icon size='large' color='blue' name='info'/>
-                            </Grid.Column>
-                            <Grid.Column width={10}>
-                                <p>{event.description}</p>
-                            </Grid.Column>
-                        </Grid>
-                        <Divider style={{ opacity: '0.5' }}/>
+                                            <Image size='mini' circular src={attendee.image ||'/assets/user.png'} />
+                                            <Item.Content verticalAlign='middle'>
+                                                <Item.Header as='h4'>
+                                                    <Header size='tiny' to={`/profile/${attendee.userName}`}>{attendee.displayName}</Header>
+                                                </Item.Header>
+                                                {attendee.following &&
+                                                    <Item.Extra style={{ color: 'orange', fontSize: '.8em' }}>Following</Item.Extra>
+                                                }
+                                            </Item.Content>
+                                        </Item>
+                                    ))}
+                                </List>
+                            </Segment>
+                            )}
+                            <Divider/>
+                            <Grid>
+                                <Grid.Column width={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Icon size='large' color='blue' name='info'/>
+                                </Grid.Column>
+                                <Grid.Column width={14}>
+                                    <p style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}>{event.description}</p>
+                                </Grid.Column>
+                            </Grid>
+                            <Divider style={{ opacity: '0.5' }}/>
 
-                        <Grid verticalAlign='middle'>
-                            <Grid.Column width={2}>
-                                <Icon name='calendar' size='large' color='blue'/>
-                            </Grid.Column>
-                            <Grid.Column width={10}>
-                                <span>
-                                {format(event.date!, 'dd/MM/yyyy HH:mm')}
-                                </span>
-                            </Grid.Column>
-                        </Grid>
-                        <Divider style={{ opacity: '0.5' }}/>
+                            <Grid>
+                                <Grid.Column width={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Icon size='large' color='blue' name='calendar'/>
+                                </Grid.Column>
+                                <Grid.Column width={14}>
+                                    <p style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}>
+                                        <span>{format(event.date!, 'dd/MM/yyyy HH:mm')}</span>
+                                    </p>
+                                </Grid.Column>
+                            </Grid>
+                            <Divider style={{ opacity: '0.5' }}/>
 
-                        <Grid verticalAlign='middle'>
-                            <Grid.Column width={2}>
-                                <Icon name='marker' size='large' color='blue'/>
-                            </Grid.Column>
-                            <Grid.Column width={10}>
-                                <span>{event.venue}, {event.city}</span>
-                            </Grid.Column>
-                        </Grid>
-                        </Card.Content>
+                            <Grid>
+                                <Grid.Column width={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Icon size='large' color='blue' name='marker'/>
+                                </Grid.Column>
+                                <Grid.Column width={14}>
+                                    <p style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}><span>{event.venue}, {event.city}</span></p>
+                                </Grid.Column>
+                            </Grid>
+                            <Divider style={{ opacity: '0.5' }}/>
                         </Card.Content>
                         <Card.Content extra>
                             {event.isHost ? (

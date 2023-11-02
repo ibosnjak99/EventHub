@@ -5,7 +5,7 @@ import ProfileContent from './ProfileContent'
 import { observer } from 'mobx-react-lite'
 import { useParams } from 'react-router-dom'
 import { useStore } from '../../../app/stores/store'
-import LoadingComponent from '../../../app/layouts/LoadingComponent'
+import LoadingComponent from '../../layouts/LoadingComponent'
 import EventsForm from "../form/EventForm"
 import EventDetailsModal from '../dashboard/EventDetailsModal'
 import UserDashboard from './UserDashboard'

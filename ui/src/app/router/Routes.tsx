@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate, RouteObject } from "react-router-dom"
-import App from "../layouts/App"
+import App from "../../features/layouts/App"
 import EventsDashboard from "../../features/events/dashboard/EventsDashboard"
 import TestErrors from "../../features/events/errors/TestError"
 import NotFound from "../../features/events/errors/NotFound"

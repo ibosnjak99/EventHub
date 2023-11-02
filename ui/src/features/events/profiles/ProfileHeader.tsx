@@ -16,7 +16,7 @@ function truncate(str: string | undefined) {
 }
 
 export default observer(function ProfileHeader({profile}: Props) {
-    const {userStore: {user}} = useStore();
+    const {userStore: {user}} = useStore()
     
     const isMobile = window.innerWidth <= 768;
 
@@ -40,9 +40,11 @@ export default observer(function ProfileHeader({profile}: Props) {
                             <Statistic label="Following" value={profile.followingCount} />
                         </Statistic.Group>
                     }
-                    <Divider/>
-                    {!user?.isModerator &&
-                        <FollowButon profile={profile}/>
+                    {!user?.isModerator && isMobile &&
+                        <>
+                            <Divider/>
+                            <FollowButon profile={profile}/>
+                        </>
                     }
                 </Grid.Column>
                 

@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
-import {  Container, Segment } from 'semantic-ui-react'
+import {  Container } from 'semantic-ui-react'
 import NavBar from './NavBar'
 import { observer } from 'mobx-react-lite'
 import { Outlet, ScrollRestoration } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
-import { useStore } from '../stores/store'
+import { useStore } from '../../app/stores/store'
 import LoadingComponent from './LoadingComponent'
-import ModalContainer from '../common/modals/ModalContainer'
+import ModalContainer from '../../app/common/modals/ModalContainer'
 import { useLocation } from 'react-router-dom'
 
 function App() {
@@ -28,7 +28,7 @@ function App() {
   if (!commonStore.appLoaded) return <LoadingComponent content='Loading...' />
 
   return (
-    <Segment style={{ overflowX: 'hidden', backgroundColor: '#f0f3f7'}}>
+    <>
       <ScrollRestoration />
       <ModalContainer />
       <ToastContainer position='bottom-right' theme='colored' autoClose={2000} />
@@ -36,7 +36,7 @@ function App() {
         <Container style={{ marginTop: '6em'}}>
           <Outlet />
         </Container>
-    </Segment>
+    </>
   )
 }
 

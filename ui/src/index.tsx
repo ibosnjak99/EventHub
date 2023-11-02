@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client'
-import './app/layouts/style.css'
+import './features/layouts/style.css'
 import 'react-calendar/dist/Calendar.css'
 import 'react-toastify/dist/ReactToastify.min.css'
 import 'semantic-ui-css/semantic.min.css'
