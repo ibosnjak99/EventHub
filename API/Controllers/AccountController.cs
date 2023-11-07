@@ -182,21 +182,18 @@ namespace API.Controllers
 
             try
             {
-                if (user.Comments != null) this.context.Comments.RemoveRange(user.Comments);
+                this.context.Comments.RemoveRange(this.context.Comments.Where(c => c.AuthorId == user.Id));
 
-                if (user.Photos != null) this.context.Photos.RemoveRange(user.Photos);
+                this.context.Photos.RemoveRange(this.context.Photos.Where(p => p.AppUserId == user.Id));
 
-                if (user.Events != null)
-                {
-                    var eventIds = user.Events.Select(e => e.EventId).ToList();
+                var eventAttendees = this.context.EventAttendees.Where(ea => ea.AppUserId == user.Id && ea.IsHost).ToList();
+                var eventIds = eventAttendees.Select(ea => ea.EventId).Distinct().ToList();
 
-                    this.context.EventAttendees.RemoveRange(this.context.EventAttendees.Where(ea => eventIds.Contains(ea.EventId)));
+                this.context.EventAttendees.RemoveRange(eventAttendees);
+                
+                this.context.Events.RemoveRange(this.context.Events.Where(e => eventIds.Contains(e.Id)));
 
-                    this.context.Events.RemoveRange(this.context.Events.Where(e => eventIds.Contains(e.Id)));
-                }
-
-                if (user.Followers != null) this.context.UserFollowings.RemoveRange(user.Followers);
-                if (user.Followings != null) this.context.UserFollowings.RemoveRange(user.Followings);
+                this.context.UserFollowings.RemoveRange(this.context.UserFollowings.Where(uf => uf.ObserverId == user.Id || uf.TargetId == user.Id));
 
                 this.context.Users.Remove(user);
 
