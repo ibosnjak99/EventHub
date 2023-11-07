@@ -3,6 +3,8 @@ import { Button, Grid, Header } from "semantic-ui-react"
 import PhotoWidgetDropzone from "./PhotoWidgetDropzone"
 import PhotoWidgetCropper from "./PhotoWidgetCropper"
 
+const isMobile = window.innerWidth <= 768
+
 interface Props {
     loading: boolean
     uploadPhoto: (file: Blob) => void
@@ -24,36 +26,64 @@ export default function PhotoUploadWidget({ loading, uploadPhoto }: Props) {
         }
     }, [files])
 
+    const columnWidth = isMobile ? 16 : 4
+
     return (
         <Grid stackable>
             <Grid.Row>
-                <Grid.Column width={4}>
+                <Grid.Column width={columnWidth}>
                     <Header sub color='blue' content='Step 1 - Pick an image' style={{ marginBottom: 20 }} />
                     <PhotoWidgetDropzone setFiles={setFiles} />
                 </Grid.Column>
+                {!isMobile && (
+                    <>
+                        <Grid.Column width={columnWidth}>
+                            <Header sub color='blue' content='Step 2 - Resize image' style={{ marginBottom: 20 }} />
+                            {files && files.length > 0 && (
+                                <PhotoWidgetCropper setCropper={setCropper} imagePreview={files[0].preview} />
+                            )}
+                        </Grid.Column>
+                        <Grid.Column width={columnWidth}>
+                            <Header sub color='blue' content='Step 3 - Preview and upload' style={{ marginBottom: 20 }} />
+                            {files && files.length > 0 &&
+                                <>
+                                    <div className='img-preview' style={{ minHeight: 200, overflow: 'hidden' }} />
+                                    <Button.Group widths={2}>
+                                        <Button loading={loading} onClick={() => onCrop()} color='blue' icon='check' />
+                                        <Button disabled={loading} onClick={() => setFiles([])} icon='close' />
+                                    </Button.Group>
+                                </>
+                            }
+                        </Grid.Column>
+                    </>
+                )}
             </Grid.Row>
-            <Grid.Row>
-                <Grid.Column width={4}>
-                    <Header sub color='blue' content='Step 2 - Resize image' style={{ marginBottom: 20 }} />
-                    {files && files.length > 0 && (
-                        <PhotoWidgetCropper setCropper={setCropper} imagePreview={files[0].preview} />
-                    )}
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-                <Grid.Column width={4}>
-                    <Header sub color='blue' content='Step 3 - Preview and upload' style={{ marginBottom: 20 }} />
-                    {files && files.length > 0 &&
-                        <>
-                            <div className='img-preview' style={{ minHeight: 200, overflow: 'hidden' }} />
-                            <Button.Group widths={2}>
-                                <Button loading={loading} onClick={() => onCrop()} color='blue' icon='check' />
-                                <Button disabled={loading} onClick={() => setFiles([])} icon='close' />
-                            </Button.Group>
-                        </>
-                    }
-                </Grid.Column>
-            </Grid.Row>
+            {isMobile && (
+                <>
+                    <Grid.Row>
+                        <Grid.Column width={columnWidth}>
+                            <Header sub color='blue' content='Step 2 - Resize image' style={{ marginBottom: 20 }} />
+                            {files && files.length > 0 && (
+                                <PhotoWidgetCropper setCropper={setCropper} imagePreview={files[0].preview} />
+                            )}
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column width={columnWidth}>
+                            <Header sub color='blue' content='Step 3 - Preview and upload' style={{ marginBottom: 20 }} />
+                            {files && files.length > 0 &&
+                                <>
+                                    <div className='img-preview' style={{ minHeight: 200, overflow: 'hidden' }} />
+                                    <Button.Group widths={2}>
+                                        <Button loading={loading} onClick={() => onCrop()} color='blue' icon='check' />
+                                        <Button disabled={loading} onClick={() => setFiles([])} icon='close' />
+                                    </Button.Group>
+                                </>
+                            }
+                        </Grid.Column>
+                    </Grid.Row>
+                </>
+            )}
         </Grid>
     )
 }

@@ -13,7 +13,7 @@ import UserDashboard from './UserDashboard'
 export default observer(function ProfilePage() {
     const {profileStore, eventStore, userStore} = useStore()
     
-    const {loadingProfile, loadProfile, profile, setActiveTab} = profileStore
+    const {loadingProfile, loadProfile, profile, setActiveTab, isCurrentUser} = profileStore
     const {editMode, selectedEvent} = eventStore
     const {user} = userStore
 
@@ -37,7 +37,7 @@ export default observer(function ProfilePage() {
                         <ProfileContent profile={profile} />
                     </>
                 }
-                {user?.isModerator &&
+                {user?.isModerator && isCurrentUser &&
                     <>
                         <UserDashboard />
                     </>

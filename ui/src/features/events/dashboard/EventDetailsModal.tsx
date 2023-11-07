@@ -14,7 +14,7 @@ export default observer(function EventModal() {
     
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [eventIdToDelete, setEventIdToDelete] = useState('')
-    const [showGoingList, setShowGoingList] = useState(false)
+    const [showGuestList, setShowGuestList] = useState(false)
 
     useEffect(() => {
         if (event!.id) {
@@ -42,9 +42,11 @@ export default observer(function EventModal() {
         setShowDeleteModal(false)
     }
 
-    function handleGoingListClick() {
-        setShowGoingList(!showGoingList)
-      }
+    function handleGuestListClick() {
+        setShowGuestList(!showGuestList)
+    }
+
+    const eventIsPast = event.date ? new Date(event.date) < new Date() : false;
 
       return (
         <>
@@ -66,14 +68,14 @@ export default observer(function EventModal() {
                                 secondary
                                 inverted
                                 color='blue'
-                                onClick={handleGoingListClick}
+                                onClick={handleGuestListClick}
                             >
                                 <Header as='h4'>
-                                    {event.attendees!.length} {event.attendees!.length === 1 ? 'person' : 'people'} going
-                                    <Icon name={showGoingList ? 'angle double up' : 'angle double down'} />
+                                    {event.attendees!.length} {event.attendees!.length === 1 ? 'guest' : 'guests'}
+                                    <Icon name={showGuestList ? 'angle double up' : 'angle double down'} />
                                 </Header>
                             </Segment>
-                            {showGoingList && (
+                            {showGuestList && (
                             <Segment attached='bottom' style={{ maxHeight: '200px', overflowY: 'auto' }}>
                                 <List divided style={{ width: '90%', margin: 'auto' }}>
                                     {event.attendees!.map(attendee => (
@@ -141,7 +143,7 @@ export default observer(function EventModal() {
                             <Divider style={{ opacity: '0.5' }}/>
                         </Card.Content>
                         <Card.Content extra>
-                            {event.isHost ? (
+                            {event.isHost && !eventIsPast ? (
                                 <Button.Group widths='3'>
                                     <Button onClick={() => openModal(event.id)} color='blue' icon='edit' content='Edit' />
                                     <Button onClick={() => handleDeleteEvent(event.id)} color='red' icon='delete' content='Delete' />
@@ -152,18 +154,23 @@ export default observer(function EventModal() {
                                         content={event.isCancelled ? 'Reactivate' : 'Cancel'}  
                                     />
                                 </Button.Group>
-                            ) : event.isGoing ? (
+                            ) : event.isGoing && !eventIsPast ? (
                                 <Button.Group widths='2'>
                                     <Button onClick={updateAttendance} loading={loading} color='red' content='Cancel attendance' />
                                 </Button.Group>
-                            ) : user?.isModerator ? (
+                            ) : user?.isModerator && !eventIsPast ? (
                                 <Button.Group widths='3'>
                                     <Button onClick={() => openModal(event.id)} color='blue' icon='edit' content='Edit' />
                                     <Button onClick={() => handleDeleteEvent(event.id)} color='red' icon='delete' content='Delete' />
                                 </Button.Group>
+                            ) : user?.isModerator && eventIsPast ? (
+                                <Button.Group widths='3'>
+                                    <Button disabled onClick={() => openModal(event.id)} color='blue' icon='edit' content='Edit' />
+                                    <Button disabled onClick={() => handleDeleteEvent(event.id)} color='red' icon='delete' content='Delete' />
+                                </Button.Group>
                             ) : (
                                 <Button.Group widths='2'>
-                                    <Button disabled={event.isCancelled} onClick={updateAttendance} loading={loading} color='blue' content='Join event' />
+                                    <Button disabled={event.isCancelled || eventIsPast} onClick={updateAttendance} loading={loading} color='blue' content='Join event' />
                                 </Button.Group>
                             )}
                         </Card.Content>

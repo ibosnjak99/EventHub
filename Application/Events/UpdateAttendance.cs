@@ -53,6 +53,7 @@ namespace Application.Events
                     .SingleOrDefaultAsync(x => x.Id == request.Id);
 
                 if (@event == null) return null;
+                if (@event.Date < DateTime.UtcNow) return Result<Unit>.Failure("Cannot attend or cancel events in the past.");
 
                 var user = await this.context.Users
                     .FirstOrDefaultAsync(x => x.UserName == this.userAccessor.GetUsername());
