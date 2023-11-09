@@ -16,8 +16,8 @@ export default observer(function ProfileEditForm({ setEditMode }: Props) {
     return (
         <Formik
             initialValues={{
-                displayName: profile?.displayName,
-                bio: profile?.bio
+                displayName: profile?.displayName || '',
+                bio: profile?.bio || ''
             }}
             onSubmit={values => {
                 updateProfile(values).then(() => {
