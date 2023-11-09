@@ -30,6 +30,14 @@
         public AppUser Author { get; set; }
 
         /// <summary>
+        /// Gets or sets the author identifier.
+        /// </summary>
+        /// <value>
+        /// The author identifier.
+        /// </value>
+        public string AuthorId { get; set; }
+
+        /// <summary>
         /// Gets or sets the event.
         /// </summary>
         /// <value>

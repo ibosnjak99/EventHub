@@ -47,7 +47,6 @@ namespace API.Controllers
             return HandleResult(await this.mediator.Send(new GetById(id)));
         }
 
-
         // POST: /api/events
         /// <summary>
         /// Creates new event asynchronous.
@@ -64,7 +63,7 @@ namespace API.Controllers
         /// Edits event asynchronous.
         /// </summary>
         /// <param name="id">The id.</param>
-        [Authorize(Policy = "IsEventHost")]
+        [Authorize(Policy = "IsEventHostOrModerator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> EditEventAsync(Guid id, Event @event)
         {
@@ -77,7 +76,7 @@ namespace API.Controllers
         /// Deletes event asynchronous.
         /// </summary>
         /// <param name="id">The id.</param>
-        [Authorize(Policy = "IsEventHost")]
+        [Authorize(Policy = "IsEventHostOrModerator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEventAsync(Guid id)
         {

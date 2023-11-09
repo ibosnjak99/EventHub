@@ -3,8 +3,15 @@ import React from "react"
 import { Form, Label } from "semantic-ui-react"
 import DatePicker, { ReactDatePickerProps } from 'react-datepicker'
 
-export default function CustomDateInput(props: Partial<ReactDatePickerProps>) {
-    const [field, meta, helpers] = useField(props.name!);
+interface CustomDateInputProps extends Partial<ReactDatePickerProps> {
+    disablePast?: boolean;
+}
+
+export default function CustomDateInput({ disablePast, ...props }: CustomDateInputProps) {
+    const [field, meta, helpers] = useField(props.name!)
+
+    const minDate = disablePast ? new Date(new Date().setHours(0, 0, 0, 0)) : undefined;
+    
     return (
         <Form.Field error={meta.touched && !!meta.error}>
             <DatePicker 
@@ -12,6 +19,7 @@ export default function CustomDateInput(props: Partial<ReactDatePickerProps>) {
                 {...props}
                 selected={(field.value && new Date(field.value)) || null}
                 onChange={value => helpers.setValue(value)}
+                minDate={minDate}
             />
             {meta.touched && meta.error ? (
                 <Label basic color='red'>{meta.error}</Label>

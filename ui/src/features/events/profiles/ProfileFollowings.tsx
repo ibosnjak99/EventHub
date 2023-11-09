@@ -4,6 +4,8 @@ import { useStore } from '../../../app/stores/store'
 import { Card, Grid, Header, Tab } from 'semantic-ui-react'
 import ProfileCard from './components/ProfileCard'
 
+const isMobile = window.innerWidth <= 768;
+
 export default observer(function ProfileFollowings() {
     const {profileStore} = useStore()
     const {followings, loadingFollowings, activeTab} = profileStore
@@ -18,7 +20,7 @@ export default observer(function ProfileFollowings() {
                         content={activeTab === 3 ? `Followers` : 'Following'} />
                 </Grid.Column>
                 <Grid.Column width={16}>
-                    <Card.Group itemsPerRow={4}>
+                    <Card.Group itemsPerRow={isMobile ? 2 : 4}>
                     {followings.map(profile => (
                         <ProfileCard key={profile.userName} profile={profile} />
                     ))}

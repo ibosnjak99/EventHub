@@ -40,6 +40,12 @@ namespace Application.Events
                 this.userAccessor = userAccessor;
             }
 
+            /// <summary>
+            /// Handles a request.
+            /// </summary>
+            /// <param name="request">The request</param>
+            /// <param name="cancellationToken">Cancellation token</param>
+            /// <returns>Response from the request</returns>
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var @event = await this.context.Events
@@ -47,17 +53,19 @@ namespace Application.Events
                     .SingleOrDefaultAsync(x => x.Id == request.Id);
 
                 if (@event == null) return null;
+                if (@event.Date < DateTime.UtcNow) return Result<Unit>.Failure("Cannot attend or cancel events in the past.");
 
                 var user = await this.context.Users
                     .FirstOrDefaultAsync(x => x.UserName == this.userAccessor.GetUsername());
 
                 if (user == null) return null;
+                if (user.IsModerator) return Result<Unit>.Failure("Cannot attend or cancel as moderator.");
 
                 var hostUsername = @event.Attendees.FirstOrDefault(x => x.IsHost)?.AppUser?.UserName;
 
                 var attendant = @event.Attendees.FirstOrDefault(x => x.AppUser.UserName == user.UserName);
 
-                if (attendant != null && hostUsername == user.UserName)
+                if ((attendant != null && hostUsername == user.UserName) || user.IsModerator)
                     @event.IsCancelled = !@event.IsCancelled;
 
                 if (attendant != null && hostUsername != user.UserName)

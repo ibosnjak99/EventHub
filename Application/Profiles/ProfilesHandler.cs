@@ -1,18 +1,22 @@
 ﻿using Application.Core;
 using Application.Interfaces;
-using AutoMapper.QueryableExtensions;
+using Application.Profiles.Queries;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Application.Profiles.Commands
 {
     /// <summary>
     /// Profiles handler class.
     /// </summary>
-    public class ProfilesHandler : IRequestHandler<Edit, Result<Unit>>, IRequestHandler<Details, Result<Profile>>, IRequestHandler<EventsList, Result<List<UserEventDto>>>
+    public class ProfilesHandler : 
+        IRequestHandler<Edit, Result<Unit>>,
+        IRequestHandler<Details, Result<Profile>>,
+        IRequestHandler<ProfileEventsList, Result<List<UserEventDto>>>,
+        IRequestHandler<GetAll, Result<List<Profile>>>
     {
         private readonly DataContext context;
         private readonly IUserAccessor accessor;
@@ -36,7 +40,7 @@ namespace Application.Profiles.Commands
         /// <param name="cancellationToken">The cancellation token.</param>
         public async Task<Result<Unit>> Handle(Edit request, CancellationToken cancellationToken)
         {
-            var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == accessor.GetUsername());
+            var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == this.accessor.GetUsername());
 
             user!.DisplayName = request.DisplayName ?? user.DisplayName;
             user.Bio = request.Bio ?? user.Bio;
@@ -58,14 +62,54 @@ namespace Application.Profiles.Commands
         /// </returns>
         public async Task<Result<Profile>> Handle(Details request, CancellationToken cancellationToken)
         {
-            var user = await this.context.Users
-                .ProjectTo<Profile>(this.mapper.ConfigurationProvider, new {currentUsername = this.accessor.GetUsername()})
-                .SingleOrDefaultAsync(x => x.UserName == request.Username);
+            var currentUser = await this.context.Users.FirstOrDefaultAsync(x => x.UserName == this.accessor.GetUsername());
 
-            return Result<Profile>.Success(user!);
+            var requestedUser = await this.context.Users.FirstOrDefaultAsync(x => x.UserName == request.Username);
+
+            if (requestedUser == null || (!currentUser!.IsModerator && requestedUser!.IsModerator))
+            {
+                return Result<Profile>.Failure("Requested user not found.");
+            }
+
+            var profile = await this.context.Users
+                .Where(u => u.Id == requestedUser.Id)
+                .ProjectTo<Profile>(this.mapper.ConfigurationProvider, new { currentUsername = this.accessor.GetUsername() })
+                .SingleOrDefaultAsync();
+
+            return Result<Profile>.Success(profile!);
         }
 
-        public async Task<Result<List<UserEventDto>>> Handle(EventsList request, CancellationToken cancellationToken)
+
+        /// <summary>
+        /// Handles the specified request.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>
+        /// Response from the request.
+        /// </returns>
+        public async Task<Result<List<Profile>>> Handle(GetAll request, CancellationToken cancellationToken)
+        {
+            var currentUser = await this.context.Users.FirstOrDefaultAsync(x => x.UserName == this.accessor.GetUsername());
+
+            if (currentUser == null || currentUser!.IsModerator == false) return Result<List<Profile>>.Failure("Cannot retrieve list of users.");
+
+            var profiles = await this.context.Users
+                .ProjectTo<Profile>(this.mapper.ConfigurationProvider, new { currentUsername = this.accessor.GetUsername() })
+                .ToListAsync(cancellationToken);
+
+            return Result<List<Profile>>.Success(profiles);
+        }
+
+        /// <summary>
+        /// Handles the specified request.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>
+        /// Response from the request.
+        /// </returns>
+        public async Task<Result<List<UserEventDto>>> Handle(ProfileEventsList request, CancellationToken cancellationToken)
         {
             var query = this.context.EventAttendees
                 .Where(u => u.AppUser.UserName == request.Username)

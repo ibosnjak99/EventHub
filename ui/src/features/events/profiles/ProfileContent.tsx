@@ -12,8 +12,10 @@ interface Props {
     profile: Profile
 }
 
-export default observer (function ProfileContent({profile}: Props) {
+export default observer(function ProfileContent({profile}: Props) {
     const {profileStore} = useStore()
+
+    const isMobile = window.innerWidth <= 768;
 
     const panes = [
         {menuItem: 'About', render: () => <ProfileAbout />},
@@ -23,12 +25,18 @@ export default observer (function ProfileContent({profile}: Props) {
         {menuItem: 'Following', render: () => <ProfileFollowings />},
     ]
 
+    const tabMenuStyle = {
+        overflowX: 'auto',
+        whiteSpace: 'nowrap'
+    }
+
     return (
         <Tab
-            menu={{ fluid: true, vertical: true}}
-            menuPosition="right"
+            menu={{ fluid: true, vertical: isMobile ? false : true, style: tabMenuStyle }}
+            menuPosition={isMobile ? undefined : "right"}
             panes={panes}
             onTabChange={(_, data) => profileStore.setActiveTab(data.activeIndex as number)}
         />
     )
 })
+

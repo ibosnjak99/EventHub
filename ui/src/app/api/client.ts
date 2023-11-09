@@ -28,25 +28,36 @@ axios.interceptors.response.use(async response => {
         response.data = new PaginatedResult(response.data, JSON.parse(pagination))
         return response as AxiosResponse<PaginatedResult<unknown>>
     }
+    if (response.status >= 200 && response.status < 300) {
+        const method = response.config.method?.toUpperCase()
+        switch (method) {
+            case 'PUT':
+                toast.success('Successfully updated!')
+                break
+            case 'DELETE':
+                toast.success('Successfully deleted!')
+                break
+        }
+    }
     return response
 }, (error: AxiosError) => {
-    const { data, status, config } = error.response as AxiosResponse
+    const { data, status } = error?.response as AxiosResponse
     switch (status) {
         case 400:
-            if (config.method === 'get' && data.errors.hasOwnProperty('id')) {
-                router.navigate('/not-found')
-            }
-            if (data.errors) {
-                const modalStateErrors = [];
-                for (const key in data.errors) {
-                    if (data.errors[key]) {
-                        modalStateErrors.push(data.errors[key])
-                    }
-                }
-                throw modalStateErrors.flat()
-            } else {
+            // if (config.method === 'get' && data.errors.hasOwnProperty('id')) {
+            //     router.navigate('/not-found')
+            // }
+            // if (data.errors) {
+            //     const modalStateErrors = []
+            //     for (const key in data.errors) {
+            //         if (data.errors[key]) {
+            //             modalStateErrors.push(data.errors[key])
+            //         }
+            //     }
+            //     throw modalStateErrors.flat()
+            // } else {
                 toast.error(data)
-            }
+            // }
             break  
         case 401:
             toast.error('Unauthorized')     
@@ -88,10 +99,13 @@ const Account = {
     current: () => requests.get<User>('/account'),
     login: (user: UserFormValues) => requests.post<User>('/account/login', user),
     register: (user: UserFormValues) => requests.post<User>('/account/register', user),
+    all: () => requests.get<User[]>('/account/all'),
+    delete: (username: string) => requests.delete<void>(`/account/${username}`),
 }
 
 const Profiles = {
     get: (username: string) => requests.get<Profile>(`/profiles/${username}`),
+    all: () => requests.get<Profile[]>(`/profiles`),
     uploadPhoto: (file: Blob) => {
         let formData = new FormData()
         formData.append('File', file)

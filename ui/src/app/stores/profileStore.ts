@@ -1,10 +1,11 @@
-import { makeAutoObservable, runInAction, reaction } from "mobx";
-import { Photo, Profile, UserEvent } from "../models/profile";
-import client from "../api/client";
-import { store } from "./store";
+import { makeAutoObservable, runInAction, reaction } from "mobx"
+import { Photo, Profile, UserEvent } from "../models/profile"
+import client from "../api/client"
+import { store } from "./store"
 
 export default class ProfileStore {
     profile: Profile | null = null
+    profiles: Profile[] | null = null
     loadingProfile = false
     uploading = false
     loading = false
@@ -54,6 +55,17 @@ export default class ProfileStore {
         } catch (error) {
             console.log(error)
             runInAction(() => this.loadingProfile = false)
+        }
+    }
+
+    getAllProfiles = async () => {
+        try {
+            const profiles = await client.Profiles.all()
+            runInAction(() => {
+                this.profiles = profiles
+            })
+        } catch (error) {
+                console.log(error)
         }
     }
 
@@ -176,7 +188,6 @@ export default class ProfileStore {
     }
 
     loadUserEvents = async (username: string, predicate?: string) => {
-        console.log(predicate)
         this.loadingEvents= true
         try {
             const events = await client.Profiles.listEvents(username, predicate!)

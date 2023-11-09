@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function CustomSelectInput(props: Props) {
-    const [field, meta, helpers] = useField(props.name);
+    const [field, meta, helpers] = useField(props.name)
     return (
         <Form.Field error={meta.touched && !!meta.error}>
             <label>{props.label}</label>

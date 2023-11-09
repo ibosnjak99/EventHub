@@ -1,18 +1,19 @@
 import { makeAutoObservable, runInAction } from "mobx"
-import { User, UserFormValues } from "../models/user";
-import client from "../api/client";
-import { store } from "./store";
-import { router } from "../router/Routes";
+import { User, UserFormValues } from "../models/user"
+import client from "../api/client"
+import { store } from "./store"
+import { router } from "../router/Routes"
 
 export default class UserStore {
     user: User | null = null
+    users: User[] | null = null
 
     constructor() {
         makeAutoObservable(this)
     }
 
     get isLoggedIn() {
-        return !!this.user;
+        return !!this.user
     }
 
     login = async (creds: UserFormValues) => {
@@ -40,14 +41,16 @@ export default class UserStore {
     }
 
     logout = () => {
-        store.commonStore.setToken(null);
-        this.user = null;
-        
-        store.eventStore.reset();
-        router.navigate('/');
+        setTimeout(() => {
+            runInAction(() => {
+                store.commonStore.setToken(null)
+                this.user = null
+                store.eventStore.reset()
+            })
+            router.navigate('/')
+        }, 500)
     }
     
-
     getUser = async () => {
         try {
             const user = await client.Account.current()
@@ -59,6 +62,28 @@ export default class UserStore {
         }
     }
 
+    getAllUsers = async () => {
+        try {
+            const users = await client.Account.all()
+            runInAction(() => {
+                this.users = users
+            })
+        } catch (error) {
+                console.log(error)
+        }
+    }
+
+    deleteUser = async (username: string) => {
+        try {
+            await client.Account.delete(username)
+            runInAction(() => {
+                if (this.users) this.users = this.users.filter(user => user.username !== username)
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    
     setImage = (image: string) => {
         if (this.user) {
             this.user.image = image
@@ -66,6 +91,6 @@ export default class UserStore {
     }
 
     setDisplayName = (name: string) => {
-        if (this.user) this.user.displayName = name;
+        if (this.user) this.user.displayName = name
     }
 }

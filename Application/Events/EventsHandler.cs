@@ -8,6 +8,7 @@ using Domain.Models;
 using Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Events
 {
@@ -51,6 +52,20 @@ namespace Application.Events
                 .ProjectTo<EventDto>(this.mapper.ConfigurationProvider, new { currentUsername = this.userAccessor.GetUsername() })
                 .AsQueryable();
 
+            if (!string.IsNullOrEmpty(request.PagingParams?.SearchTerm))
+            {
+                var searchTerm = request.PagingParams.SearchTerm.Trim().ToLower();
+
+                query = query.Where(x =>
+                    (x.Title != null && x.Title.ToLower().Contains(searchTerm)) ||
+                    (x.Description != null && x.Description.ToLower().Contains(searchTerm)) ||
+                    (x.Category != null && x.Category.ToLower().Contains(searchTerm)) ||
+                    (x.City != null && x.City.ToLower().Contains(searchTerm)) ||
+                    (x.Venue != null && x.Venue.ToLower().Contains(searchTerm))
+                );
+            }
+
+
             if (request.PagingParams!.IsGoing && !request.PagingParams.IsHost)
             {
                 query = query.Where(x => x.Attendees.Any(a => a.UserName == this.userAccessor.GetUsername()));
@@ -60,6 +75,23 @@ namespace Application.Events
             {
                 query = query.Where(x => x.HostUsername == this.userAccessor.GetUsername());
             }
+
+            if (request.PagingParams!.IsFollowing)
+            {
+                var user = await this.context.Users
+                    .Include(u => u.Followings)
+                    .FirstOrDefaultAsync(x => x.UserName == this.userAccessor.GetUsername());
+
+                var followingIds = user!.Followings.Select(f => f.TargetId).ToList();
+
+                var followingUsernames = await this.context.Users
+                    .Where(u => followingIds.Contains(u.Id))
+                    .Select(u => u.UserName)
+                    .ToListAsync();
+
+                query = query.Where(x => followingUsernames.Contains(x.HostUsername));
+            }
+
 
             return Result<PagedList<EventDto>>.Success(
                 await PagedList<EventDto>.CreateAsync(query, request.PagingParams!.PageNumber, request.PagingParams.PageSize)

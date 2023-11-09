@@ -28,5 +28,13 @@
         /// True if this instance is profile; otherwise, false.
         /// </value>
         public bool IsProfile { get; set; }
+
+        /// <summary>
+        /// Gets or sets the application user identifier.
+        /// </summary>
+        /// <value>
+        /// The application user identifier.
+        /// </value>
+        public string AppUserId { get; set; }
     }
 }

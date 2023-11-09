@@ -37,6 +37,7 @@ export default class EventStore {
         const resetPredicate = () => {
             this.predicate.forEach((value, key) => {
                 if (key !== 'startDate') this.predicate.delete(key)
+                if (key !== 'searchTerm') this.predicate.delete(key)
             })
         }
         switch (predicate) {
@@ -52,6 +53,13 @@ export default class EventStore {
                 resetPredicate()
                 this.predicate.set('isHost', true)
                 break
+            case 'isFollowing':
+                resetPredicate()
+                this.predicate.set('isFollowing', true)
+                break
+            case 'searchTerm':
+                this.predicate.set('searchTerm', value)
+                break
             case 'startDate':
                 this.predicate.delete('startDate')
                 this.predicate.set('startDate', value)
@@ -63,6 +71,9 @@ export default class EventStore {
         params.append('pageNumber', this.pagingParams.pageNumber.toString())
         params.append('pageSize', this.pagingParams.pageSize.toString())
         this.predicate.forEach((value, key) => {
+            if (key === 'searchTerm') {
+                params.append(key, (value as string).toString())
+            }
             if (key === 'startDate') {
                 params.append(key, (value as Date).toISOString())
             } else {
@@ -103,9 +114,9 @@ export default class EventStore {
     }
 
     reset() {
-        this.selectedEvent = null;
-        this.editMode = false;
-        this.eventRegistry.clear();
+        this.selectedEvent = null
+        this.editMode = false
+        this.eventRegistry.clear()
     }
 
     setPagination = (pagination: Pagination) => {

@@ -45,7 +45,7 @@ namespace API.Extensions
 
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddMediatR(typeof(GetAll));
-            services.RegisterDependencies();
+            //services.RegisterDependencies();
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining<EventsHandler>();
             services.AddHttpContextAccessor();

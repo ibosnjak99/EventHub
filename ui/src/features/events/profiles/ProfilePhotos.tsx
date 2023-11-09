@@ -9,20 +9,22 @@ interface Props {
     profile: Profile
 }
 
+const isMobile = window.innerWidth <= 768;
+
 export default observer (function ProfilePhotos({profile}: Props) {
     const {profileStore: {isCurrentUser, uploadPhoto, uploading, loading, setProfilePhoto, deletePhoto}} = useStore()
     const [addPhotoMode, setAddPhotoMode] = useState(false)
     const [target, setTarget] = useState('')
-    const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null)
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
 
 
     function openModal(photo: Photo) {
-        setSelectedPhoto(photo);
+        setSelectedPhoto(photo)
     }
 
     function closeModal() {
-        setSelectedPhoto(null);
+        setSelectedPhoto(null)
     }
 
     function handlePhotoUpload(file: Blob) {
@@ -36,20 +38,20 @@ export default observer (function ProfilePhotos({profile}: Props) {
     }
 
     function handleDeletePhoto(id: string, e: SyntheticEvent<HTMLButtonElement>) {
-        setTarget(e.currentTarget.name);
-        setShowDeleteModal(true);
+        setTarget(e.currentTarget.name)
+        setShowDeleteModal(true)
     }
 
     function handleConfirmDelete() {
         if (selectedPhoto) {
-            deletePhoto(selectedPhoto.id);
-            setShowDeleteModal(false);
-            closeModal();
+            deletePhoto(selectedPhoto.id)
+            setShowDeleteModal(false)
+            closeModal()
         }
     }
     
     function handleCancelDelete() {
-        setShowDeleteModal(false);
+        setShowDeleteModal(false)
     }
     
     return (
@@ -69,7 +71,7 @@ export default observer (function ProfilePhotos({profile}: Props) {
                     {addPhotoMode ? (
                         <PhotoUploadWidget uploadPhoto={handlePhotoUpload} loading={uploading}/>
                     ) : (
-                        <Card.Group itemsPerRow={5}>
+                        <Card.Group itemsPerRow={isMobile ? 3 : 5}>
                             {profile.photos?.map(photo => (
                                 <Card key={photo.id} onClick={() => openModal(photo)}>
                                     <Image src={photo.url} />
@@ -86,7 +88,7 @@ export default observer (function ProfilePhotos({profile}: Props) {
                     )}
                 </Grid.Column>
             </Grid>
-            <Modal open={!!selectedPhoto} onClose={closeModal} style={{ margin: 'auto' }}>
+            <Modal open={!!selectedPhoto} onClose={closeModal} style={{ margin: 'auto' }} size='tiny'>
                 <Modal.Content>
                     <Image size="big" src={selectedPhoto?.url || ''} centered />
                     {isCurrentUser && (
@@ -122,4 +124,4 @@ export default observer (function ProfilePhotos({profile}: Props) {
             </Modal>
         </Tab.Pane>
     )
-});
+})

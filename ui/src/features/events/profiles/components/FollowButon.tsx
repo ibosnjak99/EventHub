@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react';
+import React, { SyntheticEvent } from 'react'
 import { Profile } from '../../../../app/models/profile'
 import { observer } from 'mobx-react-lite'
 import { Button, Reveal } from 'semantic-ui-react'
@@ -21,7 +21,7 @@ export default observer(function FollowButton({ profile }: Props ) {
     return (
         <Reveal animated='move'>
             <Reveal.Content visible style={{ width: '100%' }}>
-                <Button fluid color='teal' content={profile.following ? 'Following' : 'Not following'} />
+                <Button fluid color='blue' content={profile.following ? 'Following' : 'Not following'} />
             </Reveal.Content>
             <Reveal.Content hidden style={{ width: '100%' }}>
                 <Button

@@ -1,5 +1,5 @@
-import React, { Fragment } from 'react';
-import { Segment, Button, Placeholder } from 'semantic-ui-react';
+import React, { Fragment } from 'react'
+import { Segment, Button, Placeholder } from 'semantic-ui-react'
 
 export default function EventListItemPlaceholder() {
     return (
@@ -30,5 +30,5 @@ export default function EventListItemPlaceholder() {
                 </Segment.Group>
             </Placeholder>
         </Fragment>
-    );
-};
+    )
+}

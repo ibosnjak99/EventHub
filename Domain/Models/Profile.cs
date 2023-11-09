@@ -8,6 +8,14 @@ namespace Application.Profiles
     public class Profile
     {
         /// <summary>
+        /// Gets or sets the application user identifier.
+        /// </summary>
+        /// <value>
+        /// The application user identifier.
+        /// </value>
+        public string AppUserId { get; set; }
+
+        /// <summary>
         /// Gets or sets the name of the user.
         /// </summary>
         /// <value>
@@ -45,7 +53,7 @@ namespace Application.Profiles
         /// <value>
         /// The photos.
         /// </value>
-        public ICollection<Photo>? Photos { get; set; }
+        public ICollection<Photo> Photos { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="Profile" /> is following.

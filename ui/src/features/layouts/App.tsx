@@ -2,14 +2,20 @@ import React, { useEffect } from 'react'
 import {  Container } from 'semantic-ui-react'
 import NavBar from './NavBar'
 import { observer } from 'mobx-react-lite'
-import { Outlet } from 'react-router-dom'
+import { Outlet, ScrollRestoration } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
-import { useStore } from '../stores/store'
+import { useStore } from '../../app/stores/store'
 import LoadingComponent from './LoadingComponent'
-import ModalContainer from '../common/modals/ModalContainer'
+import ModalContainer from '../../app/common/modals/ModalContainer'
+import { useLocation } from 'react-router-dom'
 
 function App() {
   const { commonStore, userStore } = useStore()
+  const location = useLocation()
+
+  if ('scrollRestoration' in window.history) {
+    window.history.scrollRestoration = 'manual'
+  }
 
   useEffect(() => {
     if (commonStore.token) {
@@ -23,12 +29,13 @@ function App() {
 
   return (
     <>
-    <ModalContainer />
-    <ToastContainer position='bottom-right' theme='colored' autoClose={2000} />
-      <NavBar />
-      <Container style={{ marginTop: '6em'}}>
-        <Outlet />
-      </Container>
+      <ScrollRestoration />
+      <ModalContainer />
+      <ToastContainer position='bottom-right' theme='colored' autoClose={2000} />
+      { location.pathname !== '/' && <NavBar /> }
+        <Container style={{ marginTop: '6em'}}>
+          <Outlet />
+        </Container>
     </>
   )
 }

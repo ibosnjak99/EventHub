@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { useStore } from '../../../app/stores/store';
-import { Button, Grid, Header, Tab } from "semantic-ui-react";
-import ProfileEditForm from "./ProfileEditForm";
-import { observer } from 'mobx-react-lite';
+import React, { useState } from 'react'
+import { useStore } from '../../../app/stores/store'
+import { Button, Grid, Header, Tab } from "semantic-ui-react"
+import ProfileEditForm from "./ProfileEditForm"
+import { observer } from 'mobx-react-lite'
 
 export default observer(function ProfileAbout() {
-    const { profileStore } = useStore();
-    const { isCurrentUser, profile } = profileStore;
-    const [editMode, setEditMode] = useState(false);
+    const { profileStore } = useStore()
+    const { isCurrentUser, profile } = profileStore
+    const [editMode, setEditMode] = useState(false)
 
     return (
         <Tab.Pane>
@@ -34,5 +34,5 @@ export default observer(function ProfileAbout() {
                 </Grid.Column>
             </Grid>
         </Tab.Pane>
-    );
-});
+    )
+})

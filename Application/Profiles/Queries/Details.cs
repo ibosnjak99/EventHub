@@ -5,7 +5,7 @@ using Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Profiles
+namespace Application.Profiles.Queries
 {
     /// <summary>
     ///  The profile details class.

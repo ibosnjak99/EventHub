@@ -1,7 +1,7 @@
-import { makeAutoObservable, runInAction } from "mobx";
-import { ChatComment } from "../models/comment";
-import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
-import { store } from "./store";
+import { makeAutoObservable, runInAction } from "mobx"
+import { ChatComment } from "../models/comment"
+import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
+import { store } from "./store"
 
 export default class CommentStore {
     comments: ChatComment[] = []
@@ -35,7 +35,7 @@ export default class CommentStore {
             this.hubConnection.on('ReceiveComment', (comment: ChatComment) => {
                 runInAction(() => {
                     comment.createdAt = new Date(comment.createdAt)
-                    this.comments.unshift(comment);
+                    this.comments.unshift(comment)
                 })
             })
         }
