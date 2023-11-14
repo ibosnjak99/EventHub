@@ -10,7 +10,7 @@ import * as Yup from 'yup'
 
 export default observer(function EventModal() {
     const {eventStore, commentStore, userStore: {user}} = useStore()
-    const {selectedEvent: event, openModal, unselectEvent, deleteEvent, updateAttendance, cancelEventToggle, loading} = eventStore
+    const {selectedEvent: event, openModal, unselectEvent, deleteEvent, updateAttendance, handlePayment, cancelEventToggle, loading} = eventStore
     
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [eventIdToDelete, setEventIdToDelete] = useState('')
@@ -27,7 +27,8 @@ export default observer(function EventModal() {
     }, [commentStore, event])
 
     if (!event) return null
-
+console.log(event)
+console.log(user)
     function handleDeleteEvent(id: string) {
         setEventIdToDelete(id)
         setShowDeleteModal(true)
@@ -45,7 +46,7 @@ export default observer(function EventModal() {
     function handleGuestListClick() {
         setShowGuestList(!showGuestList)
     }
-
+console.log(event)
     const eventIsPast = event.date ? new Date(event.date) < new Date() : false;
 
       return (
@@ -168,9 +169,13 @@ export default observer(function EventModal() {
                                     <Button disabled onClick={() => openModal(event.id)} color='blue' icon='edit' content='Edit' />
                                     <Button disabled onClick={() => handleDeleteEvent(event.id)} color='red' icon='delete' content='Delete' />
                                 </Button.Group>
+                            ) : !user?.isModerator && event.price !== null && event.price > 0 ? (
+                                <Button.Group widths='2'>
+                                    <Button disabled={event.isCancelled || eventIsPast} onClick={() => handlePayment(event.price)} loading={loading} color='blue' content={`Join event for ${event.price}€`} />
+                                </Button.Group>
                             ) : (
                                 <Button.Group widths='2'>
-                                    <Button disabled={event.isCancelled || eventIsPast} onClick={updateAttendance} loading={loading} color='blue' content='Join event' />
+                                    <Button disabled={event.isCancelled || eventIsPast} onClick={updateAttendance} loading={loading} color='blue' content='Join event for free' />
                                 </Button.Group>
                             )}
                         </Card.Content>

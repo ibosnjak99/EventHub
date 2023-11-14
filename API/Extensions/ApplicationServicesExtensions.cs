@@ -6,10 +6,13 @@ using Domain;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure;
+using Infrastructure.Payment;
+using Infrastructure.Payments;
 using Infrastructure.Photos;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace API.Extensions
 {
@@ -48,12 +51,16 @@ namespace API.Extensions
                 });
             });
 
+            StripeConfiguration.ApiKey = config["Stripe:SecretKey"];
+            services.Configure<StripeSettings>(config.GetSection("Stripe"));
+
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddMediatR(typeof(GetAll));
             //services.RegisterDependencies();
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining<EventsHandler>();
             services.AddHttpContextAccessor();
+            services.AddScoped<IStripeService, StripeService>();
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
             services.Configure<CloudinarySettings>(config.GetSection("Cloudinary"));

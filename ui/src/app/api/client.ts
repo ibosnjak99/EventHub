@@ -127,10 +127,16 @@ const Profiles = {
     listEvents: (username: string, predicate: string) => requests.get<UserEvent[]>((`/profiles/${username}/events?predicate=${predicate}`))
 }
 
+const Payments = {
+    createCheckoutSession: (price: number) => requests.post<{ sessionId: string }>('/payments/create-checkout-session', { amount: price })
+};
+
+
 const client = {
     Events,
     Account,
-    Profiles
+    Profiles,
+    Payments
 }
 
 export default client
