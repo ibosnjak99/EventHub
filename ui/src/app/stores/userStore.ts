@@ -7,6 +7,7 @@ import { router } from "../router/Routes"
 export default class UserStore {
     user: User | null = null
     users: User[] | null = null
+    refreshTokenTimeout?: NodeJS.Timeout
 
     constructor() {
         makeAutoObservable(this)
@@ -20,6 +21,7 @@ export default class UserStore {
         try {
             const user = await client.Account.login(creds)
             store.commonStore.setToken(user.token)
+            this.startRefreshTokenTimer(user)
             runInAction(() => this.user = user)
             router.navigate('/events')
             store.modalStore.closeModal()
@@ -32,6 +34,7 @@ export default class UserStore {
         try {
             const user = await client.Account.register(creds)
             store.commonStore.setToken(user.token)
+            this.startRefreshTokenTimer(user)
             runInAction(() => this.user = user)
             router.navigate('/events')
             store.modalStore.closeModal()
@@ -54,6 +57,8 @@ export default class UserStore {
     getUser = async () => {
         try {
             const user = await client.Account.current()
+            store.commonStore.setToken(user.token)
+            this.startRefreshTokenTimer(user)
             runInAction(() => {
                 this.user = user
             })
@@ -92,5 +97,28 @@ export default class UserStore {
 
     setDisplayName = (name: string) => {
         if (this.user) this.user.displayName = name
+    }
+
+    refreshToken = async () => {
+        this.stopRefreshTokenTimer()
+        try {
+            const user = await client.Account.refreshToken()
+            runInAction(() => this.user = user)
+            store.commonStore.setToken(user.token)
+            this.startRefreshTokenTimer(user)
+        } catch (error) {
+
+        }
+    }
+
+    private startRefreshTokenTimer(user: User) {
+        const jwt = JSON.parse(atob(user.token.split('.')[1]))
+        const expires = new Date(jwt.exp * 1000)
+        const timeout = expires.getTime() - Date.now() - (30*1000)
+        this.refreshTokenTimeout = setTimeout(this.refreshToken, timeout)
+    }
+
+    private stopRefreshTokenTimer() {
+        clearTimeout(this.refreshTokenTimeout)
     }
 }
