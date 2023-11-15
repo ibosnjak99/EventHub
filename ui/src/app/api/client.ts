@@ -131,7 +131,6 @@ const Payments = {
     createCheckoutSession: (price: number) => requests.post<{ sessionId: string }>('/payments/create-checkout-session', { amount: price })
 };
 
-
 const client = {
     Events,
     Account,

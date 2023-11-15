@@ -26,7 +26,7 @@ namespace Infrastructure.Payments
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmount = (long)amount,
+                        UnitAmount = (long)amount*100, 
                         Currency = "eur",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
