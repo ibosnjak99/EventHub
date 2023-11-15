@@ -1,4 +1,5 @@
-﻿using Infrastructure.Payments;
+﻿using API.DTOs;
+using Infrastructure.Payments;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -21,10 +22,5 @@ namespace API.Controllers
             var session = await this.stripeService.CreateCheckoutSessionAsync(dto.Amount);
             return Ok(new { sessionId = session.Id });
         }
-    }
-
-    public class PaymentRequestDto
-    {
-        public int Amount { get; set; }
     }
 }
