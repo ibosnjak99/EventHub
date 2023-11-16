@@ -20,5 +20,13 @@
         /// The secret key.
         /// </value>
         public string SecretKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets the webhook secret.
+        /// </summary>
+        /// <value>
+        /// The webhook secret.
+        /// </value>
+        public string WebhookSecret { get; set; }
     }
 }
