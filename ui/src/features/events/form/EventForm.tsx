@@ -26,7 +26,12 @@ export default observer (function EventsForm() {
       date: Yup.string().required('The date is required'),
       city: Yup.string().required('The city is required'),
       venue: Yup.string().required('The venue is required'),
+      price: Yup.number()
+        .nullable()
+        .transform((value, originalValue) => (String(originalValue).trim() === '' ? null : value))
+        .typeError('Price must be a number or leave empty if it is free')
     })
+    
 
     function handleFormSubmit(event: EventFormValues) {
       if (!event.id) {

@@ -141,6 +141,19 @@ console.log(event)
                                 </Grid.Column>
                             </Grid>
                             <Divider style={{ opacity: '0.5' }}/>
+
+                            <Grid>
+                                <Grid.Column width={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Icon size='large' color='blue' name='euro'/>
+                                </Grid.Column>
+                                <Grid.Column width={14}>
+                                    <p style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}>
+                                        <span>
+                                        {event.price === 0 ? 'Free' : `${event.price} €`}
+                                        </span>
+                                    </p>
+                                    </Grid.Column>
+                            </Grid>
                         </Card.Content>
                         <Card.Content extra>
                             {event.isHost && !eventIsPast ? (
