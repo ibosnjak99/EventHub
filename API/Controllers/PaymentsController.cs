@@ -11,11 +11,15 @@ namespace API.Controllers
     {
         private readonly IStripeService stripeService;
 
+        /// <summary>Initializes a new instance of the <see cref="PaymentsController" /> class.</summary>
+        /// <param name="stripeService">The stripe service.</param>
         public PaymentsController(IStripeService stripeService)
         {
             this.stripeService = stripeService;
         }
 
+        /// <summary>Creates the checkout session.</summary>
+        /// <param name="dto">The dto.</param>
         [HttpPost("create-checkout-session")]
         public async Task<ActionResult> CreateCheckoutSession([FromBody] PaymentRequestDto dto)
         {

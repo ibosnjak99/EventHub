@@ -5,16 +5,23 @@ using Stripe.Checkout;
 
 namespace Infrastructure.Payments
 {
+    /// <summary>
+    /// The stripe service class.
+    /// </summary>
     public class StripeService : IStripeService
     {
         private readonly StripeSettings stripeSettings;
 
+        /// <summary>Initializes a new instance of the <see cref="StripeService" /> class.</summary>
+        /// <param name="options">The options.</param>
         public StripeService(IOptions<StripeSettings> options)
         {
             this.stripeSettings = options.Value;
             StripeConfiguration.ApiKey = stripeSettings.SecretKey;
         }
 
+        /// <summary>Creates the checkout session asynchronous.</summary>
+        /// <param name="amount">The amount.</param>
         public async Task<Session> CreateCheckoutSessionAsync(int amount)
         {
             var options = new SessionCreateOptions
