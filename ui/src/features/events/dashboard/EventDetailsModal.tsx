@@ -27,8 +27,7 @@ export default observer(function EventModal() {
     }, [commentStore, event])
 
     if (!event) return null
-console.log(event)
-console.log(user)
+
     function handleDeleteEvent(id: string) {
         setEventIdToDelete(id)
         setShowDeleteModal(true)
@@ -169,9 +168,9 @@ console.log(event)
                                     <Button disabled onClick={() => openModal(event.id)} color='blue' icon='edit' content='Edit' />
                                     <Button disabled onClick={() => handleDeleteEvent(event.id)} color='red' icon='delete' content='Delete' />
                                 </Button.Group>
-                            ) : !user?.isModerator && event.price !== null && event.price > 0 ? (
+                            ) : !user?.isModerator && event.price && event.price > 0 ? (
                                 <Button.Group widths='2'>
-                                    <Button disabled={event.isCancelled || eventIsPast} onClick={() => handlePayment(event.price)} loading={loading} color='blue' content={`Join event for ${event.price}€`} />
+                                    <Button disabled={event.isCancelled || eventIsPast} onClick={() => handlePayment(event.price ?? 0)} loading={loading} color='blue' content={`Join event for ${event.price}€`} />
                                 </Button.Group>
                             ) : (
                                 <Button.Group widths='2'>

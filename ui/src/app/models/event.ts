@@ -14,7 +14,7 @@ export interface Event {
     isHost: boolean
     host?: Profile
     attendees: Profile[]
-    price: number
+    price?: number | null
   }
 
   export class Event implements Event {
@@ -31,7 +31,7 @@ export interface Event {
     category: string = ''
     city: string = ''
     venue: string = ''
-    price: number | null = null
+    price?: number | null = null
 
   constructor(event?: EventFormValues) {
     if (event) {
@@ -42,7 +42,7 @@ export interface Event {
       this.category = event.category
       this.city = event.city
       this.venue = event.venue
-      this.price = event.price
+      this.price = event?.price
     }
   }
 }

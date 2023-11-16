@@ -93,6 +93,6 @@ namespace Domain
         /// <value>
         /// The price.
         /// </value>
-        public int Price { get; set; }
+        public int? Price { get; set; }
     }
 }

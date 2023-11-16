@@ -182,6 +182,7 @@ export default class EventStore {
     }
 
     createEvent = async (event: EventFormValues) => {
+        if (event.price === null || event.price === undefined) { event.price = 0 }
         const user = store.userStore.user
         const attendee = new Profile(user!)
         try {
@@ -257,9 +258,10 @@ export default class EventStore {
     handlePayment = async (price: number) => {
         try {
             const { sessionId } = await client.Payments.createCheckoutSession(price)
-    
+
             const stripe = await stripePromise
             if (stripe) {
+
                 const { error } = await stripe.redirectToCheckout({
                     sessionId: sessionId,
                 });
