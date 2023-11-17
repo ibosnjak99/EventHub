@@ -128,8 +128,8 @@ const Profiles = {
 }
 
 const Payments = {
-    createCheckoutSession: (price: number) => requests.post<{ sessionId: string }>('/payments/create-checkout-session', { amount: price })
-};
+    createCheckoutSession: (price: number, username: string, eventId: string) => requests.post<{ sessionId: string }>('/payments/create-checkout-session', { amount: price, username, eventId })
+}
 
 const client = {
     Events,

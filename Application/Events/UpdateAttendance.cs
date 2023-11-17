@@ -17,7 +17,21 @@ namespace Application.Events
         /// </summary>
         public class Command : IRequest<Result<Unit>>
         {
+            /// <summary>
+            /// Gets or sets the identifier.
+            /// </summary>
+            /// <value>
+            /// The identifier.
+            /// </value>
             public Guid Id { get; set; }
+
+            /// <summary>
+            /// Gets or sets the username.
+            /// </summary>
+            /// <value>
+            /// The username.
+            /// </value>
+            public string? Username { get; set; }
         }
 
         /// <summary>
@@ -55,8 +69,18 @@ namespace Application.Events
                 if (@event == null) return null;
                 if (@event.Date < DateTime.UtcNow) return Result<Unit>.Failure("Cannot attend or cancel events in the past.");
 
-                var user = await this.context.Users
-                    .FirstOrDefaultAsync(x => x.UserName == this.userAccessor.GetUsername());
+                var user = new AppUser();
+
+                if (!string.IsNullOrEmpty(request.Username))
+                {
+                    user = await this.context.Users
+                        .FirstOrDefaultAsync(x => x.UserName == request.Username);
+                }
+                else
+                {
+                    user = await this.context.Users
+                        .FirstOrDefaultAsync(x => x.UserName == this.userAccessor.GetUsername());
+                }
 
                 if (user == null) return null;
                 if (user.IsModerator) return Result<Unit>.Failure("Cannot attend or cancel as moderator.");

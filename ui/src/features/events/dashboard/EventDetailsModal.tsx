@@ -9,9 +9,9 @@ import CustomTextArea from '../../../app/common/form/CustomTextArea'
 import * as Yup from 'yup'
 
 export default observer(function EventModal() {
-    const {eventStore, commentStore, userStore: {user}} = useStore()
+    const {eventStore, commentStore, userStore: {user, currentUser}} = useStore()
     const {selectedEvent: event, openModal, unselectEvent, deleteEvent, updateAttendance, handlePayment, cancelEventToggle, loading} = eventStore
-    
+
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [eventIdToDelete, setEventIdToDelete] = useState('')
     const [showGuestList, setShowGuestList] = useState(false)
@@ -45,7 +45,7 @@ export default observer(function EventModal() {
     function handleGuestListClick() {
         setShowGuestList(!showGuestList)
     }
-console.log(event)
+
     const eventIsPast = event.date ? new Date(event.date) < new Date() : false;
 
       return (
@@ -167,6 +167,8 @@ console.log(event)
                                         content={event.isCancelled ? 'Reactivate' : 'Cancel'}  
                                     />
                                 </Button.Group>
+                            ) : event.isGoing && !eventIsPast && event.price && event.price > 0 && !user?.isModerator ? (
+                                <Button fluid disabled color='blue' content="You already purchased a ticket" />
                             ) : event.isGoing && !eventIsPast ? (
                                 <Button.Group widths='2'>
                                     <Button onClick={updateAttendance} loading={loading} color='red' content='Cancel attendance' />
@@ -183,7 +185,13 @@ console.log(event)
                                 </Button.Group>
                             ) : !user?.isModerator && event.price && event.price > 0 ? (
                                 <Button.Group widths='2'>
-                                    <Button disabled={event.isCancelled || eventIsPast} onClick={() => handlePayment(event.price ?? 0)} loading={loading} color='blue' content={`Join event for ${event.price}€`} />
+                                    <Button 
+                                        disabled={event.isCancelled || eventIsPast} 
+                                        onClick={() => handlePayment(event.price ?? 0, currentUser?.username || '', event.id)} 
+                                        loading={loading} 
+                                        color='blue' 
+                                        content={`Join event for ${event.price}€`} 
+                                    />
                                 </Button.Group>
                             ) : (
                                 <Button.Group widths='2'>

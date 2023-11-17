@@ -10,6 +10,8 @@ using Infrastructure.Payments;
 using Infrastructure.Payment;
 using Stripe.Checkout;
 using Microsoft.AspNetCore.Authorization;
+using Application.Events;
+using MediatR;
 
 namespace API.Controllers
 {
@@ -39,18 +41,20 @@ namespace API.Controllers
         }
 
         /// <summary>Creates the checkout session.</summary>
-        /// <param name="dto">The dto.</param>
+        /// <param name="amount">The amount.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="eventId">The event id.</param>
         [HttpPost("create-checkout-session")]
         public async Task<ActionResult> CreateCheckoutSession([FromBody] PaymentRequestDto dto)
         {
-            var session = await this.stripeService.CreateCheckoutSessionAsync(dto.Amount);
+            var session = await this.stripeService.CreateCheckoutSessionAsync(dto.Amount, dto.Username, dto.EventId);
             return Ok(new { sessionId = session.Id });
         }
 
         /// <summary>Handles the stripe webhook.</summary>
         [HttpPost("webhook")]
         [AllowAnonymous]
-        public async Task<IActionResult> HandleStripeWebhook()
+        public async Task<IActionResult> HandleStripeWebhook([FromServices] IMediator mediator)
         {
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
 
@@ -65,6 +69,28 @@ namespace API.Controllers
                 if (stripeEvent.Type == Events.CheckoutSessionCompleted)
                 {
                     var session = stripeEvent.Data.Object as Session;
+                    var eventId = session!.Metadata["eventId"];
+                    var username = session!.Metadata["username"];
+
+                    if (Guid.TryParse(eventId, out Guid eventGuid))
+                    {
+                        var command = new UpdateAttendance.Command { Id = eventGuid, Username = username };
+                        var result = await mediator.Send(command);
+
+                        if (result.IsSuccess)
+                        {
+                            this.logger.LogInformation("Attendance updated for event {EventId}", eventId);
+                        }
+                        else
+                        {
+                            this.logger.LogError("Error updating attendance: {Error}", result.Error);
+                        }
+                    }
+                    else
+                    {
+                        this.logger.LogError("Invalid event ID: {EventId}", eventId);
+                    }
+
                     this.logger.LogInformation("Checkout session completed: {SessionId}", session.Id);
                 }
 
@@ -76,5 +102,6 @@ namespace API.Controllers
                 return BadRequest();
             }
         }
+
     }
 }

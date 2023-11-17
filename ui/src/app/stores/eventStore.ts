@@ -255,9 +255,9 @@ export default class EventStore {
         }
     }
 
-    handlePayment = async (price: number) => {
+    handlePayment = async (price: number, username: string, eventId: string) => {
         try {
-            const { sessionId } = await client.Payments.createCheckoutSession(price)
+            const { sessionId } = await client.Payments.createCheckoutSession(price, username, eventId)
 
             const stripe = await stripePromise
             if (stripe) {

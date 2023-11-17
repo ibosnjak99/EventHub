@@ -22,36 +22,44 @@ namespace Infrastructure.Payments
 
         /// <summary>Creates the checkout session asynchronous.</summary>
         /// <param name="amount">The amount.</param>
-        public async Task<Session> CreateCheckoutSessionAsync(int amount)
+        /// <param name="username">The username.</param>
+        /// <param name="eventId">The event id.</param>
+        public async Task<Session> CreateCheckoutSessionAsync(int amount, string username, string eventId)
         {
             var options = new SessionCreateOptions
             {
                 PaymentMethodTypes = new List<string> { "card" },
                 LineItems = new List<SessionLineItemOptions>
-            {
-                new SessionLineItemOptions
                 {
-                    PriceData = new SessionLineItemPriceDataOptions
+                    new SessionLineItemOptions
                     {
-                        UnitAmount = (long)amount*100, 
-                        Currency = "eur",
-                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        PriceData = new SessionLineItemPriceDataOptions
                         {
-                            Name = "Event Ticket",
+                            UnitAmount = (long)amount * 100,
+                            Currency = "eur",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = "Event Ticket",
+                            },
                         },
+                        Quantity = 1,
                     },
-                    Quantity = 1,
                 },
-            },
                 Mode = "payment",
                 SuccessUrl = "http://localhost:3000/events",
-                CancelUrl = "http://localhost:3000/events"
-            };
+                CancelUrl = "http://localhost:3000/events",
+                Metadata = new Dictionary<string, string>
+                    {
+                        { "username", username },
+                        { "eventId", eventId }
+                    }
+                };
 
             var service = new SessionService();
             Session session = await service.CreateAsync(options);
 
             return session;
         }
+
     }
 }

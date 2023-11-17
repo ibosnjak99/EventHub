@@ -5,6 +5,7 @@ import { store } from "./store"
 import { router } from "../router/Routes"
 
 export default class UserStore {
+    currentUser: User | null = null
     user: User | null = null
     users: User[] | null = null
     refreshTokenTimeout?: NodeJS.Timeout
@@ -20,6 +21,7 @@ export default class UserStore {
     login = async (creds: UserFormValues) => {
         try {
             const user = await client.Account.login(creds)
+            this.currentUser = user
             store.commonStore.setToken(user.token)
             this.startRefreshTokenTimer(user)
             runInAction(() => this.user = user)
