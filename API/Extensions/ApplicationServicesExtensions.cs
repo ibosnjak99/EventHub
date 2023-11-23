@@ -2,6 +2,7 @@
 using Application.Events;
 using Application.Events.Queries;
 using Application.Interfaces;
+using Application.Users;
 using Domain;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -60,6 +61,7 @@ namespace API.Extensions
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining<EventsHandler>();
             services.AddHttpContextAccessor();
+            services.AddScoped<IUsersHandler, UsersHandler>();
             services.AddScoped<IStripeService, StripeService>();
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
