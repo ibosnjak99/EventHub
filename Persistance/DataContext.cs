@@ -60,6 +60,14 @@ namespace Infrastructure
         public DbSet<UserFollowing> UserFollowings { get; set; }
 
         /// <summary>
+        /// Gets or sets the refresh tokens.
+        /// </summary>
+        /// <value>
+        /// The refresh tokens.
+        /// </value>
+        public DbSet<RefreshToken> RefreshToken { get; set; }
+
+        /// <summary>
         /// Configures the schema needed for the identity framework.
         /// </summary>
         /// <param name="builder">

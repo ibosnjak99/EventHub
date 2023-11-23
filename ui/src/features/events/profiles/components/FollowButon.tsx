@@ -19,11 +19,11 @@ export default observer(function FollowButton({ profile }: Props ) {
     if (userStore.user?.username === profile.userName) return null
 
     return (
-        <Reveal animated='move'>
-            <Reveal.Content visible style={{ width: '100%' }}>
-                <Button fluid color='blue' content={profile.following ? 'Following' : 'Not following'} />
-            </Reveal.Content>
-            <Reveal.Content hidden style={{ width: '100%' }}>
+        // <Reveal animated='move'>
+        //     <Reveal.Content visible style={{ width: '100%' }}>
+        //         <Button fluid color='blue' content={profile.following ? 'Following' : 'Not following'} />
+        //     </Reveal.Content>
+        //     <Reveal.Content hidden style={{ width: '100%' }}>
                 <Button
                     fluid 
                     color={profile.following ? 'red' : 'green'}
@@ -31,7 +31,7 @@ export default observer(function FollowButton({ profile }: Props ) {
                     loading={loading}
                     onClick={(e) => handleFollow(e, profile.userName)}
                 />
-            </Reveal.Content>
-        </Reveal>
+        //     </Reveal.Content>
+        // </Reveal>
     )
 })

@@ -15,7 +15,7 @@ export default observer(function EventModal() {
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [eventIdToDelete, setEventIdToDelete] = useState('')
     const [showGuestList, setShowGuestList] = useState(false)
-
+console.log(user)
     useEffect(() => {
         if (event!.id) {
             commentStore.createHubConnection(event!.id)
@@ -187,7 +187,7 @@ export default observer(function EventModal() {
                                 <Button.Group widths='2'>
                                     <Button 
                                         disabled={event.isCancelled || eventIsPast} 
-                                        onClick={() => handlePayment(event.price ?? 0, currentUser?.username || '', event.id)} 
+                                        onClick={() => handlePayment(event.price ?? 0, user?.username || '', event.id)} 
                                         loading={loading} 
                                         color='blue' 
                                         content={`Join event for ${event.price}€`} 

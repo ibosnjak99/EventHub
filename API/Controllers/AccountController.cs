@@ -225,35 +225,52 @@ namespace API.Controllers
         /// <param name="username">The username.</param>
         public async Task<bool> DeleteUserAndAssociatedDataAsync(string username)
         {
-            var user = await this.userManager.Users.SingleOrDefaultAsync(u => u.UserName == username) ?? throw new ArgumentException("User not found.");
-            if (user.IsModerator) throw new ArgumentException("Cannot delete moderator.");
+            var user = await this.userManager.Users.SingleOrDefaultAsync(u => u.UserName == username);
+            if (user == null)
+                throw new ArgumentException("User not found.");
+            if (user.IsModerator)
+                throw new ArgumentException("Cannot delete moderator.");
 
-            try
+            using (var transaction = await this.context.Database.BeginTransactionAsync())
             {
-                this.context.Comments.RemoveRange(this.context.Comments.Where(c => c.AuthorId == user.Id));
+                try
+                {
+                    // Removing related entities first
+                    var comments = await this.context.Comments.Where(c => c.AuthorId == user.Id).ToListAsync();
+                    this.context.Comments.RemoveRange(comments);
 
-                this.context.Photos.RemoveRange(this.context.Photos.Where(p => p.AppUserId == user.Id));
+                    var photos = await this.context.Photos.Where(p => p.AppUserId == user.Id).ToListAsync();
+                    this.context.Photos.RemoveRange(photos);
 
-                var eventAttendees = this.context.EventAttendees.Where(ea => ea.AppUserId == user.Id && ea.IsHost).ToList();
-                var eventIds = eventAttendees.Select(ea => ea.EventId).Distinct().ToList();
+                    var eventAttendees = await this.context.EventAttendees
+                        .Where(ea => ea.AppUserId == user.Id && ea.IsHost).ToListAsync();
+                    var eventIds = eventAttendees.Select(ea => ea.EventId).Distinct().ToList();
 
-                this.context.EventAttendees.RemoveRange(eventAttendees);
-                
-                this.context.Events.RemoveRange(this.context.Events.Where(e => eventIds.Contains(e.Id)));
+                    this.context.EventAttendees.RemoveRange(eventAttendees);
 
-                this.context.UserFollowings.RemoveRange(this.context.UserFollowings.Where(uf => uf.ObserverId == user.Id || uf.TargetId == user.Id));
+                    var events = await this.context.Events.Where(e => eventIds.Contains(e.Id)).ToListAsync();
+                    this.context.Events.RemoveRange(events);
 
-                this.context.Users.Remove(user);
+                    var userFollows = await this.context.UserFollowings
+                        .Where(uf => uf.ObserverId == user.Id || uf.TargetId == user.Id).ToListAsync();
+                    this.context.UserFollowings.RemoveRange(userFollows);
 
-                await this.context.SaveChangesAsync();
+                    var refreshTokens = await this.context.RefreshToken.Where(rt => rt.AppUser.Id == user.Id).ToListAsync();
+                    this.context.RefreshToken.RemoveRange(refreshTokens);
+
+                    // Finally, removing the user
+                    this.context.Users.Remove(user);
+
+                    // Save all changes within a transaction
+                    await this.context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                catch
+                {
+                    throw new Exception("Something went wrong during the deletion process.");
+                }
             }
-            catch
-            {
-                throw new Exception("Something went wrong during the deletion process.");
-            }
-
             return true;
         }
-
     }
 }
