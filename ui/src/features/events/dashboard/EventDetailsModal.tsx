@@ -9,13 +9,13 @@ import CustomTextArea from '../../../app/common/form/CustomTextArea'
 import * as Yup from 'yup'
 
 export default observer(function EventModal() {
-    const {eventStore, commentStore, userStore: {user, currentUser}} = useStore()
+    const {eventStore, commentStore, userStore: {user}} = useStore()
     const {selectedEvent: event, openModal, unselectEvent, deleteEvent, updateAttendance, handlePayment, cancelEventToggle, loading} = eventStore
 
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [eventIdToDelete, setEventIdToDelete] = useState('')
     const [showGuestList, setShowGuestList] = useState(false)
-console.log(user)
+
     useEffect(() => {
         if (event!.id) {
             commentStore.createHubConnection(event!.id)

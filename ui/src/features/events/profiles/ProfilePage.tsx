@@ -34,7 +34,7 @@ export default observer(function ProfilePage() {
                 {profile &&
                     <>
                         <ProfileHeader profile={profile} />
-                        <ProfileContent profile={profile} />
+                        {!user?.isModerator && <ProfileContent profile={profile} />}
                     </>
                 }
                 {user?.isModerator && isCurrentUser &&

@@ -1,17 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Stripe;
-using API.DTOs;
-using Infrastructure.Payments;
+﻿using API.DTOs;
 using Infrastructure.Payment;
-using Stripe.Checkout;
-using Microsoft.AspNetCore.Authorization;
-using Application.Events;
+using Infrastructure.Payments;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace API.Controllers
 {
@@ -25,6 +18,7 @@ namespace API.Controllers
         private readonly IStripeService stripeService;
         private readonly StripeSettings stripeSettings;
         private readonly ILogger<PaymentsController> logger;
+        private readonly ILogger<StripeService> stripeLogger;
 
         /// <summary>Initializes a new instance of the <see cref="PaymentsController" /> class.</summary>
         /// <param name="stripeService">The stripe service.</param>
@@ -33,17 +27,17 @@ namespace API.Controllers
         public PaymentsController(
             IStripeService stripeService,
             IOptions<StripeSettings> stripeSettings,
-            ILogger<PaymentsController> logger)
+            ILogger<PaymentsController> logger,
+            ILogger<StripeService> stripeLogger)
         {
             this.stripeService = stripeService;
             this.stripeSettings = stripeSettings.Value;
             this.logger = logger;
+            this.stripeLogger = stripeLogger;
         }
 
         /// <summary>Creates the checkout session.</summary>
-        /// <param name="amount">The amount.</param>
-        /// <param name="username">The username.</param>
-        /// <param name="eventId">The event id.</param>
+        /// <param name="dto"></param>
         [HttpPost("create-checkout-session")]
         public async Task<ActionResult> CreateCheckoutSession([FromBody] PaymentRequestDto dto)
         {
@@ -57,51 +51,17 @@ namespace API.Controllers
         public async Task<IActionResult> HandleStripeWebhook([FromServices] IMediator mediator)
         {
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+            var stripeSignature = Request.Headers["Stripe-Signature"];
 
-            try
+            var success = await this.stripeService.HandleWebhookAsync(json, stripeSignature, mediator, this.stripeLogger);
+            if (success)
             {
-                var stripeEvent = EventUtility.ConstructEvent(
-                    json,
-                    Request.Headers["Stripe-Signature"],
-                    this.stripeSettings.WebhookSecret
-                );
-
-                if (stripeEvent.Type == Events.CheckoutSessionCompleted)
-                {
-                    var session = stripeEvent.Data.Object as Session;
-                    var eventId = session!.Metadata["eventId"];
-                    var username = session!.Metadata["username"];
-
-                    if (Guid.TryParse(eventId, out Guid eventGuid))
-                    {
-                        var command = new UpdateAttendance.Command { Id = eventGuid, Username = username };
-                        var result = await mediator.Send(command);
-
-                        if (result.IsSuccess)
-                        {
-                            this.logger.LogInformation("Attendance updated for event {EventId}", eventId);
-                        }
-                        else
-                        {
-                            this.logger.LogError("Error updating attendance: {Error}", result.Error);
-                        }
-                    }
-                    else
-                    {
-                        this.logger.LogError("Invalid event ID: {EventId}", eventId);
-                    }
-
-                    this.logger.LogInformation("Checkout session completed: {SessionId}", session.Id);
-                }
-
                 return Ok();
             }
-            catch (Exception e)
+            else
             {
-                this.logger.LogError("Error occurred processing Stripe webhook: {Message}", e.Message);
                 return BadRequest();
             }
         }
-
     }
 }
