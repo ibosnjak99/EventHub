@@ -86,5 +86,13 @@ namespace Domain
         /// The comments.
         /// </value>
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
+        /// <summary>
+        /// Gets or sets the price.
+        /// </summary>
+        /// <value>
+        /// The price.
+        /// </value>
+        public int? Price { get; set; }
     }
 }

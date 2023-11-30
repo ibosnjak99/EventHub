@@ -11,9 +11,10 @@ import CustomSelectInput from '../../../app/common/form/CustomSelectInput'
 import { categoryOptions } from '../../../app/common/options/categoryOptions'
 import CustomDateInput from '../../../app/common/form/CustomDateInput'
 import { EventFormValues } from '../../../app/models/event'
+import CustomCityAutocomplete from '../../../app/common/form/CustomCityAutoComplete'
 
 export default observer (function EventsForm() {
-  const {eventStore} = useStore()
+  const { eventStore } = useStore()
   const { closeModal, createEvent, updateEvent, selectedEvent} = eventStore
 
     const event = selectedEvent ? new EventFormValues(selectedEvent) : new EventFormValues()
@@ -25,7 +26,12 @@ export default observer (function EventsForm() {
       date: Yup.string().required('The date is required'),
       city: Yup.string().required('The city is required'),
       venue: Yup.string().required('The venue is required'),
+      price: Yup.number()
+        .nullable()
+        .transform((value, originalValue) => (String(originalValue).trim() === '' ? null : value))
+        .typeError('Price must be a number or leave empty if it is free')
     })
+    
 
     function handleFormSubmit(event: EventFormValues) {
       if (!event.id) {
@@ -59,8 +65,9 @@ export default observer (function EventsForm() {
                   <CustomTextArea rows={4} label='Description' name='description' />
                   <CustomSelectInput options={categoryOptions} label='Category' name='category' />
                   <CustomDateInput disablePast placeholderText='Date' name='date' showTimeSelect timeCaption='time' dateFormat='MMMM d, yyyy hh:mm aa'/>
-                  <CustomTextInput label='City' name='city' />
+                  <CustomCityAutocomplete label='City' name='city' />
                   <CustomTextInput label='Venue' name='venue' />
+                  <CustomTextInput label='Price (in €)' name='price' placeholder='Leave empty if there is no entrance fee' />
                 </Form>
               </Modal.Content>
               <Modal.Actions>

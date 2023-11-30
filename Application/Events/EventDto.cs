@@ -86,5 +86,13 @@ namespace Application.Events
         /// The profiles.
         /// </value>
         public ICollection<AttendeeDto> Attendees { get; set; } = new List<AttendeeDto>();
+
+        /// <summary>
+        /// Gets or sets the price.
+        /// </summary>
+        /// <value>
+        /// The price.
+        /// </value>
+        public int Price { get; set; }
     }
 }

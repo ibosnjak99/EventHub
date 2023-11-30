@@ -41,7 +41,7 @@ axios.interceptors.response.use(async response => {
     }
     return response
 }, (error: AxiosError) => {
-    const { data, status } = error?.response as AxiosResponse
+    const { data, status, headers } = error?.response as AxiosResponse
     switch (status) {
         case 400:
             // if (config.method === 'get' && data.errors.hasOwnProperty('id')) {
@@ -60,7 +60,12 @@ axios.interceptors.response.use(async response => {
             // }
             break  
         case 401:
-            toast.error('Unauthorized')     
+            if (status === 401 && headers['www-authenticate']?.startsWith('Bearer error="invalid_token')) {
+                store.userStore.logout()
+                toast.error('Session expired - please login again')
+            } else {
+                toast.error('Unauthorized')
+            }
             break
         case 403:
             toast.error('Forbidden') 
@@ -101,6 +106,7 @@ const Account = {
     register: (user: UserFormValues) => requests.post<User>('/account/register', user),
     all: () => requests.get<User[]>('/account/all'),
     delete: (username: string) => requests.delete<void>(`/account/${username}`),
+    refreshToken: () => requests.post<User>('/account/refreshToken', {})
 }
 
 const Profiles = {
@@ -121,10 +127,15 @@ const Profiles = {
     listEvents: (username: string, predicate: string) => requests.get<UserEvent[]>((`/profiles/${username}/events?predicate=${predicate}`))
 }
 
+const Payments = {
+    createCheckoutSession: (price: number, username: string, eventId: string) => requests.post<{ sessionId: string }>('/payments/create-checkout-session', { amount: price, username, eventId })
+}
+
 const client = {
     Events,
     Account,
-    Profiles
+    Profiles,
+    Payments
 }
 
 export default client

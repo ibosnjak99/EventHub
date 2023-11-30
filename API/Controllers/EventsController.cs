@@ -1,5 +1,4 @@
-﻿using Application.Core;
-using Application.Events;
+﻿using Application.Events;
 using Application.Events.Commands;
 using Application.Events.Queries;
 using Domain;

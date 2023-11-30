@@ -1,5 +1,6 @@
 ﻿using API.DTOs;
 using API.Services;
+using Application.Users;
 using Domain.Models;
 using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
@@ -21,20 +22,23 @@ namespace API.Controllers
         private readonly UserManager<AppUser> userManager;
         private readonly TokenService tokenService;
         private readonly DataContext context;
+        private readonly IUsersHandler usersHandler;
 
         /// <summary>Initializes a new instance of the <see cref="AccountController" /> class.</summary>
         /// <param name="userManager">The user manager.</param>
         /// <param name="tokenService">The token service.</param>
         /// <param name="context"></param>
+        /// <param name="usersHandler"></param>
         public AccountController(
             UserManager<AppUser> userManager,
             TokenService tokenService, 
-            DataContext context
-            )
+            DataContext context,
+            IUsersHandler usersHandler)
         {
             this.userManager = userManager;
             this.tokenService = tokenService;
             this.context = context;
+            this.usersHandler = usersHandler;
         }
 
         /// <summary>
@@ -57,6 +61,7 @@ namespace API.Controllers
 
             if (result)
             {
+                await SetRefreshToken(user);
                 return CreateUser(user);
             }
 
@@ -97,6 +102,7 @@ namespace API.Controllers
 
             if (result.Succeeded)
             {
+                await SetRefreshToken(user);
                 return CreateUser(user);
             }
 
@@ -147,7 +153,7 @@ namespace API.Controllers
         [HttpDelete("{username}")]
         public async Task<ActionResult> DeleteUser(string username)
         {
-            await DeleteUserAndAssociatedDataAsync(username);
+            await this.usersHandler.DeleteUserAndAssociatedDataAsync(username);
 
             return Ok("User and associated data successfully deleted.");
         }
@@ -172,40 +178,49 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Deletes the user and associated data asynchronous.
+        /// Refreshes the token.
         /// </summary>
-        /// <param name="username">The username.</param>
-        public async Task<bool> DeleteUserAndAssociatedDataAsync(string username)
+        [Authorize]
+        [HttpPost("refreshToken")]
+        public async Task<ActionResult<UserDto>> RefreshToken()
         {
-            var user = await this.userManager.Users.SingleOrDefaultAsync(u => u.UserName == username) ?? throw new ArgumentException("User not found.");
-            if (user.IsModerator) throw new ArgumentException("Cannot delete moderator.");
+            var refreshToken = Request.Cookies["refreshToken"];
+            var user = await this.userManager.Users
+                .Include(r => r.RefreshTokens)
+                .Include(p => p.Photos)
+                .FirstOrDefaultAsync(x => x.UserName == User.FindFirstValue(ClaimTypes.Name));
 
-            try
-            {
-                this.context.Comments.RemoveRange(this.context.Comments.Where(c => c.AuthorId == user.Id));
+            if (user == null) return Unauthorized();
 
-                this.context.Photos.RemoveRange(this.context.Photos.Where(p => p.AppUserId == user.Id));
+            var oldToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken);
 
-                var eventAttendees = this.context.EventAttendees.Where(ea => ea.AppUserId == user.Id && ea.IsHost).ToList();
-                var eventIds = eventAttendees.Select(ea => ea.EventId).Distinct().ToList();
+            if (oldToken != null && !oldToken.IsActive) return Unauthorized();
 
-                this.context.EventAttendees.RemoveRange(eventAttendees);
-                
-                this.context.Events.RemoveRange(this.context.Events.Where(e => eventIds.Contains(e.Id)));
+            if (oldToken != null) oldToken.Revoked = DateTime.UtcNow;
 
-                this.context.UserFollowings.RemoveRange(this.context.UserFollowings.Where(uf => uf.ObserverId == user.Id || uf.TargetId == user.Id));
-
-                this.context.Users.Remove(user);
-
-                await this.context.SaveChangesAsync();
-            }
-            catch
-            {
-                throw new Exception("Something went wrong during the deletion process.");
-            }
-
-            return true;
+            return CreateUser(user);
         }
 
+        /// <summary>
+        /// Sets the refresh token.
+        /// </summary>
+        /// <param name="user">
+        /// The user.
+        /// </param>
+        private async Task SetRefreshToken(AppUser user)
+        {
+            var refreshToken = this.tokenService.GenerateRefreshToken();
+
+            user.RefreshTokens.Add(refreshToken);
+            await this.userManager.UpdateAsync(user);
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+
+            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
+        }
     }
 }

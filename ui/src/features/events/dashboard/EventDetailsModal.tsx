@@ -10,8 +10,8 @@ import * as Yup from 'yup'
 
 export default observer(function EventModal() {
     const {eventStore, commentStore, userStore: {user}} = useStore()
-    const {selectedEvent: event, openModal, unselectEvent, deleteEvent, updateAttendance, cancelEventToggle, loading} = eventStore
-    
+    const {selectedEvent: event, openModal, unselectEvent, deleteEvent, updateAttendance, handlePayment, cancelEventToggle, loading} = eventStore
+
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [eventIdToDelete, setEventIdToDelete] = useState('')
     const [showGuestList, setShowGuestList] = useState(false)
@@ -141,6 +141,19 @@ export default observer(function EventModal() {
                                 </Grid.Column>
                             </Grid>
                             <Divider style={{ opacity: '0.5' }}/>
+
+                            <Grid>
+                                <Grid.Column width={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Icon size='large' color='blue' name='euro'/>
+                                </Grid.Column>
+                                <Grid.Column width={14}>
+                                    <p style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}>
+                                        <span>
+                                        {event.price === 0 ? 'Free' : `${event.price} €`}
+                                        </span>
+                                    </p>
+                                    </Grid.Column>
+                            </Grid>
                         </Card.Content>
                         <Card.Content extra>
                             {event.isHost && !eventIsPast ? (
@@ -154,6 +167,8 @@ export default observer(function EventModal() {
                                         content={event.isCancelled ? 'Reactivate' : 'Cancel'}  
                                     />
                                 </Button.Group>
+                            ) : event.isGoing && !eventIsPast && event.price && event.price > 0 && !user?.isModerator ? (
+                                <Button fluid disabled color='blue' content="You already purchased a ticket" />
                             ) : event.isGoing && !eventIsPast ? (
                                 <Button.Group widths='2'>
                                     <Button onClick={updateAttendance} loading={loading} color='red' content='Cancel attendance' />
@@ -168,9 +183,19 @@ export default observer(function EventModal() {
                                     <Button disabled onClick={() => openModal(event.id)} color='blue' icon='edit' content='Edit' />
                                     <Button disabled onClick={() => handleDeleteEvent(event.id)} color='red' icon='delete' content='Delete' />
                                 </Button.Group>
+                            ) : !user?.isModerator && event.price && event.price > 0 ? (
+                                <Button.Group widths='2'>
+                                    <Button 
+                                        disabled={event.isCancelled || eventIsPast} 
+                                        onClick={() => handlePayment(event.price ?? 0, user?.username || '', event.id)} 
+                                        loading={loading} 
+                                        color='blue' 
+                                        content={`Join event for ${event.price}€`} 
+                                    />
+                                </Button.Group>
                             ) : (
                                 <Button.Group widths='2'>
-                                    <Button disabled={event.isCancelled || eventIsPast} onClick={updateAttendance} loading={loading} color='blue' content='Join event' />
+                                    <Button disabled={event.isCancelled || eventIsPast} onClick={updateAttendance} loading={loading} color='blue' content='Join event for free' />
                                 </Button.Group>
                             )}
                         </Card.Content>

@@ -5,6 +5,9 @@ import { format } from 'date-fns'
 import { store } from "./store"
 import { Profile } from "../models/profile"
 import { Pagination, PagingParams } from "../models/pagination"
+import { loadStripe } from "@stripe/stripe-js"
+
+const stripePromise = loadStripe('pk_test_51O59TLCqdMsjOMHMeZPFUWGL9GcbaFTCti9RtLbC7xJrJOxE4sMdpqpoWg9C9OCvLC3zVa5XeHoJPBjtfvoBD5t700SqZ2V2Mn');
 
 export default class EventStore {
     eventRegistry = new Map<string, Event>()
@@ -179,6 +182,7 @@ export default class EventStore {
     }
 
     createEvent = async (event: EventFormValues) => {
+        if (event.price === null || event.price === undefined) { event.price = 0 }
         const user = store.userStore.user
         const attendee = new Profile(user!)
         try {
@@ -248,6 +252,26 @@ export default class EventStore {
             console.log(error)
         } finally {
             runInAction(() => this.loading = false)
+        }
+    }
+
+    handlePayment = async (price: number, username: string, eventId: string) => {
+        try {
+            const { sessionId } = await client.Payments.createCheckoutSession(price, username, eventId)
+
+            const stripe = await stripePromise
+            if (stripe) {
+
+                const { error } = await stripe.redirectToCheckout({
+                    sessionId: sessionId,
+                });
+            
+                if (error) {
+                    console.error('Error redirecting to Stripe checkout:', error)
+                }
+            }
+        } catch (error) {
+            console.error('Error creating Stripe checkout session:', error)
         }
     }
 
