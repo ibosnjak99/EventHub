@@ -37,7 +37,7 @@ namespace API.Services
                 claims.Add(new Claim(ClaimTypes.Role, "Moderator"));
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.config["TokenKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSecretKeyHereYouYourSecretKeyHereYourSecretKeyHereYourSecretKeyHereYourSecretKeyHereYourSecretKeyHereYourSecretKeyHereYourSecretKeyHereYourSecretKeyHererSecretKeyHere"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
